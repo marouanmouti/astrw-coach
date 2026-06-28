@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ASTRW">
+<meta name="theme-color" content="#1a4fa0">
+<title>ASTRW Coach App</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+:root{
+  --blue:#1a4fa0;--blue-mid:#2d67c8;--blue-light:#e8f0fb;--blue-dark:#0d2d5e;
+  --white:#ffffff;--gray:#f5f6fa;--border:#dde3f0;--text:#1a1a2e;--muted:#6b7280;
+  --green:#2e7d32;--green-bg:#e8f5e9;--orange:#e65100;--orange-bg:#fff3e0;--red:#c62828;--red-bg:#fce4ec;
+}
+html,body{height:100%;overflow:hidden;background:#f0f2f8;}
+#app{
+  max-width:430px;margin:0 auto;height:100vh;height:100dvh;
+  display:flex;flex-direction:column;background:#f0f2f8;
+  position:relative;overflow:hidden;
+}
+
+/* TOP BAR */
+.top-bar{
+  background:var(--blue);padding:env(safe-area-inset-top,0) 0 0;
+  flex-shrink:0;z-index:10;
+}
+.top-bar-inner{
+  padding:12px 16px 11px;display:flex;align-items:center;gap:10px;
+}
+.badge-club{
+  width:38px;height:38px;background:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:9px;color:var(--blue);line-height:1.2;
+  text-align:center;flex-shrink:0;border:2px solid rgba(255,255,255,0.3);
+}
+.top-title{flex:1;}
+.top-title h1{font-size:15px;font-weight:600;color:#fff;}
+.top-title p{font-size:11px;color:rgba(255,255,255,0.7);margin-top:1px;}
+.season-tag{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:3px 10px;font-size:10px;color:#fff;font-weight:500;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.content::-webkit-scrollbar{display:none;}
+.page{display:none;padding:14px 14px calc(env(safe-area-inset-bottom,0) + 14px);}
+.page.active{display:block;}
+
+/* BOTTOM NAV */
+.nav{
+  background:#fff;border-top:1px solid var(--border);
+  display:flex;flex-shrink:0;
+  padding:0 0 env(safe-area-inset-bottom,0);
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 2px 6px;border:none;background:none;cursor:pointer;
+  color:var(--muted);font-size:9px;font-weight:500;letter-spacing:.2px;
+}
+.nav-icon{font-size:22px;line-height:1;}
+.nav-btn.active{color:var(--blue);}
+
+/* SECTION TITLE */
+.sec{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:0 0 8px;}
+
+/* CARDS */
+.card{background:#fff;border-radius:14px;border:1px solid var(--border);padding:14px;margin-bottom:10px;}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+
+/* STATS GRID */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.stat-box{background:#fff;border-radius:12px;border:1px solid var(--border);padding:12px;text-align:center;}
+.stat-val{font-size:26px;font-weight:600;color:var(--blue-dark);}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px;font-weight:500;}
+
+/* NEXT MATCH CARD */
+.next-card{background:var(--blue);border-radius:14px;padding:16px;margin-bottom:10px;color:#fff;}
+.next-label{font-size:10px;color:rgba(255,255,255,0.65);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.next-opp{font-size:20px;font-weight:600;margin:5px 0 4px;letter-spacing:-.2px;}
+.next-meta{font-size:12px;color:rgba(255,255,255,0.8);display:flex;align-items:center;gap:5px;margin-top:2px;}
+
+/* MATCH ROWS */
+.match-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f2f8;}
+.match-row:last-child{border-bottom:none;}
+.res-badge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.rv{background:var(--green-bg);color:var(--green);}
+.rn{background:var(--orange-bg);color:var(--orange);}
+.rd{background:var(--red-bg);color:var(--red);}
+.match-opp{font-size:13px;font-weight:500;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.match-meta{font-size:10px;color:var(--muted);}
+.match-score{font-size:14px;font-weight:600;color:var(--blue-dark);}
+
+/* ALERT PILLS */
+.alerts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.alert-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:500;}
+.ap-red{background:var(--red-bg);color:var(--red);}
+.ap-orange{background:var(--orange-bg);color:var(--orange);}
+.ap-blue{background:var(--blue-light);color:var(--blue);}
+
+/* PLAYER ROWS */
+.player-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f2f8;}
+.player-row:last-child{border-bottom:none;}
+.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;}
+.player-info{flex:1;min-width:0;}
+.player-name{font-size:13px;font-weight:500;color:var(--text);}
+.player-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.rank-num{font-size:13px;font-weight:600;color:var(--blue);width:18px;text-align:right;flex-shrink:0;}
+.rank-val{font-size:13px;font-weight:600;color:#fff;background:var(--blue);border-radius:7px;padding:3px 9px;min-width:30px;text-align:center;flex-shrink:0;}
+
+/* STATUS TAGS */
+.tag{border-radius:7px;padding:3px 9px;font-size:10px;font-weight:600;}
+.tag-ok{background:var(--green-bg);color:var(--green);}
+.tag-bless{background:var(--orange-bg);color:var(--orange);}
+.tag-susp{background:var(--red-bg);color:var(--red);}
+.tag-inc{background:#f3e5f5;color:#7b1fa2;}
+
+/* FORMS */
+.form-group{margin-bottom:11px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;font-size:14px;color:var(--text);background:#fff;
+  outline:none;appearance:none;-webkit-appearance:none;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--blue);}
+.form-group textarea{resize:none;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* BUTTONS */
+.btn{
+  width:100%;border:none;border-radius:12px;padding:13px;
+  font-size:15px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  margin-top:10px;transition:opacity .15s;
+}
+.btn:active{opacity:.85;}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-secondary{background:var(--blue-light);color:var(--blue);margin-top:8px;}
+.btn-danger{background:var(--red-bg);color:var(--red);margin-top:8px;}
+.btn-sm{width:auto;padding:7px 14px;font-size:12px;border-radius:8px;margin-top:0;}
+
+/* TAB PILLS */
+.tab-pills{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.tab-pills::-webkit-scrollbar{display:none;}
+.pill{border:1px solid var(--border);background:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.pill.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* CONVOCATION BOX */
+.convo-box{background:var(--blue-light);border-radius:12px;padding:14px;font-size:12.5px;color:var(--blue-dark);line-height:1.75;white-space:pre-wrap;margin-top:12px;border:1px dashed var(--blue-mid);}
+
+/* PLAYER CHECKBOXES */
+.player-checks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
+.pcheck{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:12px;color:var(--text);transition:all .15s;}
+.pcheck.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:500;}
+.pcheck input{display:none;}
+.pcheck-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;}
+.pcheck.sel .pcheck-dot{background:var(--blue);border-color:var(--blue);}
+
+/* PROGRESS BAR */
+.prog-bar{height:6px;background:#f0f2f8;border-radius:3px;margin-top:5px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:var(--blue);transition:width .3s;}
+.prog-fill.warn{background:var(--orange);}
+.prog-fill.danger{background:var(--red);}
+
+/* CALENDAR */
+.cal-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f2f8;}
+.cal-row:last-child{border-bottom:none;}
+.cal-date{text-align:center;min-width:32px;}
+.cal-day{font-size:17px;font-weight:600;color:var(--blue-dark);line-height:1;}
+.cal-month{font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:600;}
+.cal-info{flex:1;}
+.cal-opp{font-size:13px;font-weight:500;color:var(--text);}
+.cal-meta{font-size:10px;color:var(--muted);margin-top:1px;}
+.cal-res{font-size:11px;font-weight:600;padding:3px 8px;border-radius:7px;white-space:nowrap;}
+.cr-v{background:var(--green-bg);color:var(--green);}
+.cr-n{background:var(--orange-bg);color:var(--orange);}
+.cr-d{background:var(--red-bg);color:var(--red);}
+.cr-a{background:var(--blue-light);color:var(--blue);}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:30px 20px;color:var(--muted);font-size:13px;}
+.empty-icon{font-size:40px;margin-bottom:8px;opacity:.4;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px 16px calc(env(safe-area-inset-bottom,0) + 20px);width:100%;max-width:430px;max-height:90vh;overflow-y:auto;}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
+.modal-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:16px;}
+.modal-close{float:right;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;margin-top:-2px;}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:calc(env(safe-area-inset-bottom,0) + 70px);left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1a1a2e;color:#fff;border-radius:20px;padding:10px 20px;
+  font-size:13px;font-weight:500;opacity:0;transition:all .25s;z-index:200;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* SCORE INPUT */
+.score-input-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.score-team{flex:1;text-align:center;}
+.score-team-name{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.score-num{display:flex;align-items:center;gap:6px;justify-content:center;}
+.score-num button{width:34px;height:34px;border:1px solid var(--border);border-radius:9px;background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--blue);font-weight:600;}
+.score-num span{font-size:28px;font-weight:700;color:var(--blue-dark);min-width:32px;text-align:center;}
+.score-sep{font-size:20px;font-weight:700;color:var(--muted);}
+
+/* BUT SAISIE */
+.but-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:#f8f9fc;border-radius:10px;padding:10px;}
+.but-row select{flex:1;border:none;background:transparent;font-size:13px;color:var(--text);outline:none;}
+.but-num{display:flex;gap:4px;}
+.but-num button{width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:#fff;cursor:pointer;font-size:14px;color:var(--blue);}
+.but-num span{font-size:14px;font-weight:600;color:var(--text);min-width:16px;text-align:center;line-height:28px;}
+
+/* CARTON SELECTOR */
+.carton-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.carton-tag{padding:5px 11px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid transparent;}
+.carton-tag.jaune{background:var(--orange-bg);color:var(--orange);border-color:var(--orange);}
+.carton-tag.rouge{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+.carton-tag.inactive{background:#f0f2f8;color:var(--muted);border-color:var(--border);}
+
+/* FORMATION */
+.terrain{background:linear-gradient(180deg,#2d7a2d,#1a5c1a);border-radius:12px;padding:16px;position:relative;aspect-ratio:.7;}
+.terrain-lines{position:absolute;inset:12px;border:2px solid rgba(255,255,255,.2);border-radius:8px;}
+.poste-group{display:flex;justify-content:space-around;margin-bottom:12px;}
+.poste-slot{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.poste-av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--blue-dark);border:2px solid rgba(255,255,255,.6);}
+.poste-av.empty{background:rgba(255,255,255,.2);color:rgba(255,255,255,.5);}
+.poste-name{font-size:8px;color:rgba(255,255,255,.85);font-weight:500;text-align:center;max-width:44px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* NOTES */
+.note-card{background:#fffef0;border:1px solid #e8d44d;border-radius:12px;padding:12px;margin-bottom:8px;}
+.note-date{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.note-text{font-size:13px;color:var(--text);line-height:1.5;}
+
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div class="badge-club">ASTRW</div>
+      <div class="top-title">
+        <h1>Coach App</h1>
+        <p>R3 Alsace · Assistant entraîneur</p>
+      </div>
+      <div class="season-tag">2025/26</div>
+    </div>
+  </div>
+
+  <!-- PAGES -->
+  <div class="content">
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="page active" id="page-home">
+      <div id="home-next"></div>
+      <div class="stat-grid" id="home-stats"></div>
+      <div class="sec">Alertes</div>
+      <div id="home-alerts" class="alerts" style="margin-bottom:10px"></div>
+      <div class="sec">Derniers résultats</div>
+      <div class="card" id="home-results"></div>
+    </div>
+
+    <!-- ===== CONVOCATIONS ===== -->
+    <div class="page" id="page-convo">
+      <div class="sec">Infos du match</div>
+      <div class="card">
+        <div class="form-group"><label>Adversaire</label><input type="text" id="c-adv" placeholder="ex: FC Mulhouse B"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Date</label><input type="date" id="c-date"></div>
+          <div class="form-group"><label>RDV</label><input type="time" id="c-time" value="13:30"></div>
+        </div>
+        <div class="form-group"><label>Lieu</label><input type="text" id="c-lieu" placeholder="Stade Théodore"></div>
+        <div class="form-group"><label>Type</label>
+          <select id="c-type"><option>Domicile</option><option>Extérieur</option></select>
+        </div>
+        <div class="form-group"><label>Message personnalisé (optionnel)</label>
+          <textarea id="c-msg" rows="2" placeholder="ex: Tenue complète requise, crampons obligatoires..."></textarea>
+        </div>
+      </div>
+      <div class="sec">Joueurs convoqués</div>
+      <div class="player-checks" id="convo-checks"></div>
+      <button class="btn btn-primary" onclick="genConvo()">
+        <span>📋</span> Générer la convocation
+      </button>
+      <div id="convo-result" style="display:none">
+        <div class="convo-box" id="convo-text"></div>
+        <button class="btn btn-secondary" onclick="copyConvo()">📋 Copier pour WhatsApp</button>
+      </div>
+    </div>
+
+    <!-- ===== STATS ===== -->
+    <div class="page" id="page-stats">
+      <div class="tab-pills">
+        <div class="pill active" onclick="statTab('buteurs',this)">⚽ Buteurs</div>
+        <div class="pill" onclick="statTab('passeurs',this)">🎯 Passeurs</div>
+        <div class="pill" onclick="statTab('minutes',this)">⏱ Minutes</div>
+        <div class="pill" onclick="statTab('saisir',this)">➕ Saisir match</div>
+      </div>
+      <div id="stat-buteurs"></div>
+      <div id="stat-passeurs" style="display:none"></div>
+      <div id="stat-minutes" style="display:none"></div>
+      <div id="stat-saisir" style="display:none"></div>
+    </div>
+
+    <!-- ===== EFFECTIF ===== -->
+    <div class="page" id="page-effectif">
+      <div class="tab-pills">
+        <div class="pill active" onclick="effTab('liste',this)">👥 Liste</div>
+        <div class="pill" onclick="effTab('cartons',this)">🟨 Cartons</div>
+        <div class="pill" onclick="effTab('ajouter',this)">➕ Ajouter</div>
+      </div>
+      <div id="eff-liste"></div>
+      <div id="eff-cartons" style="display:none"></div>
+      <div id="eff-ajouter" style="display:none">
+        <div class="card">
+          <div class="card-title">Nouveau joueur</div>
+          <div class="form-group"><label>Prénom et nom</label><input type="text" id="new-nom" placeholder="ex: Lucas Bernard"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Numéro</label><input type="number" id="new-num" min="1" max="99" placeholder="10"></div>
+            <div class="form-group"><label>Poste</label>
+              <select id="new-poste"><option>Gardien</option><option>Défenseur</option><option>Milieu</option><option>Ailier</option><option>Attaquant</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>Statut</label>
+            <select id="new-statut"><option value="ok">Disponible</option><option value="bless">Blessé</option><option value="susp">Suspendu</option><option value="inc">Incertain</option></select>
+          </div>
+          <button class="btn btn-primary" onclick="addPlayer()">Ajouter le joueur</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CALENDRIER ===== -->
+    <div class="page" id="page-cal">
+      <div class="tab-pills">
+        <div class="pill active" onclick="calTab('liste',this)">📅 Matchs</div>
+        <div class="pill" onclick="calTab('ajouter',this)">➕ Ajouter</div>
+      </div>
+      <div id="cal-liste"></div>
+      <div id="cal-ajouter" style="display:none">
+        <div class="card">
+          <div class="card-title">Nouveau match</div>
+          <div class="form-group"><label>Adversaire</label><input type="text" id="cal-adv" placeholder="FC Mulhouse B"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Date</label><input type="date" id="cal-date"></div>
+            <div class="form-group"><label>Heure</label><input type="time" id="cal-heure" value="15:00"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Type</label>
+              <select id="cal-type"><option>Domicile</option><option>Extérieur</option></select>
+            </div>
+            <div class="form-group"><label>Lieu</label><input type="text" id="cal-lieu" placeholder="Stade Théodore"></div>
+          </div>
+          <button class="btn btn-primary" onclick="addMatch()">Ajouter au calendrier</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NOTES ===== -->
+    <div class="page" id="page-notes">
+      <div class="card">
+        <div class="card-title">Nouvelle note</div>
+        <div class="form-group">
+          <textarea id="note-input" rows="4" placeholder="Observations tactiques, points à travailler, absences prévues..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="addNote()">Enregistrer la note</button>
+      </div>
+      <div class="sec" style="margin-top:4px">Notes récentes</div>
+      <div id="notes-list"></div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="nav">
+    <button class="nav-btn active" onclick="goPage('home',this)">
+      <div class="nav-icon">🏠</div>Dashboard
+    </button>
+    <button class="nav-btn" onclick="goPage('convo',this)">
+      <div class="nav-icon">📋</div>Convo
+    </button>
+    <button class="nav-btn" onclick="goPage('stats',this)">
+      <div class="nav-icon">📊</div>Stats
+    </button>
+    <button class="nav-btn" onclick="goPage('effectif',this)">
+      <div class="nav-icon">👥</div>Effectif
+    </button>
+    <button class="nav-btn" onclick="goPage('cal',this)">
+      <div class="nav-icon">📅</div>Calendrier
+    </button>
+    <button class="nav-btn" onclick="goPage('notes',this)">
+      <div class="nav-icon">📝</div>Notes
+    </button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ====== DATA & STORAGE ======
+var KEYS = {players:'astrw_players',matchs:'astrw_matchs',notes:'astrw_notes'};
+
+var DEFAULT_PLAYERS = [
+  {id:1,nom:'Lucas Bernard',num:1,poste:'Gardien',statut:'ok',buts:0,passes:0,jaunes:0,rouges:0,minutes:0},
+  {id:2,nom:'Hugo Petit',num:2,poste:'Défenseur',statut:'ok',buts:0,passes:0,jaunes:0,rouges:0,minutes:0},
+  {id:3,nom:'Théo Martin',num:3,poste:'Défenseur',statut:'bless',buts:0,passes:0,jaunes:1,rouges:0,minutes:180},
+  {id:4,nom:'Alexis Dubois',num:4,poste:'Défenseur',statut:'ok',buts:1,passes:5,jaunes:0,rouges:0,minutes:810},
+  {id:5,nom:'Thomas Remy',num:5,poste:'Défenseur',statut:'ok',buts:0,passes:3,jaunes:1,rouges:0,minutes:900},
+  {id:6,nom:'Jordan Klein',num:6,poste:'Milieu',statut:'ok',buts:5,passes:2,jaunes:2,rouges:0,minutes:870},
+  {id:7,nom:'Rayan Benali',num:7,poste:'Ailier',statut:'ok',buts:6,passes:1,jaunes:1,rouges:0,minutes:800},
+  {id:8,nom:'Samir Nasri',num:8,poste:'Milieu',statut:'ok',buts:2,passes:4,jaunes:1,rouges:0,minutes:850},
+  {id:9,nom:'Mehdi Aziz',num:9,poste:'Attaquant',statut:'ok',buts:9,passes:2,jaunes:1,rouges:0,minutes:900},
+  {id:10,nom:'Karim Sali',num:10,poste:'Milieu',statut:'susp',buts:3,passes:1,jaunes:3,rouges:0,minutes:750},
+  {id:11,nom:'Nabil Omar',num:11,poste:'Ailier',statut:'ok',buts:4,passes:2,jaunes:0,rouges:0,minutes:780},
+  {id:14,nom:'Kevin Lara',num:14,poste:'Milieu',statut:'ok',buts:1,passes:7,jaunes:0,rouges:0,minutes:820},
+  {id:15,nom:'Florian Collet',num:15,poste:'Milieu',statut:'ok',buts:1,passes:1,jaunes:0,rouges:0,minutes:600},
+  {id:17,nom:'Yanis Hakim',num:17,poste:'Attaquant',statut:'ok',buts:2,passes:2,jaunes:0,rouges:0,minutes:540}
+];
+
+var DEFAULT_MATCHS = [
+  {id:1,adv:'AS Bartenheim',date:'2026-05-25',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:2,scoreAdv:0,statut:'joue',buts:[{pid:9,nb:1},{pid:7,nb:1}],passes:[{pid:14,nb:1},{pid:8,nb:1}],jaunes:[],rouges:[]},
+  {id:2,adv:'FC Kembs',date:'2026-06-01',heure:'15:00',type:'Extérieur',lieu:'Terrain de Kembs',scoreNous:0,scoreAdv:2,statut:'joue',buts:[],passes:[],jaunes:[{pid:6}],rouges:[]},
+  {id:3,adv:'SC Cernay',date:'2026-06-08',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:3,scoreAdv:0,statut:'joue',buts:[{pid:9,nb:2},{pid:7,nb:1}],passes:[{pid:14,nb:1},{pid:4,nb:1},{pid:11,nb:1}],jaunes:[],rouges:[]},
+  {id:4,adv:'FC Illzach',date:'2026-06-15',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:1,scoreAdv:1,statut:'joue',buts:[{pid:9,nb:1}],passes:[{pid:14,nb:1}],jaunes:[{pid:10}],rouges:[]},
+  {id:5,adv:'AS Kingersheim',date:'2026-06-22',heure:'15:00',type:'Extérieur',lieu:'Terrain de Kingersheim',scoreNous:2,scoreAdv:1,statut:'joue',buts:[{pid:7,nb:1},{pid:11,nb:1}],passes:[{pid:4,nb:1},{pid:8,nb:1}],jaunes:[{pid:10}],rouges:[]},
+  {id:6,adv:'FC Mulhouse B',date:'2026-07-06',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:null,scoreAdv:null,statut:'avenir',buts:[],passes:[],jaunes:[],rouges:[]}
+];
+
+var DEFAULT_NOTES = [
+  {id:1,date:'2026-06-20',texte:'Travailler la sortie de balle côté gauche. Les centres de Rayan sont trop précipités.'},
+  {id:2,date:'2026-06-22',texte:'Bonne victoire à Kingersheim. Pressing haut efficace en 2e mi-temps. Jordan à surveiller (2 jaunes).'}
+];
+
+function load(key,def){try{var v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch(e){return def;}}
+function save(key,data){try{localStorage.setItem(key,JSON.stringify(data));}catch(e){}}
+
+var players = load(KEYS.players, DEFAULT_PLAYERS);
+var matchs = load(KEYS.matchs, DEFAULT_MATCHS);
+var notes = load(KEYS.notes, DEFAULT_NOTES);
+
+function savePlayers(){save(KEYS.players,players);}
+function saveMatchs(){save(KEYS.matchs,matchs);}
+function saveNotes(){save(KEYS.notes,notes);}
+
+// ====== HELPERS ======
+var COLORS=['#1a4fa0','#2d67c8','#0d2d5e','#1565c0','#1976d2','#0277bd','#01579b','#006064','#00695c','#2e7d32','#33691e','#558b2f','#4e342e','#5d4037','#37474f','#455a64','#7b1fa2','#ad1457','#c62828','#bf360c'];
+function avColor(id){return COLORS[id%COLORS.length];}
+function initials(nom){var p=nom.split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+function fmtDate(d){if(!d)return'';var p=d.split('-');var months=['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];return parseInt(p[2])+' '+months[parseInt(p[1])-1]+' '+p[0];}
+function fmtDateShort(d){if(!d)return'';var p=d.split('-');var months=['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];return parseInt(p[2])+' '+months[parseInt(p[1])-1];}
+function getPlayer(id){return players.find(function(p){return p.id==id;});}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+
+// ====== NAVIGATION ======
+function goPage(name,btn){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  renderPage(name);
+}
+
+function renderPage(name){
+  if(name==='home') renderHome();
+  else if(name==='convo') renderConvo();
+  else if(name==='stats') renderStats('buteurs');
+  else if(name==='effectif') renderEffectif('liste');
+  else if(name==='cal') renderCal('liste');
+  else if(name==='notes') renderNotes();
+}
+
+// ====== HOME ======
+function renderHome(){
+  var joues = matchs.filter(function(m){return m.statut==='joue';});
+  var v=0,n=0,d=0,bf=0,bc=0;
+  joues.forEach(function(m){
+    if(m.scoreNous>m.scoreAdv)v++;
+    else if(m.scoreNous===m.scoreAdv)n++;
+    else d++;
+    bf+=m.scoreNous||0; bc+=m.scoreAdv||0;
+  });
+  var pts = v*3+n;
+  
+  // Next match
+  var next = matchs.filter(function(m){return m.statut==='avenir';}).sort(function(a,b){return a.date>b.date?1:-1;})[0];
+  var nh = document.getElementById('home-next');
+  if(next){
+    nh.innerHTML='<div class="next-card"><div class="next-label">Prochain match</div><div class="next-opp">'+next.adv+'</div><div class="next-meta">📅 '+fmtDate(next.date)+' · '+next.heure+'</div><div class="next-meta">📍 '+(next.lieu||'Stade Théodore')+' · '+next.type+'</div></div>';
+  } else {
+    nh.innerHTML='<div class="next-card"><div class="next-label">Aucun prochain match</div><div class="next-opp">Saison terminée !</div></div>';
+  }
+  
+  // Stats
+  document.getElementById('home-stats').innerHTML=
+    '<div class="stat-box"><div class="stat-val">'+v+'</div><div class="stat-lbl">Victoires</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+n+'</div><div class="stat-lbl">Nuls</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+d+'</div><div class="stat-lbl">Défaites</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+pts+'</div><div class="stat-lbl">Points</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+bf+'</div><div class="stat-lbl">Buts marqués</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+bc+'</div><div class="stat-lbl">Buts encaissés</div></div>';
+  
+  // Alerts
+  var alerts = '';
+  players.filter(function(p){return p.statut==='susp';}).forEach(function(p){
+    alerts+='<div class="alert-pill ap-red">🟥 '+p.nom.split(' ')[0]+' suspendu</div>';
+  });
+  players.filter(function(p){return p.statut==='bless';}).forEach(function(p){
+    alerts+='<div class="alert-pill ap-orange">🤕 '+p.nom.split(' ')[0]+' blessé</div>';
+  });
+  players.filter(function(p){return p.jaunes===2;}).forEach(function(p){
+    alerts+='<div class="alert-pill ap-orange">⚠️ '+p.nom.split(' ')[0]+' 2 jaunes</div>';
+  });
+  if(next) alerts+='<div class="alert-pill ap-blue">📋 Convocation à envoyer</div>';
+  document.getElementById('home-alerts').innerHTML = alerts || '<div class="alert-pill ap-blue" style="opacity:.5">✅ Aucune alerte</div>';
+  
+  // Results
+  var recent = joues.sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,5);
+  var rhtml='';
+  recent.forEach(function(m){
+    var res = m.scoreNous>m.scoreAdv?'V':m.scoreNous===m.scoreAdv?'N':'D';
+    var cls = res==='V'?'rv':res==='N'?'rn':'rd';
+    rhtml+='<div class="match-row"><div class="res-badge '+cls+'">'+res+'</div><div class="player-info"><div class="player-name">'+m.adv+'</div><div class="player-sub">'+fmtDateShort(m.date)+' · '+m.type+'</div></div><div class="match-score">'+m.scoreNous+' – '+m.scoreAdv+'</div></div>';
+  });
+  document.getElementById('home-results').innerHTML = rhtml || '<div class="empty"><div class="empty-icon">⚽</div>Aucun match joué</div>';
+}
+
+// ====== CONVOCATIONS ======
+function renderConvo(){
+  var html='';
+  players.filter(function(p){return p.statut!=='susp';}).sort(function(a,b){return a.num-b.num;}).forEach(function(p){
+    var isBless = p.statut==='bless';
+    html+='<label class="pcheck'+(isBless?'':' sel')+'" data-id="'+p.id+'">'+
+      '<input type="checkbox"'+(isBless?'':' checked')+' onchange="togglePcheck(this)">'+
+      '<div class="pcheck-dot"></div>'+
+      '<span>#'+p.num+' '+p.nom.split(' ')[0]+'</span></label>';
+  });
+  document.getElementById('convo-checks').innerHTML=html;
+  document.getElementById('convo-result').style.display='none';
+}
+
+function togglePcheck(inp){
+  var lbl=inp.closest('.pcheck');
+  lbl.classList.toggle('sel',inp.checked);
+}
+
+function genConvo(){
+  var adv=document.getElementById('c-adv').value||'Adversaire';
+  var date=document.getElementById('c-date').value;
+  var time=document.getElementById('c-time').value;
+  var lieu=document.getElementById('c-lieu').value||'Stade Théodore';
+  var type=document.getElementById('c-type').value;
+  var msg=document.getElementById('c-msg').value;
+  var convoked=[...document.querySelectorAll('#convo-checks .pcheck input:checked')].map(function(inp,i){
+    var id=inp.closest('.pcheck').dataset.id;
+    var p=getPlayer(parseInt(id));
+    return p?'   '+(i+1)+'. '+p.nom+' (#'+p.num+')':'';
+  }).filter(Boolean);
+  
+  var txt='📢 *CONVOCATION ASTRW*\n';
+  txt+='────────────────────\n';
+  txt+='⚽ *Match :* ASTRW vs '+adv+'\n';
+  txt+='📅 *Date :* '+fmtDate(date)+'\n';
+  txt+='⏰ *RDV :* '+time+'\n';
+  txt+='📍 *Lieu :* '+lieu+' ('+type+')\n';
+  txt+='────────────────────\n';
+  txt+='*Joueurs convoqués ('+convoked.length+') :*\n';
+  txt+=convoked.join('\n');
+  txt+='\n────────────────────\n';
+  if(msg) txt+=msg+'\n';
+  txt+='✅ Merci de confirmer votre présence.\n';
+  txt+='Bonne préparation à tous ! 💙🤍\n';
+  txt+='— Staff ASTRW';
+  
+  document.getElementById('convo-text').textContent=txt;
+  document.getElementById('convo-result').style.display='block';
+  document.getElementById('convo-result').scrollIntoView({behavior:'smooth'});
+}
+
+function copyConvo(){
+  var t=document.getElementById('convo-text').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast('✅ Copié !');});}
+  else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✅ Copié !');}
+}
+
+// ====== STATS ======
+var curStatTab='buteurs';
+function statTab(name,btn){
+  curStatTab=name;
+  document.querySelectorAll('.page.active .tab-pills .pill').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  ['buteurs','passeurs','minutes','saisir'].forEach(function(t){
+    document.getElementById('stat-'+t).style.display=t===name?'block':'none';
+  });
+  if(name==='buteurs') renderButeurs();
+  else if(name==='passeurs') renderPasseurs();
+  else if(name==='minutes') renderMinutes();
+  else if(name==='saisir') renderSaisir();
+}
+
+function renderStats(tab){
+  renderButeurs();
+  ['passeurs','minutes','saisir'].forEach(function(t){document.getElementById('stat-'+t).style.display='none';});
+}
+
+function renderRanking(containerId, sorted, valFn, icon){
+  var html='<div class="card">';
+  if(!sorted.length){html+='<div class="empty"><div class="empty-icon">'+icon+'</div>Aucune donnée</div>';}
+  sorted.forEach(function(p,i){
+    var val=valFn(p);
+    html+='<div class="player-row"><div class="rank-num">'+(i+1)+'</div>'+
+      '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>'+
+      '<div class="player-info"><div class="player-name">'+p.nom+'</div><div class="player-sub">#'+p.num+' · '+p.poste+'</div></div>'+
+      '<div class="rank-val">'+val+'</div></div>';
+  });
+  html+='</div>';
+  document.getElementById(containerId).innerHTML=html;
+}
+
+function renderButeurs(){
+  var sorted=players.filter(function(p){return p.buts>0;}).sort(function(a,b){return b.buts-a.buts;});
+  renderRanking('stat-buteurs',sorted,function(p){return p.buts+' ⚽';},'⚽');
+}
+
+function renderPasseurs(){
+  var sorted=players.filter(function(p){return p.passes>0;}).sort(function(a,b){return b.passes-a.passes;});
+  renderRanking('stat-passeurs',sorted,function(p){return p.passes+' 🎯';},'🎯');
+}
+
+function renderMinutes(){
+  var sorted=[...players].sort(function(a,b){return b.minutes-a.minutes;});
+  renderRanking('stat-minutes',sorted,function(p){return p.minutes+''';},'⏱');
+}
+
+// Saisie de match
+var saisirScore=[0,0];
+var saisirButs={};
+var saisirPasses={};
+var saisirJaunes=[];
+var saisirRouges=[];
+
+function renderSaisir(){
+  var html='<div class="card"><div class="card-title">Nouveau match</div>';
+  html+='<div class="form-group"><label>Adversaire</label><input type="text" id="s-adv" placeholder="FC Mulhouse B"></div>';
+  html+='<div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="s-date"></div><div class="form-group"><label>Type</label><select id="s-type"><option>Domicile</option><option>Extérieur</option></select></div></div>';
+  html+='<div class="form-group"><label>Score</label>';
+  html+='<div class="score-input-row"><div class="score-team"><div class="score-team-name">ASTRW</div><div class="score-num"><button onclick="adjScore(0,-1)">−</button><span id="sn0">0</span><button onclick="adjScore(0,1)">+</button></div></div><div class="score-sep">–</div><div class="score-team"><div class="score-team-name">Adverse</div><div class="score-num"><button onclick="adjScore(1,-1)">−</button><span id="sn1">0</span><button onclick="adjScore(1,1)">+</button></div></div></div>';
+  html+='</div>';
+  
+  // Buteurs
+  html+='<div class="form-group"><label>Buteurs</label><div id="s-buts-list"></div><button class="btn btn-secondary" style="margin-top:6px" onclick="addButRow()">+ Ajouter un buteur</button></div>';
+  
+  // Passeurs
+  html+='<div class="form-group"><label>Passeurs décisifs</label><div id="s-passes-list"></div><button class="btn btn-secondary" style="margin-top:6px" onclick="addPasseRow()">+ Ajouter un passeur</button></div>';
+  
+  // Cartons
+  html+='<div class="form-group"><label>Cartons jaunes</label><div class="carton-grid" id="s-jaunes">';
+  players.forEach(function(p){html+='<div class="carton-tag jaune inactive" onclick="toggleCarton(this,'+p.id+',\'jaune\')">#'+p.num+' '+p.nom.split(' ')[0]+'</div>';});
+  html+='</div></div>';
+  html+='<div class="form-group"><label>Carton rouge</label><div class="carton-grid" id="s-rouges">';
+  players.forEach(function(p){html+='<div class="carton-tag rouge inactive" onclick="toggleCarton(this,'+p.id+',\'rouge\')">#'+p.num+' '+p.nom.split(' ')[0]+'</div>';});
+  html+='</div></div>';
+  
+  html+='<button class="btn btn-primary" onclick="saveMatch()">Enregistrer le match</button></div>';
+  
+  saisirScore=[0,0]; saisirButs={}; saisirPasses={}; saisirJaunes=[]; saisirRouges=[];
+  document.getElementById('stat-saisir').innerHTML=html;
+}
+
+function adjScore(team,delta){
+  saisirScore[team]=Math.max(0,saisirScore[team]+delta);
+  document.getElementById('sn'+team).textContent=saisirScore[team];
+}
+
+function playerOptions(){
+  return players.map(function(p){return '<option value="'+p.id+'">#'+p.num+' '+p.nom+'</option>';}).join('');
+}
+
+function addButRow(){
+  var list=document.getElementById('s-buts-list');
+  var row=document.createElement('div');row.className='but-row';
+  row.innerHTML='<select>'+playerOptions()+'</select><div class="but-num"><button onclick="adjBut(this,-1)">−</button><span>1</span><button onclick="adjBut(this,1)">+</button></div><button onclick="this.closest(\'.but-row\').remove()" style="background:none;border:none;color:var(--red);font-size:18px;cursor:pointer">✕</button>';
+  list.appendChild(row);
+}
+
+function addPasseRow(){
+  var list=document.getElementById('s-passes-list');
+  var row=document.createElement('div');row.className='but-row';
+  row.innerHTML='<select>'+playerOptions()+'</select><div class="but-num"><button onclick="adjBut(this,-1)">−</button><span>1</span><button onclick="adjBut(this,1)">+</button></div><button onclick="this.closest(\'.but-row\').remove()" style="background:none;border:none;color:var(--red);font-size:18px;cursor:pointer">✕</button>';
+  list.appendChild(row);
+}
+
+function adjBut(btn,delta){
+  var span=btn.closest('.but-num').querySelector('span');
+  span.textContent=Math.max(1,parseInt(span.textContent)+delta);
+}
+
+function toggleCarton(el,pid,type){
+  el.classList.toggle('inactive');
+  var arr=type==='jaune'?saisirJaunes:saisirRouges;
+  var idx=arr.indexOf(pid);
+  if(idx>=0) arr.splice(idx,1); else arr.push(pid);
+}
+
+function saveMatch(){
+  var adv=document.getElementById('s-adv').value;
+  var date=document.getElementById('s-date').value;
+  var type=document.getElementById('s-type').value;
+  if(!adv||!date){toast('⚠️ Remplis adversaire et date');return;}
+  
+  var buts=[];
+  document.querySelectorAll('#s-buts-list .but-row').forEach(function(row){
+    var pid=parseInt(row.querySelector('select').value);
+    var nb=parseInt(row.querySelector('.but-num span').textContent);
+    buts.push({pid:pid,nb:nb});
+  });
+  
+  var passes=[];
+  document.querySelectorAll('#s-passes-list .but-row').forEach(function(row){
+    var pid=parseInt(row.querySelector('select').value);
+    var nb=parseInt(row.querySelector('.but-num span').textContent);
+    passes.push({pid:pid,nb:nb});
+  });
+  
+  var newMatch={
+    id:Date.now(),adv:adv,date:date,heure:'15:00',type:type,lieu:'',
+    scoreNous:saisirScore[0],scoreAdv:saisirScore[1],statut:'joue',
+    buts:buts,passes:passes,jaunes:saisirJaunes.map(function(id){return{pid:id};}),rouges:saisirRouges.map(function(id){return{pid:id};})
+  };
+  matchs.push(newMatch);
+  
+  // Update player stats
+  buts.forEach(function(b){var p=getPlayer(b.pid);if(p){p.buts+=b.nb;p.minutes+=90;}});
+  passes.forEach(function(b){var p=getPlayer(b.pid);if(p)p.passes+=b.nb;});
+  saisirJaunes.forEach(function(id){var p=getPlayer(id);if(p){p.jaunes++;if(p.jaunes>=3)p.statut='susp';}});
+  saisirRouges.forEach(function(id){var p=getPlayer(id);if(p){p.rouges++;p.statut='susp';}});
+  
+  savePlayers(); saveMatchs();
+  toast('✅ Match enregistré !');
+  renderSaisir();
+}
+
+// ====== EFFECTIF ======
+function effTab(name,btn){
+  document.querySelectorAll('#page-effectif .tab-pills .pill').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  ['liste','cartons','ajouter'].forEach(function(t){document.getElementById('eff-'+t).style.display=t===name?'block':'none';});
+  if(name==='liste') renderEffListe();
+  else if(name==='cartons') renderCartons();
+}
+
+function renderEffectif(tab){
+  renderEffListe();
+  document.getElementById('eff-cartons').style.display='none';
+  document.getElementById('eff-ajouter').style.display='none';
+}
+
+function renderEffListe(){
+  var sorted=[...players].sort(function(a,b){return a.num-b.num;});
+  var html='<div class="card">';
+  sorted.forEach(function(p){
+    var tagCls={'ok':'tag-ok','bless':'tag-bless','susp':'tag-susp','inc':'tag inc'};
+    var tagTxt={'ok':'Disponible','bless':'Blessé','susp':'Suspendu','inc':'Incertain'};
+    html+='<div class="player-row">'+
+      '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>'+
+      '<div class="player-info"><div class="player-name">'+p.nom+'</div><div class="player-sub">#'+p.num+' · '+p.poste+' · '+p.buts+' ⚽ '+p.passes+' 🎯</div></div>'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
+        '<div class="tag '+(tagCls[p.statut]||'tag-ok')+'">'+tagTxt[p.statut]+'</div>'+
+        '<div style="display:flex;gap:4px">'+
+          '<button class="btn btn-sm" style="background:var(--orange-bg);color:var(--orange);padding:4px 8px;font-size:10px" onclick="changeStatus('+p.id+')">Statut</button>'+
+          '<button class="btn btn-sm" style="background:var(--red-bg);color:var(--red);padding:4px 8px;font-size:10px" onclick="deletePlayer('+p.id+')">✕</button>'+
+        '</div>'+
+      '</div></div>';
+  });
+  html+='</div>';
+  document.getElementById('eff-liste').innerHTML=html;
+}
+
+function changeStatus(pid){
+  var p=getPlayer(pid); if(!p) return;
+  var statuts=['ok','bless','susp','inc'];
+  var idx=statuts.indexOf(p.statut);
+  p.statut=statuts[(idx+1)%statuts.length];
+  savePlayers(); renderEffListe();
+  toast('Statut mis à jour');
+}
+
+function deletePlayer(pid){
+  if(!confirm('Supprimer ce joueur ?')) return;
+  players=players.filter(function(p){return p.id!==pid;});
+  savePlayers(); renderEffListe();
+  toast('Joueur supprimé');
+}
+
+function renderCartons(){
+  var sorted=[...players].sort(function(a,b){return b.jaunes-a.jaunes;});
+  var html='<div class="card">';
+  sorted.forEach(function(p){
+    var pct=Math.min(100,Math.round(p.jaunes/3*100));
+    var cls=p.jaunes>=3?'danger':p.jaunes>=2?'warn':'';
+    html+='<div class="player-row">'+
+      '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>'+
+      '<div class="player-info">'+
+        '<div class="player-name">'+p.nom+'</div>'+
+        '<div class="player-sub">'+p.jaunes+' jaune'+(p.jaunes>1?'s':'')+(p.rouges?' · '+p.rouges+' rouge'+(p.rouges>1?'s':''):'')+
+          (p.jaunes>=3?' · <strong style="color:var(--red)">SUSPENDU</strong>':'')+
+          (p.jaunes===2?' · <strong style="color:var(--orange)">Attention !</strong>':'')+'</div>'+
+        '<div class="prog-bar"><div class="prog-fill '+cls+'" style="width:'+pct+'%"></div></div>'+
+      '</div></div>';
+  });
+  html+='</div>';
+  document.getElementById('eff-cartons').innerHTML=html;
+}
+
+function addPlayer(){
+  var nom=document.getElementById('new-nom').value.trim();
+  var num=parseInt(document.getElementById('new-num').value);
+  var poste=document.getElementById('new-poste').value;
+  var statut=document.getElementById('new-statut').value;
+  if(!nom||!num){toast('⚠️ Remplis le nom et le numéro');return;}
+  players.push({id:Date.now(),nom:nom,num:num,poste:poste,statut:statut,buts:0,passes:0,jaunes:0,rouges:0,minutes:0});
+  savePlayers();
+  document.getElementById('new-nom').value='';
+  document.getElementById('new-num').value='';
+  toast('✅ Joueur ajouté !');
+}
+
+// ====== CALENDRIER ======
+function calTab(name,btn){
+  document.querySelectorAll('#page-cal .tab-pills .pill').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('cal-liste').style.display=name==='liste'?'block':'none';
+  document.getElementById('cal-ajouter').style.display=name==='ajouter'?'block':'none';
+  if(name==='liste') renderCalListe();
+}
+
+function renderCal(tab){
+  renderCalListe();
+  document.getElementById('cal-ajouter').style.display='none';
+}
+
+function renderCalListe(){
+  var sorted=[...matchs].sort(function(a,b){return a.date>b.date?1:-1;});
+  var html='<div class="card">';
+  sorted.forEach(function(m){
+    var p=m.date.split('-');var months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+    var res='',cls='cr-a';
+    if(m.statut==='joue'){
+      if(m.scoreNous>m.scoreAdv){res=m.scoreNous+' – '+m.scoreAdv;cls='cr-v';}
+      else if(m.scoreNous===m.scoreAdv){res=m.scoreNous+' – '+m.scoreAdv;cls='cr-n';}
+      else{res=m.scoreNous+' – '+m.scoreAdv;cls='cr-d';}
+    } else {res=m.heure||'15h00';cls='cr-a';}
+    var icon=m.type==='Domicile'?'🏠':'🚌';
+    html+='<div class="cal-row">'+
+      '<div class="cal-date"><div class="cal-day">'+parseInt(p[2])+'</div><div class="cal-month">'+months[parseInt(p[1])-1]+'</div></div>'+
+      '<div class="cal-info"><div class="cal-opp">'+m.adv+'</div><div class="cal-meta">'+icon+' '+m.type+(m.lieu?' · '+m.lieu:'')+'</div></div>'+
+      '<div class="cal-res '+cls+'">'+res+'</div></div>';
+  });
+  html+='</div>';
+  document.getElementById('cal-liste').innerHTML=html;
+}
+
+function addMatch(){
+  var adv=document.getElementById('cal-adv').value.trim();
+  var date=document.getElementById('cal-date').value;
+  var heure=document.getElementById('cal-heure').value;
+  var type=document.getElementById('cal-type').value;
+  var lieu=document.getElementById('cal-lieu').value;
+  if(!adv||!date){toast('⚠️ Remplis adversaire et date');return;}
+  matchs.push({id:Date.now(),adv:adv,date:date,heure:heure,type:type,lieu:lieu,scoreNous:null,scoreAdv:null,statut:'avenir',buts:[],passes:[],jaunes:[],rouges:[]});
+  saveMatchs();
+  document.getElementById('cal-adv').value='';
+  toast('✅ Match ajouté !');
+  calTab('liste',document.querySelector('#page-cal .tab-pills .pill'));
+}
+
+// ====== NOTES ======
+function renderNotes(){
+  var sorted=[...notes].sort(function(a,b){return a.date<b.date?1:-1;});
+  var html='';
+  if(!sorted.length){html='<div class="empty"><div class="empty-icon">📝</div>Aucune note pour l\'instant</div>';}
+  sorted.forEach(function(n){
+    html+='<div class="note-card">'+
+      '<div class="note-date">📅 '+fmtDate(n.date)+' <button onclick="deleteNote('+n.id+')" style="float:right;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px">✕</button></div>'+
+      '<div class="note-text">'+n.texte+'</div></div>';
+  });
+  document.getElementById('notes-list').innerHTML=html;
+}
+
+function addNote(){
+  var txt=document.getElementById('note-input').value.trim();
+  if(!txt){toast('⚠️ Écris quelque chose');return;}
+  notes.push({id:Date.now(),date:new Date().toISOString().slice(0,10),texte:txt});
+  saveNotes();
+  document.getElementById('note-input').value='';
+  renderNotes();
+  toast('✅ Note enregistrée');
+}
+
+function deleteNote(id){
+  notes=notes.filter(function(n){return n.id!==id;});
+  saveNotes(); renderNotes();
+}
+
+// ====== INIT ======
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js');});
+}
+renderHome();
+</script>
+</body>
+</html>
