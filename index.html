@@ -91,6 +91,26 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 .tag-ok{background:var(--green-l);color:var(--green);}
 .tag-bless{background:var(--orange-l);color:var(--orange);}
 .tag-susp{background:var(--red-l);color:var(--red);}
+.tag-absent{background:#f3e5f5;color:#7b1fa2;}
+.tag-mute{background:#e3f2fd;color:#0277bd;}
+.tag-mutehp{background:#e0f2f1;color:#00695c;}
+
+/* TERRAIN COMPO */
+.terrain-wrap{background:linear-gradient(180deg,#1e7a1e,#145214);border-radius:14px;padding:14px;margin-bottom:10px;position:relative;min-height:480px;}
+.terrain-lines{position:absolute;inset:14px;border:2px solid rgba(255,255,255,.2);border-radius:8px;pointer-events:none;}
+.terrain-mid{position:absolute;left:14px;right:14px;top:50%;height:2px;background:rgba(255,255,255,.2);}
+.terrain-circle{position:absolute;left:50%;top:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border:2px solid rgba(255,255,255,.2);border-radius:50%;}
+.formation-row{display:flex;justify-content:space-around;margin-bottom:6px;}
+.slot{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:52px;}
+.slot-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;transition:all .2s;}
+.slot-av.filled{background:rgba(255,255,255,.9);color:#1a1a2e;}
+.slot-av.empty{background:rgba(255,255,255,.1);border-style:dashed;}
+.slot-name{font-size:8px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;max-width:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.slot-poste{font-size:7px;color:rgba(255,255,255,.6);text-align:center;}
+.compo-dispo{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;}
+.dispo-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.dispo-tag{padding:5px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#f5f6fa;color:var(--text);}
+.dispo-tag.on-field{background:var(--blue);color:#fff;border-color:var(--blue);}
 
 /* POSTE COLORS */
 .pc-gb{background:#ff6b00;color:#fff;}
@@ -274,9 +294,11 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
     <div class="page" id="pg-effectif">
       <div class="pills" id="eff-pills">
         <div class="pill active" data-tab="e-liste">👥 Liste</div>
+        <div class="pill" data-tab="e-dispo">✅ Dispo</div>
         <div class="pill" data-tab="e-ajouter">➕ Ajouter</div>
       </div>
       <div class="subpage active" id="e-liste"></div>
+      <div class="subpage" id="e-dispo"></div>
       <div class="subpage" id="e-ajouter">
         <div class="card">
           <div class="fg"><label>Nom complet</label><input type="text" id="new-nom" placeholder="Mohamed Dupont"></div>
@@ -293,6 +315,9 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
               <option value="ok">✅ Disponible</option>
               <option value="bless">🤕 Blessé</option>
               <option value="susp">🟥 Suspendu</option>
+              <option value="absent">🚫 Absent</option>
+              <option value="mute">🔵 Muté</option>
+              <option value="mutehp">🟢 Muté hors période</option>
             </select>
           </div>
           <button class="btn btn-p" id="btn-add-player">Ajouter le joueur</button>
@@ -359,6 +384,7 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
     <button class="nav-btn" data-page="stats"><span class="ico">📊</span>Stats</button>
     <button class="nav-btn" data-page="effectif"><span class="ico">👥</span>Effectif</button>
     <button class="nav-btn" data-page="cal"><span class="ico">📅</span>Calendrier</button>
+    <button class="nav-btn" data-page="compo"><span class="ico">🎯</span>Compo</button>
     <button class="nav-btn" data-page="notes"><span class="ico">📝</span>Notes</button>
   </nav>
 </div>
@@ -385,6 +411,9 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
         <option value="ok">✅ Disponible</option>
         <option value="bless">🤕 Blessé</option>
         <option value="susp">🟥 Suspendu</option>
+        <option value="absent">🚫 Absent</option>
+        <option value="mute">🔵 Muté</option>
+        <option value="mutehp">🟢 Muté hors période</option>
       </select>
     </div>
     <button class="btn btn-p" id="btn-save-joueur">Enregistrer</button>
@@ -524,9 +553,14 @@ function posteColorClass(pt) {
 }
 function posteSortKey(p) {
   var pt = (p.postes_main && p.postes_main.length) ? p.postes_main[0] : (p.poste || 'BU');
-  if (pt === 'GB') return 0;
-  if (pt === 'DD' || pt === 'DC' || pt === 'DG') return 1;
-  if (pt === 'MC' || pt === 'MD' || pt === 'MG') return 2;
+  var order = {GB:0, DD:10, DC:11, DG:12, MC:20, MD:21, MG:22, BU:30};
+  return order[pt] !== undefined ? order[pt] : 99;
+}
+function posteGroup(p) {
+  var key = posteSortKey(p);
+  if (key === 0)  return 0;
+  if (key < 20)  return 1;
+  if (key < 30)  return 2;
   return 3;
 }
 function renderPosteTags(p) {
@@ -534,12 +568,24 @@ function renderPosteTags(p) {
   var sec  = (p.postes_sec  && p.postes_sec.length)  ? p.postes_sec  : [];
   var h = '';
   main.forEach(function(pt) {
-    h += '<span class="poste-tag ' + posteColorClass(pt) + '">' + pt + '</span>';
+    if (POSTE_INFO[pt]) h += '<span class="poste-tag ' + posteColorClass(pt) + '">' + pt + '</span>';
   });
   sec.forEach(function(pt) {
-    h += '<span class="poste-tag-sec ' + posteColorClass(pt) + '">' + pt + '</span>';
+    if (POSTE_INFO[pt]) {
+      var cl = posteColorClass(pt);
+      // Inline style for sec to avoid background:transparent override
+      h += '<span class="poste-tag" style="border-radius:5px;padding:2px 6px;font-size:10px;font-weight:500;display:inline-block;margin-right:3px;opacity:.75;border:1.5px dashed currentColor;background:transparent;color:' + getPosteColor(pt) + '">' + pt + '</span>';
+    }
   });
   return h;
+}
+
+function getPosteColor(pt) {
+  if (pt === 'GB') return '#ff6b00';
+  if (pt === 'DD' || pt === 'DC' || pt === 'DG') return '#b8940a';
+  if (pt === 'MC' || pt === 'MD' || pt === 'MG') return '#1a7a40';
+  if (pt === 'BU') return '#1a4fa0';
+  return '#6b7280';
 }
 
 // ── POSTE GRID ──
@@ -590,9 +636,10 @@ function renderPage(name) {
   if (name === 'home')     renderHome();
   if (name === 'convo')    renderConvo();
   if (name === 'stats')    { renderButeurs(); }
-  if (name === 'effectif') renderListe();
+  if (name === 'effectif') { renderListe(); renderDispo(); }
   if (name === 'cal')      renderCalListe();
   if (name === 'notes')    renderNotes();
+  if (name === 'compo')    { if(!compoState.slots.length)initCompo(); renderCompo(); }
 }
 
 function initPills(pillsId) {
@@ -615,7 +662,9 @@ function initPills(pillsId) {
         if (tabId === 's-cartons') renderCartons();
         if (tabId === 's-saisir') renderSaisir();
         if (tabId === 'e-liste') renderListe();
+        if (tabId === 'e-dispo') renderDispo();
         if (tabId === 'cl-liste') renderCalListe();
+        if (tabId === 'cp-terrain') renderCompo();
       }
     });
   });
@@ -629,6 +678,201 @@ function openModal(id) {
 function closeModal(id) {
   var m = document.getElementById(id);
   if (m) m.classList.remove('open');
+}
+
+
+// ── DISPO ──
+function renderDispo() {
+  var el = document.getElementById('e-dispo');
+  if (!el) return;
+  var next = matchs.filter(function(m){return m.statut!=='joue';}).sort(function(a,b){return a.date>b.date?1:-1;})[0];
+  var dispos = players.filter(function(p){return p.statut==='ok';});
+  var indispos = players.filter(function(p){return p.statut!=='ok';});
+
+  var h = '';
+  if (next) {
+    h += '<div class="next-card" style="margin-bottom:10px"><div class="next-lbl">Prochain match</div><div class="next-opp">'+next.adv+'</div><div class="next-meta">📅 '+fmtDate(next.date)+' · '+next.type+'</div></div>';
+  }
+
+  h += '<div class="sec">✅ Disponibles ('+dispos.length+')</div><div class="card">';
+  if (!dispos.length) h += '<div class="empty">Aucun joueur disponible</div>';
+  var sortedD = dispos.slice().sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
+  sortedD.forEach(function(p){
+    h += '<div class="player-row">' +
+      '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
+      '<div class="p-info"><div class="p-name">'+p.nom+'</div><div style="margin-top:2px">'+renderPosteTags(p)+'</div></div>' +
+      '</div>';
+  });
+  h += '</div>';
+
+  if (indispos.length) {
+    var tagC={ok:'tag-ok',bless:'tag-bless',susp:'tag-susp',absent:'tag-absent',mute:'tag-mute',mutehp:'tag-mutehp'};
+    var tagT={ok:'✅ Dispo',bless:'🤕 Blessé',susp:'🟥 Suspendu',absent:'🚫 Absent',mute:'🔵 Muté',mutehp:'🟢 Muté HP'};
+    h += '<div class="sec" style="margin-top:10px">❌ Indisponibles ('+indispos.length+')</div><div class="card">';
+    indispos.slice().sort(function(a,b){return a.nom.localeCompare(b.nom);}).forEach(function(p){
+      var tc=tagC[p.statut]||'tag-ok', tt=tagT[p.statut]||'';
+      h += '<div class="player-row">' +
+        '<div class="av" style="background:'+avColor(p.id)+';opacity:.5">'+initials(p.nom)+'</div>' +
+        '<div class="p-info"><div class="p-name" style="opacity:.6">'+p.nom+'</div><div style="margin-top:2px">'+renderPosteTags(p)+'</div></div>' +
+        '<div class="tag '+tc+'">'+tt+'</div>' +
+        '</div>';
+    });
+    h += '</div>';
+  }
+  el.innerHTML = h;
+}
+
+
+// ── COMPO ──
+var compoState = {
+  formation: '433',
+  mode: 'ballon',
+  slots: [] // [{poste:'GB',playerId:null}, ...]
+};
+
+var FORMATIONS = {
+  '433':  [{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MC'},{p:'MG'},{p:'BU'},{p:'BU'},{p:'BU'}],
+  '442':  [{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'BU'},{p:'BU'}],
+  '4231': [{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'MD'},{p:'MC'},{p:'BU'}],
+  '352':  [{p:'GB'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'MG'},{p:'MC'},{p:'MC'},{p:'MC'},{p:'MD'},{p:'BU'},{p:'BU'}],
+  '532':  [{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MC'},{p:'MG'},{p:'BU'},{p:'BU'}],
+  '451':  [{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MC'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'BU'}]
+};
+
+var FORMATION_ROWS = {
+  '433':  [[0],[1,2,3,4],[5,6,7],[8,9,10]],
+  '442':  [[0],[1,2,3,4],[5,6,7,8],[9,10]],
+  '4231': [[0],[1,2,3,4],[5,6],[7,8,9],[10]],
+  '352':  [[0],[1,2,3],[4,5,6,7,8],[9,10]],
+  '532':  [[0],[1,2,3,4,5],[6,7,8],[9,10]],
+  '451':  [[0],[1,2,3,4],[5,6,7,8,9],[10]]
+};
+
+var compoPickingSlot = null;
+
+function initCompo() {
+  var f = compoState.formation;
+  var template = FORMATIONS[f] || FORMATIONS['433'];
+  // Garder les joueurs déjà assignés si les slots correspondent
+  if (compoState.slots.length !== template.length) {
+    compoState.slots = template.map(function(t){ return {poste:t.p, playerId:null}; });
+  } else {
+    compoState.slots = template.map(function(t,i){ return {poste:t.p, playerId:compoState.slots[i]?compoState.slots[i].playerId:null}; });
+  }
+}
+
+function renderCompo() {
+  var el = document.getElementById('cp-terrain');
+  if (!el) return;
+  var f = compoState.formation;
+  var rows = FORMATION_ROWS[f] || FORMATION_ROWS['433'];
+  var mode = compoState.mode;
+
+  // Terrain avec slots
+  var terrain = '<div class="terrain-wrap">';
+  terrain += '<div class="terrain-lines"></div>';
+  terrain += '<div class="terrain-mid"></div>';
+  terrain += '<div class="terrain-circle"></div>';
+
+  // Mode label
+  terrain += '<div style="position:absolute;top:18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.3);color:#fff;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;">'+f+' · '+(mode==='ballon'?'⚽ Avec ballon':'🛡️ Sans ballon')+'</div>';
+
+  // Rows — affichage de bas (attaquants) vers haut (gardien) selon mode
+  var displayRows = mode === 'ballon' ? rows.slice().reverse() : rows;
+  terrain += '<div style="display:flex;flex-direction:column;justify-content:space-around;height:100%;padding:36px 0 10px">';
+  displayRows.forEach(function(row) {
+    terrain += '<div class="formation-row">';
+    row.forEach(function(si) {
+      var slot = compoState.slots[si];
+      var player = slot && slot.playerId ? getPlayer(slot.playerId) : null;
+      var filled = !!player;
+      var av = filled ? initials(player.nom) : slot.poste;
+      var avStyle = filled ? 'background:'+avColor(player.id)+';color:#fff;border-color:rgba(255,255,255,.8)' : '';
+      terrain += '<div class="slot" data-slot="'+si+'">' +
+        '<div class="slot-av '+(filled?'filled':'empty')+'" style="'+avStyle+'">'+av+'</div>' +
+        '<div class="slot-name">'+(filled?player.nom.split(' ')[0]:'—')+'</div>' +
+        '<div class="slot-poste">'+slot.poste+'</div>' +
+        '</div>';
+    });
+    terrain += '</div>';
+  });
+  terrain += '</div></div>';
+
+  // Liste joueurs disponibles à assigner
+  var dispos = players.filter(function(p){return p.statut==='ok';});
+  var assigned = compoState.slots.map(function(s){return s.playerId;}).filter(Boolean);
+  var nonAssigned = dispos.filter(function(p){return assigned.indexOf(p.id)<0;});
+
+  var dispo = '<div class="compo-dispo"><div class="sec" style="margin-bottom:6px">Joueurs disponibles</div>' +
+    '<div class="dispo-list">';
+  nonAssigned.forEach(function(p){
+    dispo += '<div class="dispo-tag" data-dispo-pid="'+p.id+'">'+p.nom.split(' ')[0]+' <span style="opacity:.6;font-size:9px">'+((p.postes_main&&p.postes_main[0])||p.poste)+'</span></div>';
+  });
+  if (!nonAssigned.length) dispo += '<div style="font-size:11px;color:var(--muted)">Tous les joueurs dispo sont placés</div>';
+  dispo += '</div>';
+  if (compoPickingSlot !== null) {
+    dispo += '<div style="margin-top:8px;font-size:12px;color:var(--blue);font-weight:500">👆 Sélectionne un joueur pour le poste '+compoState.slots[compoPickingSlot].poste+'</div>';
+  }
+  dispo += '</div>';
+
+  el.innerHTML = terrain + dispo;
+
+  // Listeners slots
+  el.querySelectorAll('[data-slot]').forEach(function(slotEl){
+    slotEl.addEventListener('click', function(){
+      var si = parseInt(slotEl.getAttribute('data-slot'));
+      if (compoPickingSlot === si) {
+        // Deselect
+        compoPickingSlot = null;
+      } else if (compoState.slots[si].playerId) {
+        // Retirer le joueur
+        compoState.slots[si].playerId = null;
+        compoPickingSlot = null;
+      } else {
+        compoPickingSlot = si;
+      }
+      renderCompo();
+    });
+  });
+
+  // Listeners joueurs dispo
+  el.querySelectorAll('[data-dispo-pid]').forEach(function(tag){
+    tag.addEventListener('click', function(){
+      if (compoPickingSlot === null) { toast('👆 Appuie d\'abord sur un poste sur le terrain'); return; }
+      var pid = parseInt(tag.getAttribute('data-dispo-pid'));
+      compoState.slots[compoPickingSlot].playerId = pid;
+      compoPickingSlot = null;
+      renderCompo();
+    });
+  });
+}
+
+function applyFormation() {
+  compoState.formation = document.getElementById('cp-formation').value;
+  compoState.mode = document.getElementById('cp-mode').value;
+  initCompo();
+  renderCompo();
+  // Switch to terrain tab
+  document.querySelectorAll('#compo-pills .pill').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('#pg-compo .subpage').forEach(function(s){s.classList.remove('active');});
+  document.querySelector('#compo-pills .pill[data-tab="cp-terrain"]').classList.add('active');
+  document.getElementById('cp-terrain').classList.add('active');
+}
+
+function saveCompo() {
+  var lineup = compoState.slots.map(function(s,i){
+    var p = s.playerId ? getPlayer(s.playerId) : null;
+    return {slot:i, poste:s.poste, nom:p?p.nom:'—', playerId:s.playerId};
+  });
+  dbSet('astrw_compo', {formation:compoState.formation, mode:compoState.mode, slots:compoState.slots});
+  toast('✅ Composition sauvegardée');
+}
+
+function resetCompo() {
+  initCompo();
+  compoPickingSlot = null;
+  renderCompo();
+  toast('🔄 Composition réinitialisée');
 }
 
 // ── HOME ──
@@ -899,7 +1143,7 @@ function renderListe() {
   var groups = [[0,'🧤 Gardiens'],[1,'🛡️ Défenseurs'],[2,'⚙️ Milieux'],[3,'⚽ Attaquants']];
   var lastG = -1, h = '';
   sorted.forEach(function(p) {
-    var gk = posteSortKey(p);
+    var gk = posteGroup(p);
     if (gk !== lastG) {
       if (lastG !== -1) h += '</div>';
       var gl = groups.filter(function(g){return g[0]===gk;})[0];
@@ -1133,6 +1377,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initPills('stats-pills');
   initPills('eff-pills');
   initPills('cal-pills');
+  initPills('compo-pills');
 
   // Fermeture modales
   document.querySelectorAll('[data-close]').forEach(function(btn) {
@@ -1299,6 +1544,19 @@ document.addEventListener('DOMContentLoaded', function() {
     renderNotes(); toast('✅ Note enregistrée');
   });
 
+  // Compo
+  document.getElementById('btn-apply-formation').addEventListener('click', applyFormation);
+  document.getElementById('btn-save-compo').addEventListener('click', saveCompo);
+  document.getElementById('btn-reset-compo').addEventListener('click', resetCompo);
+
+  // Charger compo sauvegardée
+  var savedCompo = dbGet('astrw_compo', null);
+  if (savedCompo) {
+    compoState.formation = savedCompo.formation || '433';
+    compoState.mode = savedCompo.mode || 'ballon';
+    compoState.slots = savedCompo.slots || [];
+  }
+
   // Reload
   document.getElementById('btn-reload').addEventListener('click', function() {
     toast('🔄 Rechargement...');
@@ -1315,6 +1573,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renderConvo();
   renderButeurs();
   renderListe();
+  renderDispo();
   renderCalListe();
   renderNotes();
 });
