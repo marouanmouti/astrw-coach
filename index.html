@@ -140,7 +140,7 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
     <div class="top-bar-inner">
       <div class="badge-club">ASTRW</div>
       <div class="top-title"><h1>Coach App</h1><p>R3 Alsace · Assistant entraîneur</p></div>
-      <div class="season-tag">2025/26</div>
+      <div class="season-tag">2026/27</div>
     </div>
   </div>
 
@@ -211,6 +211,14 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
     </div>
 
     <div class="page" id="page-cal">
+      <a href="https://www.sportcorico.com/clubs/as-theodore-ruelisheim-wittenh/wittenheim-astr" target="_blank" id="btn-fff" style="display:flex;align-items:center;gap:10px;background:#1a4fa0;border-radius:12px;padding:12px 14px;margin-bottom:12px;text-decoration:none;">
+        <span style="font-size:22px">⚽</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:#fff;">Voir sur la FFF / SportCorico</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:1px;">Résultats officiels ASTRW Seniors 1 · R3 Alsace</div>
+        </div>
+        <span style="font-size:16px;color:rgba(255,255,255,.7);">↗</span>
+      </a>
       <div class="tab-pills" id="cal-pills">
         <div class="pill active" data-sub="sub-cal-liste">📅 Matchs</div>
         <div class="pill" data-sub="sub-cal-ajouter">➕ Ajouter</div>
@@ -259,38 +267,23 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 (function() {
 
 /* ---- DONNEES PAR DEFAUT ---- */
-var DEF_PLAYERS = [
-  {id:1,nom:'Lucas Bernard',num:1,poste:'Gardien',statut:'ok',buts:0,passes:0,jaunes:0,rouges:0,minutes:0},
-  {id:2,nom:'Hugo Petit',num:2,poste:'Défenseur',statut:'ok',buts:0,passes:0,jaunes:0,rouges:0,minutes:0},
-  {id:3,nom:'Théo Martin',num:3,poste:'Défenseur',statut:'bless',buts:0,passes:0,jaunes:1,rouges:0,minutes:180},
-  {id:4,nom:'Alexis Dubois',num:4,poste:'Défenseur',statut:'ok',buts:1,passes:5,jaunes:0,rouges:0,minutes:810},
-  {id:5,nom:'Thomas Remy',num:5,poste:'Défenseur',statut:'ok',buts:0,passes:3,jaunes:1,rouges:0,minutes:900},
-  {id:6,nom:'Jordan Klein',num:6,poste:'Milieu',statut:'ok',buts:5,passes:2,jaunes:2,rouges:0,minutes:870},
-  {id:7,nom:'Rayan Benali',num:7,poste:'Ailier',statut:'ok',buts:6,passes:1,jaunes:1,rouges:0,minutes:800},
-  {id:8,nom:'Samir Nasri',num:8,poste:'Milieu',statut:'ok',buts:2,passes:4,jaunes:1,rouges:0,minutes:850},
-  {id:9,nom:'Mehdi Aziz',num:9,poste:'Attaquant',statut:'ok',buts:9,passes:2,jaunes:1,rouges:0,minutes:900},
-  {id:10,nom:'Karim Sali',num:10,poste:'Milieu',statut:'susp',buts:3,passes:1,jaunes:3,rouges:0,minutes:750},
-  {id:11,nom:'Nabil Omar',num:11,poste:'Ailier',statut:'ok',buts:4,passes:2,jaunes:0,rouges:0,minutes:780},
-  {id:14,nom:'Kevin Lara',num:14,poste:'Milieu',statut:'ok',buts:1,passes:7,jaunes:0,rouges:0,minutes:820},
-  {id:15,nom:'Florian Collet',num:15,poste:'Milieu',statut:'ok',buts:1,passes:1,jaunes:0,rouges:0,minutes:600},
-  {id:17,nom:'Yanis Hakim',num:17,poste:'Attaquant',statut:'ok',buts:2,passes:2,jaunes:0,rouges:0,minutes:540}
-];
-var DEF_MATCHS = [
-  {id:1,adv:'AS Bartenheim',date:'2026-05-25',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:2,scoreAdv:0,statut:'joue',buts:[{pid:9,nb:1},{pid:7,nb:1}],passes:[{pid:14,nb:1},{pid:8,nb:1}],jaunes:[],rouges:[]},
-  {id:2,adv:'FC Kembs',date:'2026-06-01',heure:'15:00',type:'Extérieur',lieu:'Kembs',scoreNous:0,scoreAdv:2,statut:'joue',buts:[],passes:[],jaunes:[{pid:6}],rouges:[]},
-  {id:3,adv:'SC Cernay',date:'2026-06-08',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:3,scoreAdv:0,statut:'joue',buts:[{pid:9,nb:2},{pid:7,nb:1}],passes:[{pid:14,nb:1},{pid:4,nb:1},{pid:11,nb:1}],jaunes:[],rouges:[]},
-  {id:4,adv:'FC Illzach',date:'2026-06-15',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:1,scoreAdv:1,statut:'joue',buts:[{pid:9,nb:1}],passes:[{pid:14,nb:1}],jaunes:[{pid:10}],rouges:[]},
-  {id:5,adv:'AS Kingersheim',date:'2026-06-22',heure:'15:00',type:'Extérieur',lieu:'Kingersheim',scoreNous:2,scoreAdv:1,statut:'joue',buts:[{pid:7,nb:1},{pid:11,nb:1}],passes:[{pid:4,nb:1},{pid:8,nb:1}],jaunes:[{pid:10}],rouges:[]},
-  {id:6,adv:'FC Mulhouse B',date:'2026-07-06',heure:'15:00',type:'Domicile',lieu:'Stade Théodore',scoreNous:null,scoreAdv:null,statut:'avenir',buts:[],passes:[],jaunes:[],rouges:[]}
-];
-var DEF_NOTES = [
-  {id:1,date:'2026-06-20',texte:'Travailler la sortie de balle côté gauche.'},
-  {id:2,date:'2026-06-22',texte:'Bonne victoire à Kingersheim. Jordan à surveiller (2 jaunes).'}
-];
+var DEF_PLAYERS = [];
+var DEF_MATCHS = [];
+var DEF_NOTES = [];
+
 
 /* ---- STORAGE ---- */
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+/* Reset si ancienne version (données fictives) */
+var DATA_VERSION='v4_new_season';
+if(localStorage.getItem('astrw_version')!==DATA_VERSION){
+  localStorage.removeItem('astrw_matchs');
+  localStorage.removeItem('astrw_players');
+  localStorage.removeItem('astrw_notes');
+  localStorage.setItem('astrw_version',DATA_VERSION);
+}
 
 var players = load('astrw_players', DEF_PLAYERS);
 var matchs  = load('astrw_matchs',  DEF_MATCHS);
@@ -350,12 +343,13 @@ function renderHome(){
     else d++;
     bf+=m.scoreNous||0;bc+=m.scoreAdv||0;
   });
-  var next=matchs.filter(function(m){return m.statut==='avenir';}).sort(function(a,b){return a.date>b.date?1:-1;})[0];
+  var next=matchs.filter(function(m){return m.statut==='?'||m.statut==='avenir';}).sort(function(a,b){return a.date>b.date?1:-1;})[0];
   var nh=document.getElementById('home-next');
   if(next){
-    nh.innerHTML='<div class="next-card"><div class="next-label">Prochain match</div><div class="next-opp">'+next.adv+'</div><div class="next-meta">📅 '+fmtDate(next.date)+' · '+next.heure+'</div><div class="next-meta">📍 '+(next.lieu||'Stade Théodore')+' · '+next.type+'</div></div>';
+    var tag=next.statut==='?'?'<span style="font-size:10px;background:rgba(255,255,255,.2);border-radius:10px;padding:2px 8px;margin-left:6px;">Score à compléter</span>':'';
+    nh.innerHTML='<div class="next-card"><div class="next-label">Prochain match sans score</div><div class="next-opp">'+next.adv+tag+'</div><div class="next-meta">📅 '+fmtDate(next.date)+' · '+next.heure+'</div><div class="next-meta">📍 '+(next.lieu||'Stade Théodore')+' · '+next.type+'</div>'+(next.comp?'<div class="next-meta" style="margin-top:4px;opacity:.7">🏆 '+next.comp+'</div>':'')+'</div>';
   } else {
-    nh.innerHTML='<div class="next-card"><div class="next-label">Saison</div><div class="next-opp">Aucun match à venir</div></div>';
+    nh.innerHTML='<div class="next-card"><div class="next-label">Saison 2026/27</div><div class="next-opp">Calendrier complet ✅</div></div>';
   }
   document.getElementById('home-stats').innerHTML=
     '<div class="stat-box"><div class="stat-val">'+v+'</div><div class="stat-lbl">Victoires</div></div>'+
@@ -365,17 +359,18 @@ function renderHome(){
     '<div class="stat-box"><div class="stat-val">'+bf+'</div><div class="stat-lbl">Buts marqués</div></div>'+
     '<div class="stat-box"><div class="stat-val">'+bc+'</div><div class="stat-lbl">Buts encaissés</div></div>';
   var al='';
+  var manquants=matchs.filter(function(m){return m.statut==='?';}).length;
+  if(manquants>0) al+='<div class="alert-pill ap-orange">📋 '+manquants+' score'+(manquants>1?'s':'')+' à compléter</div>';
   players.filter(function(p){return p.statut==='susp';}).forEach(function(p){al+='<div class="alert-pill ap-red">🟥 '+p.nom.split(' ')[0]+' suspendu</div>';});
   players.filter(function(p){return p.statut==='bless';}).forEach(function(p){al+='<div class="alert-pill ap-orange">🤕 '+p.nom.split(' ')[0]+' blessé</div>';});
   players.filter(function(p){return p.jaunes===2&&p.statut!=='susp';}).forEach(function(p){al+='<div class="alert-pill ap-orange">⚠️ '+p.nom.split(' ')[0]+' 2 jaunes</div>';});
-  if(next)al+='<div class="alert-pill ap-blue">📋 Convocation à envoyer</div>';
   document.getElementById('home-alerts').innerHTML=al||'<div class="alert-pill ap-blue">✅ Aucune alerte</div>';
   var recent=joues.sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,5);
   var rh='';
   recent.forEach(function(m){
     var res=m.scoreNous>m.scoreAdv?'V':m.scoreNous===m.scoreAdv?'N':'D';
     var cls=res==='V'?'rv':res==='N'?'rn':'rd';
-    rh+='<div class="match-row"><div class="res-badge '+cls+'">'+res+'</div><div class="player-info"><div class="player-name">'+m.adv+'</div><div class="player-sub">'+fmtShort(m.date)+' · '+m.type+'</div></div><div class="match-score">'+m.scoreNous+' – '+m.scoreAdv+'</div></div>';
+    rh+='<div class="match-row"><div class="res-badge '+cls+'">'+res+'</div><div class="player-info"><div class="player-name">'+m.adv+'</div><div class="player-sub">'+fmtShort(m.date)+' · '+(m.comp||m.type)+'</div></div><div class="match-score">'+m.scoreNous+' – '+m.scoreAdv+'</div></div>';
   });
   document.getElementById('home-results').innerHTML=rh||'<div class="empty">Aucun match joué</div>';
 }
@@ -608,10 +603,17 @@ function renderCalListe(){
     if(m.statut==='joue'){
       res=m.scoreNous+' – '+m.scoreAdv;
       cls=m.scoreNous>m.scoreAdv?'cr-v':m.scoreNous===m.scoreAdv?'cr-n':'cr-d';
-    } else {res=m.heure||'15h00';cls='cr-a';}
+    } else if(m.statut==='arrêté'){
+      res='Arrêté';cls='cr-n';
+    } else if(m.statut==='?'){
+      res='Score ?';cls='cr-a';
+    } else {
+      res=m.heure||'15h00';cls='cr-a';
+    }
+    var comp=m.comp?'<span style="font-size:9px;background:#f0f2f8;color:var(--muted);border-radius:4px;padding:1px 5px;margin-left:4px;">'+m.comp+'</span>':'';
     h+='<div class="cal-row">'+
       '<div class="cal-date"><div class="cal-day">'+parseInt(p[2])+'</div><div class="cal-month">'+M[parseInt(p[1])-1]+'</div></div>'+
-      '<div class="cal-info"><div class="cal-opp">'+m.adv+'</div><div class="cal-meta">'+(m.type==='Domicile'?'🏠':'🚌')+' '+m.type+(m.lieu?' · '+m.lieu:'')+'</div></div>'+
+      '<div class="cal-info"><div class="cal-opp">'+m.adv+comp+'</div><div class="cal-meta">'+(m.type==='Domicile'?'🏠':'🚌')+' '+m.type+(m.lieu?' · '+m.lieu:'')+'</div></div>'+
       '<div class="cal-res '+cls+'">'+res+'</div></div>';
   });
   h+='</div>';
