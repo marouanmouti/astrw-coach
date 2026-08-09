@@ -316,6 +316,11 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
               <option value="bless">🤕 Blessé</option>
               <option value="susp">🟥 Suspendu</option>
               <option value="absent">🚫 Absent</option>
+            </select>
+          </div>
+          <div class="fg"><label>Mutation</label>
+            <select id="new-mute">
+              <option value="none">— Aucune mutation</option>
               <option value="mute">🔵 Muté</option>
               <option value="mutehp">🟢 Muté hors période</option>
             </select>
@@ -375,6 +380,50 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
       </div>
     </div>
 
+
+    <!-- COMPO -->
+    <div class="page" id="pg-compo">
+      <div class="pills" id="compo-pills">
+        <div class="pill active" data-tab="cp-terrain">🟢 Terrain</div>
+        <div class="pill" data-tab="cp-options">⚙️ Options</div>
+      </div>
+      <div class="subpage active" id="cp-terrain"></div>
+      <div class="subpage" id="cp-options">
+        <div class="card">
+          <div class="fg"><label>Formation</label>
+            <select id="cp-formation">
+              <option value="433">4-3-3</option>
+              <option value="442">4-4-2</option>
+              <option value="4231">4-2-3-1</option>
+              <option value="352">3-5-2</option>
+              <option value="532">5-3-2</option>
+              <option value="451">4-5-1</option>
+            </select>
+          </div>
+          <div class="fg"><label>Mode</label>
+            <select id="cp-mode">
+              <option value="ballon">⚽ Avec ballon</option>
+              <option value="sans">🛡️ Sans ballon</option>
+            </select>
+          </div>
+          <button class="btn btn-p" id="btn-apply-formation" style="margin-top:8px">Appliquer la formation</button>
+          <button class="btn btn-s" id="btn-reset-compo">🔄 Réinitialiser</button>
+          <button class="btn btn-s" id="btn-save-compo">💾 Sauvegarder la compo</button>
+        </div>
+        <div class="card" style="margin-top:0">
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px">📋 Légende</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.8">
+            <b>4-3-3</b> : 1 GB · 4 Déf · 3 Mil · 3 Att<br>
+            <b>4-4-2</b> : 1 GB · 4 Déf · 4 Mil · 2 Att<br>
+            <b>4-2-3-1</b> : 1 GB · 4 Déf · 2 MD · 3 MA · 1 BU<br>
+            <b>3-5-2</b> : 1 GB · 3 Déf · 5 Mil · 2 Att<br>
+            <b>5-3-2</b> : 1 GB · 5 Déf · 3 Mil · 2 Att<br>
+            <b>4-5-1</b> : 1 GB · 4 Déf · 5 Mil · 1 BU
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- end content -->
 
   <!-- BOTTOM NAV -->
@@ -412,6 +461,11 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
         <option value="bless">🤕 Blessé</option>
         <option value="susp">🟥 Suspendu</option>
         <option value="absent">🚫 Absent</option>
+      </select>
+    </div>
+    <div class="fg"><label>Mutation</label>
+      <select id="ej-mute">
+        <option value="none">— Aucune mutation</option>
         <option value="mute">🔵 Muté</option>
         <option value="mutehp">🟢 Muté hors période</option>
       </select>
@@ -855,8 +909,10 @@ function applyFormation() {
   // Switch to terrain tab
   document.querySelectorAll('#compo-pills .pill').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('#pg-compo .subpage').forEach(function(s){s.classList.remove('active');});
-  document.querySelector('#compo-pills .pill[data-tab="cp-terrain"]').classList.add('active');
-  document.getElementById('cp-terrain').classList.add('active');
+  var terrainPill = document.querySelector('#compo-pills .pill[data-tab="cp-terrain"]');
+  if (terrainPill) terrainPill.classList.add('active');
+  var terrainEl = document.getElementById('cp-terrain');
+  if (terrainEl) terrainEl.classList.add('active');
 }
 
 function saveCompo() {
@@ -1161,7 +1217,10 @@ function renderListe() {
         '<div class="p-sub" style="margin-top:3px">'+( p.buts||0)+' ⚽ '+(p.passes||0)+' 🎯 '+(p.matchs_joues||0)+' matchs</div>' +
       '</div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' +
-        '<div class="tag '+tc+'">'+tt+'</div>' +
+        '<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">' +
+          '<div class="tag '+tc+'">'+tt+'</div>' +
+          (p.mute==='mute'?'<div class="tag tag-mute">🔵 Muté</div>':p.mute==='mutehp'?'<div class="tag tag-mutehp">🟢 HP</div>':'') +
+        '</div>' +
         '<div style="display:flex;gap:6px">' +
           '<button class="ibtn" style="background:var(--blue-l);color:var(--blue)" data-edit-player="'+p.id+'">✏️</button>' +
           '<button class="ibtn" style="background:var(--red-l);color:var(--red)" data-del-player="'+p.id+'">✕</button>' +
@@ -1180,6 +1239,9 @@ function openModalJoueur(pid) {
   document.getElementById('ej-nom').value = p.nom;
   var ss = document.getElementById('ej-statut');
   for (var i=0; i<ss.options.length; i++) { if (ss.options[i].value===p.statut) { ss.selectedIndex=i; break; } }
+  var ms = document.getElementById('ej-mute');
+  var muteVal = p.mute || 'none';
+  for (var i=0; i<ms.options.length; i++) { if (ms.options[i].value===muteVal) { ms.selectedIndex=i; break; } }
   var main = (p.postes_main && p.postes_main.length) ? p.postes_main : [p.poste||'GB'];
   var sec  = (p.postes_sec  && p.postes_sec.length)  ? p.postes_sec  : [];
   buildPosteGrid('ej-main', main, [],  'edit');
@@ -1192,17 +1254,18 @@ function saveModalJoueur() {
   if (!p) return;
   var nom = document.getElementById('ej-nom').value.trim();
   if (!nom) { toast('⚠️ Remplis le nom'); return; }
+  var main = getSelectedPostes('ej-main');
+  if (!main.length) { toast('⚠️ Sélectionne au moins un poste principal'); return; }
   p.nom = nom;
   p.statut = document.getElementById('ej-statut').value;
-  var main = getSelectedPostes('ej-main');
-  var sec  = getSelectedPostes('ej-sec');
-  if (!main.length) { toast('⚠️ Sélectionne au moins un poste principal'); return; }
+  p.mute = document.getElementById('ej-mute').value;
   p.postes_main = main;
-  p.postes_sec  = sec;
+  p.postes_sec  = getSelectedPostes('ej-sec');
   p.poste = main[0];
   dbSet('astrw_players', players);
   closeModal('modal-joueur');
   renderListe();
+  renderDispo();
   toast('✅ Joueur mis à jour');
 }
 
@@ -1508,8 +1571,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var main = getSelectedPostes('np-main');
     var sec  = getSelectedPostes('np-sec');
     if (!main.length) { toast('⚠️ Sélectionne au moins un poste principal'); return; }
+    var mute = document.getElementById('new-mute').value;
     players.push({id:Date.now(),nom:nom,poste:main[0],postes_main:main,postes_sec:sec,
-      statut:statut,buts:0,passes:0,jaunes:0,rouges:0,minutes:0,matchs_joues:0});
+      statut:statut,mute:mute,buts:0,passes:0,jaunes:0,rouges:0,minutes:0,matchs_joues:0});
     dbSet('astrw_players', players);
     document.getElementById('new-nom').value='';
     buildPosteGrid('np-main',[],[]);
