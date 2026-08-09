@@ -68,6 +68,14 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 .tag-ok{background:var(--green-bg);color:var(--green);}
 .tag-bless{background:var(--orange-bg);color:var(--orange);}
 .tag-susp{background:var(--red-bg);color:var(--red);}
+/* POSTE COLORS */
+.poste-gb{background:#ff6b00;color:#fff;}
+.poste-def{background:#f5c800;color:#1a1a2e;}
+.poste-mil{background:#27ae60;color:#fff;}
+.poste-bu{background:#1a4fa0;color:#fff;}
+.poste-tag{border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;display:inline-block;}
+.poste-tag-sec{border-radius:6px;padding:2px 7px;font-size:10px;font-weight:500;display:inline-block;opacity:.65;border:1px solid currentColor;}
+
 .form-group{margin-bottom:11px;}
 .form-group label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
 .form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--text);background:#fff;outline:none;appearance:none;-webkit-appearance:none;}
@@ -91,6 +99,11 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 .pcheck.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:500;}
 .pcheck-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;}
 .pcheck.sel .pcheck-dot{background:var(--blue);border-color:var(--blue);}
+
+.poste-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+.poste-btn{padding:8px 6px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;border:2px solid transparent;opacity:.4;transition:opacity .15s;}
+.poste-btn.sel-main{opacity:1;border-color:#1a1a2e;}
+.poste-btn.sel-sec{opacity:.75;border-style:dashed;}
 .prog-bar{height:6px;background:#f0f2f8;border-radius:3px;margin-top:5px;overflow:hidden;}
 .prog-fill{height:100%;border-radius:3px;background:var(--blue);}
 .prog-fill.warn{background:var(--orange);}
@@ -199,11 +212,8 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
       <div class="sub-page" id="sub-cartons"></div>
       <div class="sub-page" id="sub-ajouter">
         <div class="card">
-          <div class="form-group"><label>Nom complet</label><input type="text" id="new-nom" placeholder="Lucas Bernard"></div>
-          <div class="form-row">
-            <div class="form-group"><label>Numéro</label><input type="number" id="new-num" min="1" max="99" placeholder="10"></div>
-            <div class="form-group"><label>Poste</label><select id="new-poste"><option>Gardien</option><option>Défenseur</option><option>Milieu</option><option>Ailier</option><option>Attaquant</option></select></div>
-          </div>
+          <div class="form-group"><label>Nom complet</label><input type="text" id="new-nom" placeholder="ex: Mohamed Dupont"></div>
+          <div class="form-group"><label>Poste</label><select id="new-poste"><option value="GB">GB — Gardien de but</option><option value="DD">DD — Défenseur droit</option><option value="DC">DC — Défenseur central</option><option value="DG">DG — Défenseur gauche</option><option value="MC">MC — Milieu central</option><option value="MD">MD — Milieu droit</option><option value="MG">MG — Milieu gauche</option><option value="BU">BU — Buteur</option></select></div>
           <div class="form-group"><label>Statut</label><select id="new-statut"><option value="ok">Disponible</option><option value="bless">Blessé</option><option value="susp">Suspendu</option></select></div>
           <button class="btn btn-primary" id="btn-add-player">Ajouter le joueur</button>
         </div>
@@ -220,14 +230,7 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
           </div>
           <span style="font-size:16px;color:rgba(255,255,255,.7);">↗</span>
         </a>
-        <a href="https://www.sportcorico.com/clubs/as-theodore-ruelisheim-wittenh/wittenheim-astr" target="_blank" style="display:flex;align-items:center;gap:10px;background:#0d2d5e;border-radius:12px;padding:12px 14px;text-decoration:none;">
-          <span style="font-size:20px">📊</span>
-          <div style="flex:1;">
-            <div style="font-size:13px;font-weight:600;color:#fff;">Résultats ASTRW — SportCorico</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:1px;">Scores et classement ASTRW Seniors 1</div>
-          </div>
-          <span style="font-size:16px;color:rgba(255,255,255,.7);">↗</span>
-        </a>
+
       </div>
       <div class="tab-pills" id="cal-pills">
         <div class="pill active" data-sub="sub-cal-liste">📅 Matchs</div>
@@ -269,6 +272,31 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
     <button class="nav-btn" data-page="cal"><span class="nav-icon">📅</span>Calendrier</button>
     <button class="nav-btn" data-page="notes"><span class="nav-icon">📝</span>Notes</button>
   </nav>
+</div>
+
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="modal-title" style="margin:0">Modifier le joueur</div>
+      <button class="modal-close" onclick="document.getElementById('edit-modal').classList.remove('show')">✕</button>
+    </div>
+    <div class="form-group"><label>Nom complet</label><input type="text" id="edit-nom" placeholder="Nom du joueur"></div>
+    <div class="form-group">
+      <label>Postes <span style="font-weight:400;text-transform:none;font-size:10px">(1 clic = principal · 2 clics = secondaire · 3 clics = retirer)</span></label>
+      <div id="edit-poste-container"></div>
+    </div>
+    <div class="form-group"><label>Statut</label>
+      <select id="edit-statut">
+        <option value="ok">✅ Disponible</option>
+        <option value="bless">🤕 Blessé</option>
+        <option value="susp">🟥 Suspendu</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" id="btn-save-edit">Enregistrer</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -388,11 +416,11 @@ function renderHome(){
 /* ---- CONVO ---- */
 function renderConvo(){
   var html='';
-  var sorted=[].concat(players).sort(function(a,b){return a.num-b.num;});
+  var sorted=[].concat(players).sort(function(a,b){return a.nom.localeCompare(b.nom);});
   sorted.forEach(function(p){
     var isBless=p.statut==='bless';
     html+='<div class="pcheck'+(isBless?'':' sel')+'" data-id="'+p.id+'">'+
-      '<div class="pcheck-dot"></div><span>#'+p.num+' '+p.nom.split(' ')[0]+'</span></div>';
+      '<div class="pcheck-dot"></div><span>'+p.nom.split(' ')[0]+'</span></div>';
   });
   document.getElementById('convo-checks').innerHTML=html;
   document.getElementById('convo-result').style.display='none';
@@ -412,7 +440,7 @@ function genConvo(){
   var convoked=[];
   sel.forEach(function(el,i){
     var p=getPlayer(parseInt(el.getAttribute('data-id')));
-    if(p)convoked.push((i+1)+'. '+p.nom+' (#'+p.num+')');
+    if(p)convoked.push((i+1)+'. '+p.nom);
   });
   var txt='📢 *CONVOCATION ASTRW*\n';
   txt+='────────────────────\n';
@@ -447,7 +475,7 @@ function renderRanking(id,list,valFn){
   sorted.forEach(function(p,i){
     h+='<div class="player-row"><div class="rank-num">'+(i+1)+'</div>'+
       '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>'+
-      '<div class="player-info"><div class="player-name">'+p.nom+'</div><div class="player-sub">#'+p.num+' · '+p.poste+'</div></div>'+
+      '<div class="player-info"><div class="player-name">'+p.nom+'</div><div class="player-sub">'+p.poste+'</div></div>'+
       '<div class="rank-val">'+valFn(p)+'</div></div>';
   });
   h+='</div>';
@@ -461,7 +489,7 @@ function renderMinutes(){
   all.forEach(function(p,i){
     h+='<div class="player-row"><div class="rank-num">'+(i+1)+'</div>'+
       '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>'+
-      '<div class="player-info"><div class="player-name">'+p.nom+'</div><div class="player-sub">#'+p.num+'</div></div>'+
+      '<div class="player-info"><div class="player-name">'+p.nom+'</div><div class="player-sub">'+p.poste+'</div></div>'+
       '<div class="rank-val">'+p.minutes+"'</div></div>";
   });
   h+='</div>';
@@ -471,9 +499,9 @@ function renderMinutes(){
 var sScore=[0,0],sJaunes=[],sRouges=[];
 function renderSaisir(){
   sScore=[0,0];sJaunes=[];sRouges=[];
-  var opts=players.map(function(p){return '<option value="'+p.id+'">#'+p.num+' '+p.nom+'</option>';}).join('');
-  var cj=players.map(function(p){return '<div class="ctag ctag-off ctag-j-item" data-pid="'+p.id+'">#'+p.num+' '+p.nom.split(' ')[0]+'</div>';}).join('');
-  var cr=players.map(function(p){return '<div class="ctag ctag-off ctag-r-item" data-pid="'+p.id+'">#'+p.num+' '+p.nom.split(' ')[0]+'</div>';}).join('');
+  var opts=players.map(function(p){return '<option value="'+p.id+'">'+p.nom+'</option>';}).join('');
+  var cj=players.map(function(p){return '<div class="ctag ctag-off ctag-j-item" data-pid="'+p.id+'">'+p.nom.split(' ')[0]+'</div>';}).join('');
+  var cr=players.map(function(p){return '<div class="ctag ctag-off ctag-r-item" data-pid="'+p.id+'">'+p.nom.split(' ')[0]+'</div>';}).join('');
   var h='<div class="card">'+
     '<div class="form-group"><label>Adversaire</label><input type="text" id="s-adv" placeholder="FC Mulhouse B"></div>'+
     '<div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="s-date"></div><div class="form-group"><label>Type</label><select id="s-type"><option>Domicile</option><option>Extérieur</option></select></div></div>'+
@@ -545,34 +573,150 @@ function saveMatch(){
 }
 
 /* ---- EFFECTIF ---- */
+var POSTES=['GB','DD','DC','DG','MC','MD','MG','BU'];
+var POSTES_LABELS={GB:'GB — Gardien',DD:'DD — Déf. droit',DC:'DC — Déf. central',DG:'DG — Déf. gauche',MC:'MC — Mil. central',MD:'MD — Mil. droit',MG:'MG — Mil. gauche',BU:'BU — Buteur'};
+var POSTES_SHORT={GB:'GB',DD:'DD',DC:'DC',DG:'DG',MC:'MC',MD:'MD',MG:'MG',BU:'BU'};
+
+function posteColor(p){
+  if(p==='GB') return 'poste-gb';
+  if(p==='DD'||p==='DC'||p==='DG') return 'poste-def';
+  if(p==='MC'||p==='MD'||p==='MG') return 'poste-mil';
+  if(p==='BU') return 'poste-bu';
+  return 'poste-mil';
+}
+
+function posteSortKey(p){
+  // Sort by first principal poste
+  var pp = (p.postes_main && p.postes_main.length) ? p.postes_main[0] : (p.poste||'BU');
+  if(pp==='GB') return 0;
+  if(pp==='DD'||pp==='DC'||pp==='DG') return 1;
+  if(pp==='MC'||pp==='MD'||pp==='MG') return 2;
+  if(pp==='BU') return 3;
+  return 4;
+}
+
+function renderPosteTags(p){
+  var main = p.postes_main && p.postes_main.length ? p.postes_main : [p.poste||'GB'];
+  var sec  = p.postes_sec  && p.postes_sec.length  ? p.postes_sec  : [];
+  var h='';
+  main.forEach(function(pt){h+='<span class="poste-tag '+posteColor(pt)+'">'+pt+'</span> ';});
+  sec.forEach(function(pt){h+='<span class="poste-tag-sec '+posteColor(pt)+'">'+pt+'</span> ';});
+  return h.trim();
+}
+
+function openEditModal(pid){
+  var p=getPlayer(pid);if(!p)return;
+  var modal=document.getElementById('edit-modal');
+  document.getElementById('edit-nom').value=p.nom;
+  var ss=document.getElementById('edit-statut');
+  for(var i=0;i<ss.options.length;i++){if(ss.options[i].value===p.statut)ss.selectedIndex=i;}
+
+  // Build poste selector grid
+  var main = p.postes_main && p.postes_main.length ? p.postes_main : (p.poste ? [p.poste] : []);
+  var sec  = p.postes_sec  && p.postes_sec.length  ? p.postes_sec  : [];
+  var postes_info = {
+    GB:{label:'GB',sub:'Gardien',cls:'poste-gb'},
+    DD:{label:'DD',sub:'Déf. droit',cls:'poste-def'},
+    DC:{label:'DC',sub:'Déf. central',cls:'poste-def'},
+    DG:{label:'DG',sub:'Déf. gauche',cls:'poste-def'},
+    MC:{label:'MC',sub:'Mil. central',cls:'poste-mil'},
+    MD:{label:'MD',sub:'Mil. droit',cls:'poste-mil'},
+    MG:{label:'MG',sub:'Mil. gauche',cls:'poste-mil'},
+    BU:{label:'BU',sub:'Buteur',cls:'poste-bu'}
+  };
+  var gridH='<div class="poste-grid" id="edit-poste-grid">';
+  POSTES.forEach(function(pt){
+    var info=postes_info[pt];
+    var isMa=main.indexOf(pt)>=0;
+    var isSe=sec.indexOf(pt)>=0;
+    var selCls=isMa?'sel-main':isSe?'sel-sec':'';
+    gridH+='<div class="poste-btn '+info.cls+' '+selCls+'" data-pt="'+pt+'">'+
+      '<div style="font-size:14px;font-weight:700">'+info.label+'</div>'+
+      '<div style="font-size:9px;margin-top:2px">'+info.sub+'</div>'+
+    '</div>';
+  });
+  gridH+='</div>';
+  gridH+='<div style="display:flex;gap:12px;margin-top:8px;font-size:10px;color:var(--muted)">'+
+    '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;border:2px solid #1a1a2e;margin-right:4px;"></span>Poste principal</span>'+
+    '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;border:2px dashed var(--muted);margin-right:4px;"></span>Poste secondaire</span>'+
+  '</div>';
+  document.getElementById('edit-poste-container').innerHTML=gridH;
+
+  // Click logic: 1st click = principal, 2nd = secondaire, 3rd = déselectionne
+  document.querySelectorAll('#edit-poste-grid .poste-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(btn.classList.contains('sel-main')){
+        btn.classList.remove('sel-main');btn.classList.add('sel-sec');
+      } else if(btn.classList.contains('sel-sec')){
+        btn.classList.remove('sel-sec');
+      } else {
+        btn.classList.add('sel-main');
+      }
+    });
+  });
+
+  document.getElementById('btn-save-edit').onclick=function(){
+    p.nom=document.getElementById('edit-nom').value.trim()||p.nom;
+    p.statut=document.getElementById('edit-statut').value;
+    var newMain=[],newSec=[];
+    document.querySelectorAll('#edit-poste-grid .poste-btn').forEach(function(btn){
+      if(btn.classList.contains('sel-main')) newMain.push(btn.getAttribute('data-pt'));
+      else if(btn.classList.contains('sel-sec')) newSec.push(btn.getAttribute('data-pt'));
+    });
+    p.postes_main=newMain.length?newMain:[p.poste||'GB'];
+    p.postes_sec=newSec;
+    p.poste=p.postes_main[0];
+    save('astrw_players',players);
+    modal.classList.remove('show');
+    renderListe();toast('✅ Joueur mis à jour');
+  };
+  modal.classList.add('show');
+}
+
 function renderListe(){
-  var sorted=[].concat(players).sort(function(a,b){return a.num-b.num;});
+  if(!players.length){
+    document.getElementById('sub-liste').innerHTML='<div class="empty"><div class="empty-icon">👥</div>Aucun joueur — ajoutes-en via l\'onglet ➕</div>';
+    return;
+  }
+  var sorted=[].concat(players).sort(function(a,b){
+    var ka=posteSortKey(a),kb=posteSortKey(b);
+    if(ka!==kb) return ka-kb;
+    return a.nom.localeCompare(b.nom);
+  });
   var tagC={ok:'tag-ok',bless:'tag-bless',susp:'tag-susp'};
-  var tagT={ok:'Disponible',bless:'Blessé',susp:'Suspendu'};
-  var h='<div class="card">';
+  var tagT={ok:'✅ Dispo',bless:'🤕 Blessé',susp:'🟥 Suspendu'};
+  // Group headers
+  var groups=[[0,'🧤 Gardiens'],[1,'🛡️ Défenseurs'],[2,'⚙️ Milieux'],[3,'⚽ Attaquants']];
+  var lastGroup=-1;
+  var h='';
   sorted.forEach(function(p){
-    var tc=tagC[p.statut]||'tag-ok';var tt=tagT[p.statut]||'Disponible';
+    var gk=posteSortKey(p);
+    if(gk!==lastGroup){
+      if(lastGroup!==-1) h+='</div>';
+      var gl=groups.find(function(g){return g[0]===gk;});
+      h+='<div class="sec" style="margin-top:'+(lastGroup===-1?'0':'10px')+'">'+( gl?gl[1]:'Autres')+'</div><div class="card">';
+      lastGroup=gk;
+    }
+    var tc=tagC[p.statut]||'tag-ok';var tt=tagT[p.statut]||'✅ Dispo';
     h+='<div class="player-row">'+
       '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>'+
-      '<div class="player-info"><div class="player-name">'+p.nom+'</div><div class="player-sub">#'+p.num+' · '+p.poste+' · '+p.buts+' ⚽ '+p.passes+' 🎯</div></div>'+
+      '<div class="player-info">'+
+        '<div class="player-name">'+p.nom+'</div>'+
+        '<div style="margin-top:3px">'+renderPosteTags(p)+'</div>'+
+        '<div class="player-sub" style="margin-top:3px">'+p.buts+' ⚽ '+p.passes+' 🎯</div>'+
+      '</div>'+
       '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
         '<div class="tag '+tc+'">'+tt+'</div>'+
         '<div style="display:flex;gap:4px">'+
-          '<button class="btn btn-sm btn-secondary" style="padding:4px 8px;font-size:10px" data-statut="'+p.id+'">Statut</button>'+
+          '<button class="btn btn-sm btn-secondary" style="padding:4px 8px;font-size:10px;margin-top:0" data-edit="'+p.id+'">✏️</button>'+
           '<button class="btn btn-sm" style="padding:4px 8px;font-size:10px;background:var(--red-bg);color:var(--red);margin-top:0" data-del="'+p.id+'">✕</button>'+
         '</div>'+
       '</div></div>';
   });
-  h+='</div>';
+  if(lastGroup!==-1) h+='</div>';
   document.getElementById('sub-liste').innerHTML=h;
-  document.querySelectorAll('[data-statut]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var pid=parseInt(btn.getAttribute('data-statut'));
-      var p=getPlayer(pid);if(!p)return;
-      var s=['ok','bless','susp'];var idx=s.indexOf(p.statut);
-      p.statut=s[(idx+1)%s.length];
-      save('astrw_players',players);renderListe();toast('Statut mis à jour');
-    });
+  document.querySelectorAll('[data-edit]').forEach(function(btn){
+    btn.addEventListener('click',function(){openEditModal(parseInt(btn.getAttribute('data-edit')));});
   });
   document.querySelectorAll('[data-del]').forEach(function(btn){
     btn.addEventListener('click',function(){
@@ -583,6 +727,7 @@ function renderListe(){
     });
   });
 }
+
 
 function renderCartons(){
   var sorted=[].concat(players).sort(function(a,b){return b.jaunes-a.jaunes;});
@@ -666,14 +811,11 @@ function init(){
   document.getElementById('btn-copy-convo').addEventListener('click',copyConvo);
   document.getElementById('btn-add-player').addEventListener('click',function(){
     var nom=document.getElementById('new-nom').value.trim();
-    var num=parseInt(document.getElementById('new-num').value);
     var poste=document.getElementById('new-poste').value;
     var statut=document.getElementById('new-statut').value;
-    if(!nom||!num){toast('⚠️ Remplis le nom et le numéro');return;}
-    players.push({id:Date.now(),nom:nom,num:num,poste:poste,statut:statut,buts:0,passes:0,jaunes:0,rouges:0,minutes:0});
-    save('astrw_players',players);
+    if(!nom){toast('⚠️ Remplis le nom');return;}
+    players.push({id:Date.now(),nom:nom,poste:poste,postes_main:[poste],postes_sec:[],statut:statut,buts:0,passes:0,jaunes:0,rouges:0,minutes:0});
     document.getElementById('new-nom').value='';
-    document.getElementById('new-num').value='';
     toast('✅ Joueur ajouté !');renderListe();
   });
   document.getElementById('btn-add-match').addEventListener('click',function(){
