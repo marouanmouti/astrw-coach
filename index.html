@@ -291,12 +291,12 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 
 
 <!-- EDIT MODAL -->
-<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)this.classList.remove('show')">
+<div class="modal-overlay" id="edit-modal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div class="modal-title" style="margin:0">Modifier le joueur</div>
-      <button class="modal-close" onclick="document.getElementById('edit-modal').classList.remove('show')">✕</button>
+      <button class="modal-close">✕</button>
     </div>
     <div class="form-group"><label>Nom complet</label><input type="text" id="edit-nom" placeholder="Nom du joueur"></div>
     <div class="form-group">
@@ -316,12 +316,12 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 
 
 <!-- MATCH MODAL -->
-<div class="modal-overlay" id="match-modal" onclick="if(event.target===this)this.classList.remove('show')">
+<div class="modal-overlay" id="match-modal">
   <div class="modal" style="max-height:92vh;overflow-y:auto;">
     <div class="modal-handle"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div class="modal-title" style="margin:0" id="match-modal-title">Match</div>
-      <button class="modal-close" onclick="document.getElementById('match-modal').classList.remove('show')">✕</button>
+      <button class="modal-close">✕</button>
     </div>
     <div class="form-group"><label>Adversaire</label><input type="text" id="mm-adv" placeholder="FC Mulhouse B"></div>
     <div class="form-row">
@@ -785,17 +785,6 @@ function renderListe(){
   });
   if(lastGroup!==-1) h+='</div>';
   document.getElementById('sub-liste').innerHTML=h;
-  document.querySelectorAll('[data-edit]').forEach(function(btn){
-    btn.addEventListener('click',function(){openEditModal(parseInt(btn.getAttribute('data-edit')));});
-  });
-  document.querySelectorAll('[data-del]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var pid=parseInt(btn.getAttribute('data-del'));
-      if(!confirm('Supprimer ce joueur ?'))return;
-      players=players.filter(function(p){return p.id!==pid;});
-      save('astrw_players',players);renderListe();toast('Joueur supprimé');
-    });
-  });
 }
 
 
@@ -843,12 +832,6 @@ function renderCalListe(){
   });
   h+='</div>';
   document.getElementById('sub-cal-liste').innerHTML=h;
-  document.querySelectorAll('[data-edit-match]').forEach(function(btn){
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      openMatchModal(parseInt(btn.getAttribute('data-edit-match')));
-    });
-  });
 }
 
 
@@ -1117,6 +1100,34 @@ function init(){
     document.getElementById('note-input').value='';
     renderNotes();toast('✅ Note enregistrée');
   });
+  /* Event delegation — un seul listener pour tous les boutons dynamiques */
+  document.addEventListener('click', function(e){
+    // Bouton modifier joueur
+    var editBtn = e.target.closest('[data-edit]');
+    if(editBtn){
+      e.stopPropagation();
+      openEditModal(parseInt(editBtn.getAttribute('data-edit')));
+      return;
+    }
+    // Bouton supprimer joueur
+    var delBtn = e.target.closest('[data-del]');
+    if(delBtn){
+      e.stopPropagation();
+      var pid=parseInt(delBtn.getAttribute('data-del'));
+      if(!confirm('Supprimer ce joueur ?'))return;
+      players=players.filter(function(p){return p.id!==pid;});
+      save('astrw_players',players);renderListe();toast('Joueur supprimé');
+      return;
+    }
+    // Bouton modifier match
+    var editMatch = e.target.closest('[data-edit-match]');
+    if(editMatch){
+      e.stopPropagation();
+      openMatchModal(parseInt(editMatch.getAttribute('data-edit-match')));
+      return;
+    }
+  });
+
   /* Service worker */
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('./sw.js');
@@ -1131,44 +1142,56 @@ function init(){
 }
 
 
-  // Score buttons for match modal
-  var mmScoreLocal=[null,null];
-  function initMMScore(){
-    document.getElementById('mm-sm0').addEventListener('click',function(){
-      if(mmScore[0]===null)mmScore[0]=0; else mmScore[0]=Math.max(0,mmScore[0]-1);
-      document.getElementById('mm-sn0').textContent=mmScore[0];
+  // Init match modal buttons — ici dans init() donc DOM garanti prêt
+  document.getElementById('mm-sm0').addEventListener('click',function(){
+    if(mmScore[0]===null)mmScore[0]=0; else mmScore[0]=Math.max(0,mmScore[0]-1);
+    document.getElementById('mm-sn0').textContent=mmScore[0];
+  });
+  document.getElementById('mm-sp0').addEventListener('click',function(){
+    if(mmScore[0]===null)mmScore[0]=0; else mmScore[0]++;
+    document.getElementById('mm-sn0').textContent=mmScore[0];
+  });
+  document.getElementById('mm-sm1').addEventListener('click',function(){
+    if(mmScore[1]===null)mmScore[1]=0; else mmScore[1]=Math.max(0,mmScore[1]-1);
+    document.getElementById('mm-sn1').textContent=mmScore[1];
+  });
+  document.getElementById('mm-sp1').addEventListener('click',function(){
+    if(mmScore[1]===null)mmScore[1]=0; else mmScore[1]++;
+    document.getElementById('mm-sn1').textContent=mmScore[1];
+  });
+  document.getElementById('mm-reset-score').addEventListener('click',function(){
+    mmScore=[null,null];
+    document.getElementById('mm-sn0').textContent='—';
+    document.getElementById('mm-sn1').textContent='—';
+  });
+  document.getElementById('mm-add-but').addEventListener('click',function(){addButRowMM('mm-buts-list');});
+  document.getElementById('mm-add-passe').addEventListener('click',function(){addButRowMM('mm-passes-list');});
+  document.getElementById('mm-save').addEventListener('click',saveMatchModal);
+  document.getElementById('mm-delete').addEventListener('click',function(){
+    if(!confirm('Supprimer ce match ?'))return;
+    var m=matchs.find(function(x){return x.id===mmCurrentId;});
+    if(m&&m.statut==='joue') revertMatchStats(m);
+    matchs=matchs.filter(function(x){return x.id!==mmCurrentId;});
+    save('astrw_matchs',matchs);save('astrw_players',players);
+    document.getElementById('match-modal').classList.remove('show');
+    renderCalListe();renderHome();toast('Match supprimé');
+  });
+
+  // Fermeture modales via bouton ✕ dans HTML (onclick inline → remplacer par listener)
+  document.getElementById('edit-modal').addEventListener('click',function(e){
+    if(e.target===this) this.classList.remove('show');
+  });
+  document.getElementById('match-modal').addEventListener('click',function(e){
+    if(e.target===this) this.classList.remove('show');
+  });
+  // Boutons fermeture ✕
+  document.querySelectorAll('.modal-close').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      btn.closest('.modal-overlay').classList.remove('show');
     });
-    document.getElementById('mm-sp0').addEventListener('click',function(){
-      if(mmScore[0]===null)mmScore[0]=0; else mmScore[0]++;
-      document.getElementById('mm-sn0').textContent=mmScore[0];
-    });
-    document.getElementById('mm-sm1').addEventListener('click',function(){
-      if(mmScore[1]===null)mmScore[1]=0; else mmScore[1]=Math.max(0,mmScore[1]-1);
-      document.getElementById('mm-sn1').textContent=mmScore[1];
-    });
-    document.getElementById('mm-sp1').addEventListener('click',function(){
-      if(mmScore[1]===null)mmScore[1]=0; else mmScore[1]++;
-      document.getElementById('mm-sn1').textContent=mmScore[1];
-    });
-    document.getElementById('mm-reset-score').addEventListener('click',function(){
-      mmScore=[null,null];
-      document.getElementById('mm-sn0').textContent='—';
-      document.getElementById('mm-sn1').textContent='—';
-    });
-    document.getElementById('mm-add-but').addEventListener('click',function(){addButRowMM('mm-buts-list');});
-    document.getElementById('mm-add-passe').addEventListener('click',function(){addButRowMM('mm-passes-list');});
-    document.getElementById('mm-save').addEventListener('click',saveMatchModal);
-    document.getElementById('mm-delete').addEventListener('click',function(){
-      if(!confirm('Supprimer ce match ?'))return;
-      var m=matchs.find(function(x){return x.id===mmCurrentId;});
-      if(m&&m.statut==='joue') revertMatchStats(m);
-      matchs=matchs.filter(function(x){return x.id!==mmCurrentId;});
-      save('astrw_matchs',matchs);save('astrw_players',players);
-      document.getElementById('match-modal').classList.remove('show');
-      renderCalListe();renderHome();toast('Match supprimé');
-    });
-  }
-  initMMScore();
+  });
+
+}
 
 window.addEventListener('DOMContentLoaded', init);
 
