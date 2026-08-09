@@ -1,4 +1,4 @@
-const CACHE_NAME = 'astrw-v1';
+const CACHE_NAME = 'astrw-v6';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -7,6 +7,7 @@ self.addEventListener('install', e => {
 });
 
 self.addEventListener('activate', e => {
+  // Supprime TOUS les anciens caches
   e.waitUntil(caches.keys().then(keys =>
     Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
   ));
@@ -14,7 +15,15 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Network first : toujours essayer le réseau, cache uniquement en fallback offline
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('./index.html')))
+    fetch(e.request)
+      .then(response => {
+        // Met à jour le cache avec la version fraîche
+        var clone = response.clone();
+        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
