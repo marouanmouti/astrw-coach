@@ -779,9 +779,10 @@ function renderDispo() {
   if (!dispos.length) h += '<div class="empty">Aucun joueur disponible</div>';
   var sortedD = dispos.slice().sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
   sortedD.forEach(function(p){
+    var mb=(p.mute&&p.mute!=='none')?'<span class="tag '+(p.mute==='mute'?'tag-mute':'tag-mutehp')+'" style="font-size:9px;padding:2px 6px;margin-left:4px">'+(p.mute==='mute'?'🔵 Muté':'🟢 HP')+'</span>':'';
     h += '<div class="player-row">' +
-      '<div class="av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
-      '<div class="p-info"><div class="p-name">'+p.nom+'</div><div style="margin-top:2px">'+renderPosteTags(p)+'</div></div>' +
+      '<div class="av" style="background:'+avColor(p.id)+'">'+ initials(p.nom)+'</div>' +
+      '<div class="p-info"><div class="p-name">'+p.nom+'</div><div style="margin-top:2px">'+renderPosteTags(p)+mb+'</div></div>' +
       '</div>';
   });
   h += '</div>';
@@ -812,12 +813,61 @@ var compoState = {
 };
 
 var FORMATIONS = {
-  '433':  {rows:[[0],[1,2,3,4],[5,6,7],[8,9,10]], slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MC'},{p:'MG'},{p:'BU'},{p:'BU'},{p:'BU'}]},
-  '442':  {rows:[[0],[1,2,3,4],[5,6,7,8],[9,10]], slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'DD'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'BU'},{p:'BU'}]},
-  '4231': {rows:[[0],[1,2,3,4],[5,6],[7,8,9],[10]], slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'MD'},{p:'MC'},{p:'BU'}]},
-  '352':  {rows:[[0],[1,2,3],[4,5,6,7,8],[9,10]], slots:[{p:'GB'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'MG'},{p:'MC'},{p:'MC'},{p:'MC'},{p:'MD'},{p:'BU'},{p:'BU'}]},
-  '532':  {rows:[[0],[1,2,3,4,5],[6,7,8],[9,10]], slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MC'},{p:'MG'},{p:'BU'},{p:'BU'}]},
-  '451':  {rows:[[0],[1,2,3,4],[5,6,7,8,9],[10]], slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MC'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'BU'}]}
+  '433': {
+    rows: [[0],[1,2,3,4],[5,6,7],[8,9,10]],
+    slots: [
+      {p:'GB'},
+      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
+      {p:'MG'},{p:'MC'},{p:'MD'},
+      {p:'BU'},{p:'BU'},{p:'BU'}
+    ]
+  },
+  '442': {
+    rows: [[0],[1,2,3,4],[5,6,7,8],[9,10]],
+    slots: [
+      {p:'GB'},
+      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
+      {p:'MG'},{p:'MC'},{p:'MC'},{p:'MD'},
+      {p:'BU'},{p:'BU'}
+    ]
+  },
+  '4231': {
+    rows: [[0],[1,2,3,4],[5,6],[7,8,9],[10]],
+    slots: [
+      {p:'GB'},
+      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
+      {p:'MC'},{p:'MC'},
+      {p:'MG'},{p:'MC'},{p:'MD'},
+      {p:'BU'}
+    ]
+  },
+  '352': {
+    rows: [[0],[1,2,3],[4,5,6,7,8],[9,10]],
+    slots: [
+      {p:'GB'},
+      {p:'DC'},{p:'DC'},{p:'DC'},
+      {p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'DD'},
+      {p:'BU'},{p:'BU'}
+    ]
+  },
+  '532': {
+    rows: [[0],[1,2,3,4,5],[6,7,8],[9,10]],
+    slots: [
+      {p:'GB'},
+      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'DG'},
+      {p:'MG'},{p:'MC'},{p:'MD'},
+      {p:'BU'},{p:'BU'}
+    ]
+  },
+  '451': {
+    rows: [[0],[1,2,3,4],[5,6,7,8,9],[10]],
+    slots: [
+      {p:'GB'},
+      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
+      {p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'DD'},
+      {p:'BU'}
+    ]
+  }
 };
 
 var draggedPlayerId = null; // id du joueur en cours de drag (depuis bench)
@@ -832,8 +882,8 @@ function initCompo(keepPlayers) {
 
 function renderCompo() {
   var f    = FORMATIONS[compoState.formation] || FORMATIONS['433'];
-  var rows = f.rows.slice();
-  if (compoState.mode === 'off') rows = rows.slice().reverse(); // attaquants en haut
+  // Toujours attaquants en haut, gardien en bas
+  var rows = f.rows.slice().reverse();
 
   // Terrain
   var grid = document.getElementById('cp-grid');
