@@ -319,6 +319,63 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
   </div>
 </div>
 
+
+<!-- MATCH MODAL -->
+<div class="modal-overlay" id="match-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal" style="max-height:92vh;overflow-y:auto;">
+    <div class="modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="modal-title" style="margin:0" id="match-modal-title">Match</div>
+      <button class="modal-close" onclick="document.getElementById('match-modal').classList.remove('show')">✕</button>
+    </div>
+    <div class="form-group"><label>Adversaire</label><input type="text" id="mm-adv" placeholder="FC Mulhouse B"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="mm-date"></div>
+      <div class="form-group"><label>Heure</label><input type="time" id="mm-heure" value="15:00"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Type</label><select id="mm-type"><option>Domicile</option><option>Extérieur</option></select></div>
+      <div class="form-group"><label>Compétition</label><select id="mm-comp"><option value="R3 Alsace">R3 Alsace</option><option value="Coupe de France">Coupe de France</option><option value="Coupe du Grand Est">Coupe Grand Est</option><option value="Match amical">Amical</option></select></div>
+    </div>
+
+    <div id="mm-score-section">
+      <div class="form-group" style="margin-top:4px"><label>Score (si match joué)</label>
+        <div class="score-row" style="margin-top:8px">
+          <div class="score-team"><div class="score-team-name">ASTRW</div>
+            <div class="score-num"><button id="mm-sm0">−</button><span id="mm-sn0">—</span><button id="mm-sp0">+</button></div>
+          </div>
+          <div class="score-sep">–</div>
+          <div class="score-team"><div class="score-team-name">Adverse</div>
+            <div class="score-num"><button id="mm-sm1">−</button><span id="mm-sn1">—</span><button id="mm-sp1">+</button></div>
+          </div>
+        </div>
+        <button class="btn btn-secondary" id="mm-reset-score" style="margin-top:6px;font-size:12px;padding:7px">Effacer le score</button>
+      </div>
+
+      <div class="form-group"><label>Joueurs ayant participé</label>
+        <div id="mm-players-grid" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></div>
+      </div>
+      <div class="form-group"><label>Buteurs</label><div id="mm-buts-list"></div>
+        <button class="btn btn-secondary" id="mm-add-but" style="margin-top:6px;font-size:12px;padding:7px">+ Buteur</button>
+      </div>
+      <div class="form-group"><label>Passeurs</label><div id="mm-passes-list"></div>
+        <button class="btn btn-secondary" id="mm-add-passe" style="margin-top:6px;font-size:12px;padding:7px">+ Passeur</button>
+      </div>
+      <div class="form-group"><label>Cartons jaunes</label>
+        <div class="carton-grid" id="mm-jaunes"></div>
+      </div>
+      <div class="form-group"><label>Carton rouge</label>
+        <div class="carton-grid" id="mm-rouges"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-primary" id="mm-save" style="flex:1;margin-top:0">Enregistrer</button>
+      <button class="btn" id="mm-delete" style="background:var(--red-bg);color:var(--red);margin-top:0;width:auto;padding:13px 16px">🗑️</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -335,7 +392,7 @@ function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}c
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
 /* Reset si ancienne version (données fictives) */
-var DATA_VERSION='v6_postes';
+var DATA_VERSION='v7_matchmodal';
 if(localStorage.getItem('astrw_version')!==DATA_VERSION){
   localStorage.removeItem('astrw_matchs');
   localStorage.removeItem('astrw_players');
@@ -730,11 +787,11 @@ function renderListe(){
         '<div style="margin-top:3px">'+renderPosteTags(p)+'</div>'+
         '<div class="player-sub" style="margin-top:3px">'+p.buts+' ⚽ '+p.passes+' 🎯</div>'+
       '</div>'+
-      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">'+
         '<div class="tag '+tc+'">'+tt+'</div>'+
-        '<div style="display:flex;gap:4px">'+
-          '<button class="btn btn-sm btn-secondary" style="padding:4px 8px;font-size:10px;margin-top:0" data-edit="'+p.id+'">✏️</button>'+
-          '<button class="btn btn-sm" style="padding:4px 8px;font-size:10px;background:var(--red-bg);color:var(--red);margin-top:0" data-del="'+p.id+'">✕</button>'+
+        '<div style="display:flex;gap:6px">'+
+          '<button class="btn btn-sm btn-secondary" style="padding:8px 12px;font-size:13px;margin-top:0;min-width:38px" data-edit="'+p.id+'">✏️</button>'+
+          '<button class="btn btn-sm" style="padding:8px 12px;font-size:13px;background:var(--red-bg);color:var(--red);margin-top:0;min-width:38px" data-del="'+p.id+'">✕</button>'+
         '</div>'+
       '</div></div>';
   });
@@ -777,28 +834,208 @@ function renderCalListe(){
   var sorted=[].concat(matchs).sort(function(a,b){return a.date>b.date?1:-1;});
   var M=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   var h='<div class="card">';
+  if(!sorted.length) h+='<div class="empty">Aucun match — ajoutes-en via ➕</div>';
   sorted.forEach(function(m){
     var p=m.date.split('-');
     var res='',cls='cr-a';
     if(m.statut==='joue'){
       res=m.scoreNous+' – '+m.scoreAdv;
       cls=m.scoreNous>m.scoreAdv?'cr-v':m.scoreNous===m.scoreAdv?'cr-n':'cr-d';
-    } else if(m.statut==='arrêté'){
-      res='Arrêté';cls='cr-n';
-    } else if(m.statut==='?'){
-      res='Score ?';cls='cr-a';
-    } else {
-      res=m.heure||'15h00';cls='cr-a';
-    }
+    } else if(m.statut==='arrêté'){res='Arrêté';cls='cr-n';
+    } else if(m.statut==='?'){res='Score ?';cls='cr-a';
+    } else {res=m.heure||'15h00';cls='cr-a';}
     var comp=m.comp?'<span style="font-size:9px;background:#f0f2f8;color:var(--muted);border-radius:4px;padding:1px 5px;margin-left:4px;">'+m.comp+'</span>':'';
-    h+='<div class="cal-row">'+
+    h+='<div class="cal-row" style="cursor:pointer" data-mid="'+m.id+'">'+
       '<div class="cal-date"><div class="cal-day">'+parseInt(p[2])+'</div><div class="cal-month">'+M[parseInt(p[1])-1]+'</div></div>'+
-      '<div class="cal-info"><div class="cal-opp">'+m.adv+comp+'</div><div class="cal-meta">'+(m.type==='Domicile'?'🏠':'🚌')+' '+m.type+(m.lieu?' · '+m.lieu:'')+'</div></div>'+
-      '<div class="cal-res '+cls+'">'+res+'</div></div>';
+      '<div class="cal-info"><div class="cal-opp">'+m.adv+comp+'</div><div class="cal-meta">'+(m.type==='Domicile'?'🏠':'🚌')+' '+m.type+'</div></div>'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+        '<div class="cal-res '+cls+'">'+res+'</div>'+
+        '<button style="background:var(--blue-light);color:var(--blue);border:none;border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer" data-edit-match="'+m.id+'">✏️</button>'+
+      '</div></div>';
   });
   h+='</div>';
   document.getElementById('sub-cal-liste').innerHTML=h;
+  document.querySelectorAll('[data-edit-match]').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      openMatchModal(parseInt(btn.getAttribute('data-edit-match')));
+    });
+  });
 }
+
+
+/* ---- MATCH MODAL ---- */
+var mmScore=[null,null], mmJaunes=[], mmRouges=[], mmCurrentId=null, mmPrevStats={};
+
+function playerOpts(){
+  return players.map(function(p){return '<option value="'+p.id+'">'+p.nom+'</option>';}).join('');
+}
+
+function addButRowMM(listId){
+  var list=document.getElementById(listId);
+  var row=document.createElement('div');row.className='but-row';
+  row.innerHTML='<select>'+playerOpts()+'</select><div class="but-num"><button class="bm">−</button><span>1</span><button class="bp">+</button></div><button class="del-btn">✕</button>';
+  list.appendChild(row);
+  row.querySelector('.bm').addEventListener('click',function(){var s=row.querySelector('.but-num span');s.textContent=Math.max(1,parseInt(s.textContent)-1);});
+  row.querySelector('.bp').addEventListener('click',function(){var s=row.querySelector('.but-num span');s.textContent=parseInt(s.textContent)+1;});
+  row.querySelector('.del-btn').addEventListener('click',function(){row.remove();});
+}
+
+function openMatchModal(mid){
+  mmCurrentId=mid;
+  var m=matchs.find(function(x){return x.id===mid;});
+  if(!m)return;
+  var modal=document.getElementById('match-modal');
+  document.getElementById('match-modal-title').textContent='Match : '+m.adv;
+  document.getElementById('mm-adv').value=m.adv||'';
+  document.getElementById('mm-date').value=m.date||'';
+  document.getElementById('mm-heure').value=m.heure||'15:00';
+  document.getElementById('mm-type').value=m.type||'Domicile';
+  // Comp select
+  var cs=document.getElementById('mm-comp');
+  var compVal=m.comp||'R3 Alsace';
+  var found=false;
+  for(var i=0;i<cs.options.length;i++){if(cs.options[i].value===compVal){cs.selectedIndex=i;found=true;break;}}
+  if(!found){cs.options[0].selected=true;}
+
+  // Score
+  mmScore=[m.scoreNous!=null?m.scoreNous:null, m.scoreAdv!=null?m.scoreAdv:null];
+  document.getElementById('mm-sn0').textContent=mmScore[0]!=null?mmScore[0]:'—';
+  document.getElementById('mm-sn1').textContent=mmScore[1]!=null?mmScore[1]:'—';
+
+  // Players grid
+  var pg=document.getElementById('mm-players-grid');
+  var joueursIds=(m.joueurs||[]);
+  pg.innerHTML=players.map(function(p){
+    var sel=joueursIds.indexOf(p.id)>=0;
+    return '<div class="ctag '+(sel?'ctag-j':'ctag-off')+' mm-player-tag" data-pid="'+p.id+'" style="cursor:pointer">'+p.nom.split(' ')[0]+'</div>';
+  }).join('');
+  pg.querySelectorAll('.mm-player-tag').forEach(function(el){
+    el.addEventListener('click',function(){
+      el.classList.toggle('ctag-off');
+      el.classList.toggle('ctag-j');
+    });
+  });
+
+  // Buts
+  var bl=document.getElementById('mm-buts-list'); bl.innerHTML='';
+  (m.buts||[]).forEach(function(b){
+    addButRowMM('mm-buts-list');
+    var rows=bl.querySelectorAll('.but-row');
+    var row=rows[rows.length-1];
+    var sel=row.querySelector('select');
+    for(var i=0;i<sel.options.length;i++){if(parseInt(sel.options[i].value)===b.pid){sel.selectedIndex=i;break;}}
+    row.querySelector('.but-num span').textContent=b.nb||1;
+  });
+
+  // Passes
+  var pl=document.getElementById('mm-passes-list'); pl.innerHTML='';
+  (m.passes||[]).forEach(function(b){
+    addButRowMM('mm-passes-list');
+    var rows=pl.querySelectorAll('.but-row');
+    var row=rows[rows.length-1];
+    var sel=row.querySelector('select');
+    for(var i=0;i<sel.options.length;i++){if(parseInt(sel.options[i].value)===b.pid){sel.selectedIndex=i;break;}}
+    row.querySelector('.but-num span').textContent=b.nb||1;
+  });
+
+  // Cartons
+  mmJaunes=(m.jaunes||[]).map(function(j){return j.pid;});
+  mmRouges=(m.rouges||[]).map(function(r){return r.pid;});
+  document.getElementById('mm-jaunes').innerHTML=players.map(function(p){
+    var on=mmJaunes.indexOf(p.id)>=0;
+    return '<div class="ctag '+(on?'ctag-j':'ctag-off')+' mm-ctag-j" data-pid="'+p.id+'">'+p.nom.split(' ')[0]+'</div>';
+  }).join('');
+  document.getElementById('mm-rouges').innerHTML=players.map(function(p){
+    var on=mmRouges.indexOf(p.id)>=0;
+    return '<div class="ctag '+(on?'ctag-r':'ctag-off')+' mm-ctag-r" data-pid="'+p.id+'">'+p.nom.split(' ')[0]+'</div>';
+  }).join('');
+  document.querySelectorAll('.mm-ctag-j').forEach(function(el){
+    el.addEventListener('click',function(){
+      el.classList.toggle('ctag-off');el.classList.toggle('ctag-j');
+      var pid=parseInt(el.getAttribute('data-pid'));
+      var idx=mmJaunes.indexOf(pid);
+      if(idx>=0)mmJaunes.splice(idx,1);else mmJaunes.push(pid);
+    });
+  });
+  document.querySelectorAll('.mm-ctag-r').forEach(function(el){
+    el.addEventListener('click',function(){
+      el.classList.toggle('ctag-off');el.classList.toggle('ctag-r');
+      var pid=parseInt(el.getAttribute('data-pid'));
+      var idx=mmRouges.indexOf(pid);
+      if(idx>=0)mmRouges.splice(idx,1);else mmRouges.push(pid);
+    });
+  });
+
+  modal.classList.add('show');
+}
+
+function revertMatchStats(m){
+  // Annule les stats d'un match déjà enregistré
+  (m.buts||[]).forEach(function(b){var p=getPlayer(b.pid);if(p)p.buts=Math.max(0,p.buts-b.nb);});
+  (m.passes||[]).forEach(function(b){var p=getPlayer(b.pid);if(p)p.passes=Math.max(0,p.passes-b.nb);});
+  (m.jaunes||[]).forEach(function(j){var p=getPlayer(j.pid);if(p)p.jaunes=Math.max(0,p.jaunes-1);});
+  (m.rouges||[]).forEach(function(r){var p=getPlayer(r.pid);if(p)p.rouges=Math.max(0,p.rouges-1);});
+  (m.joueurs||[]).forEach(function(id){var p=getPlayer(id);if(p)p.matchs_joues=Math.max(0,(p.matchs_joues||1)-1);});
+}
+
+function applyMatchStats(m){
+  (m.buts||[]).forEach(function(b){var p=getPlayer(b.pid);if(p)p.buts+=b.nb;});
+  (m.passes||[]).forEach(function(b){var p=getPlayer(b.pid);if(p)p.passes+=b.nb;});
+  (m.jaunes||[]).forEach(function(j){var p=getPlayer(j.pid);if(p){p.jaunes++;if(p.jaunes>=3)p.statut='susp';}});
+  (m.rouges||[]).forEach(function(r){var p=getPlayer(r.pid);if(p){p.rouges++;p.statut='susp';}});
+  (m.joueurs||[]).forEach(function(id){var p=getPlayer(id);if(p)p.matchs_joues=(p.matchs_joues||0)+1;});
+}
+
+function saveMatchModal(){
+  var m=matchs.find(function(x){return x.id===mmCurrentId;});
+  if(!m)return;
+
+  // Revert old stats if was joue
+  if(m.statut==='joue') revertMatchStats(m);
+
+  // Update match data
+  m.adv=document.getElementById('mm-adv').value.trim()||m.adv;
+  m.date=document.getElementById('mm-date').value||m.date;
+  m.heure=document.getElementById('mm-heure').value;
+  m.type=document.getElementById('mm-type').value;
+  m.comp=document.getElementById('mm-comp').value;
+
+  // Joueurs
+  m.joueurs=[];
+  document.querySelectorAll('#mm-players-grid .mm-player-tag:not(.ctag-off)').forEach(function(el){
+    m.joueurs.push(parseInt(el.getAttribute('data-pid')));
+  });
+
+  // Buts
+  m.buts=[];
+  document.querySelectorAll('#mm-buts-list .but-row').forEach(function(r){
+    m.buts.push({pid:parseInt(r.querySelector('select').value),nb:parseInt(r.querySelector('.but-num span').textContent)});
+  });
+  // Passes
+  m.passes=[];
+  document.querySelectorAll('#mm-passes-list .but-row').forEach(function(r){
+    m.passes.push({pid:parseInt(r.querySelector('select').value),nb:parseInt(r.querySelector('.but-num span').textContent)});
+  });
+
+  m.jaunes=mmJaunes.map(function(id){return{pid:id};});
+  m.rouges=mmRouges.map(function(id){return{pid:id};});
+
+  // Score
+  if(mmScore[0]!=null&&mmScore[1]!=null){
+    m.scoreNous=mmScore[0];m.scoreAdv=mmScore[1];m.statut='joue';
+    applyMatchStats(m);
+  } else {
+    m.scoreNous=null;m.scoreAdv=null;m.statut='avenir';
+  }
+
+  save('astrw_matchs',matchs);save('astrw_players',players);
+  document.getElementById('match-modal').classList.remove('show');
+  renderCalListe();renderHome();
+  renderButeurs();renderPasseurs();renderMatchs();renderCartons();
+  toast('✅ Match mis à jour !');
+}
+
 
 /* ---- NOTES ---- */
 function renderNotes(){
@@ -910,6 +1147,46 @@ function init(){
   renderCalListe();
   renderNotes();
 }
+
+
+  // Score buttons for match modal
+  var mmScoreLocal=[null,null];
+  function initMMScore(){
+    document.getElementById('mm-sm0').addEventListener('click',function(){
+      if(mmScore[0]===null)mmScore[0]=0; else mmScore[0]=Math.max(0,mmScore[0]-1);
+      document.getElementById('mm-sn0').textContent=mmScore[0];
+    });
+    document.getElementById('mm-sp0').addEventListener('click',function(){
+      if(mmScore[0]===null)mmScore[0]=0; else mmScore[0]++;
+      document.getElementById('mm-sn0').textContent=mmScore[0];
+    });
+    document.getElementById('mm-sm1').addEventListener('click',function(){
+      if(mmScore[1]===null)mmScore[1]=0; else mmScore[1]=Math.max(0,mmScore[1]-1);
+      document.getElementById('mm-sn1').textContent=mmScore[1];
+    });
+    document.getElementById('mm-sp1').addEventListener('click',function(){
+      if(mmScore[1]===null)mmScore[1]=0; else mmScore[1]++;
+      document.getElementById('mm-sn1').textContent=mmScore[1];
+    });
+    document.getElementById('mm-reset-score').addEventListener('click',function(){
+      mmScore=[null,null];
+      document.getElementById('mm-sn0').textContent='—';
+      document.getElementById('mm-sn1').textContent='—';
+    });
+    document.getElementById('mm-add-but').addEventListener('click',function(){addButRowMM('mm-buts-list');});
+    document.getElementById('mm-add-passe').addEventListener('click',function(){addButRowMM('mm-passes-list');});
+    document.getElementById('mm-save').addEventListener('click',saveMatchModal);
+    document.getElementById('mm-delete').addEventListener('click',function(){
+      if(!confirm('Supprimer ce match ?'))return;
+      var m=matchs.find(function(x){return x.id===mmCurrentId;});
+      if(m&&m.statut==='joue') revertMatchStats(m);
+      matchs=matchs.filter(function(x){return x.id!==mmCurrentId;});
+      save('astrw_matchs',matchs);save('astrw_players',players);
+      document.getElementById('match-modal').classList.remove('show');
+      renderCalListe();renderHome();toast('Match supprimé');
+    });
+  }
+  initMMScore();
 
 window.addEventListener('DOMContentLoaded', init);
 
