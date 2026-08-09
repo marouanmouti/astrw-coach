@@ -92,32 +92,35 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 .tag-bless{background:var(--orange-l);color:var(--orange);}
 .tag-susp{background:var(--red-l);color:var(--red);}
 
-/* NOUVELLE COMPO */
-.compo-wrap{background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:10px;}
-.compo-topbar{background:var(--blue);padding:10px 14px;display:flex;align-items:center;gap:10px;}
-.compo-formation-label{font-size:15px;font-weight:700;color:#fff;flex:1;}
-.compo-mode-toggle{display:flex;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;}
-.compo-mode-btn{padding:5px 12px;font-size:11px;font-weight:600;color:rgba(255,255,255,.7);cursor:pointer;border:none;background:none;}
-.compo-mode-btn.active{background:#fff;color:var(--blue);border-radius:20px;}
-.terrain{background:linear-gradient(180deg,#1e7a1e,#145214);position:relative;aspect-ratio:0.65;overflow:hidden;}
-.terrain-line-outer{position:absolute;inset:8px;border:1.5px solid rgba(255,255,255,.2);border-radius:4px;pointer-events:none;}
-.terrain-line-mid{position:absolute;left:8px;right:8px;top:50%;height:1.5px;background:rgba(255,255,255,.2);pointer-events:none;}
-.terrain-circle{position:absolute;left:50%;top:50%;width:70px;height:70px;margin:-35px 0 0 -35px;border:1.5px solid rgba(255,255,255,.2);border-radius:50%;pointer-events:none;}
-.terrain-grid{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-around;padding:12px 6px;}
-.terrain-row{display:flex;justify-content:space-around;align-items:center;}
-.tslot{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:54px;}
-.tslot-circle{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:rgba(255,255,255,.1);color:#fff;transition:all .15s;position:relative;}
-.tslot-circle.has-player{background:rgba(255,255,255,.92);color:#1a1a2e;border-color:#fff;}
-.tslot-circle.drag-over{border-color:#ffd700;border-width:3px;background:rgba(255,215,0,.2);}
-.tslot-circle.selected{border-color:#ffd700;border-width:3px;}
-.tslot-name{font-size:8px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;max-width:54px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.5);}
-.tslot-poste{font-size:7px;color:rgba(255,255,255,.55);text-align:center;}
-.compo-bench{padding:10px 12px;}
-.bench-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
-.bench-players{display:flex;flex-wrap:wrap;gap:6px;}
-.bench-player{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:20px;background:#f5f6fa;border:1px solid var(--border);cursor:grab;font-size:12px;font-weight:500;color:var(--text);user-select:none;-webkit-user-select:none;}
-.bench-player.dragging{opacity:.4;}
-.bench-player .bp-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0;}
+/* COMPO */
+.compo-topbar{background:#1a4fa0;padding:10px 14px;border-radius:12px 12px 0 0;display:flex;align-items:center;gap:10px;}
+.compo-flabel{font-size:15px;font-weight:600;color:#fff;flex:1;}
+.compo-flabel span{display:block;font-size:10px;font-weight:400;opacity:.65;margin-top:1px;}
+.mode-toggle{display:flex;background:rgba(255,255,255,.15);border-radius:20px;padding:2px;}
+.mode-btn{padding:4px 11px;font-size:11px;font-weight:600;color:rgba(255,255,255,.65);cursor:pointer;border:none;background:none;border-radius:20px;}
+.mode-btn.active{background:#fff;color:#1a4fa0;}
+.terrain-wrap{background:linear-gradient(180deg,#1e8c1e,#135213);position:relative;}
+.t-line-outer{position:absolute;inset:8px;border:1.5px solid rgba(255,255,255,.18);border-radius:4px;pointer-events:none;}
+.t-line-mid{position:absolute;left:8px;right:8px;top:50%;height:1.5px;background:rgba(255,255,255,.18);pointer-events:none;}
+.t-circle{position:absolute;left:50%;top:50%;width:68px;height:68px;margin:-34px 0 0 -34px;border:1.5px solid rgba(255,255,255,.18);border-radius:50%;pointer-events:none;}
+.t-grid{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-evenly;padding:10px 4px;}
+.t-row{display:flex;justify-content:space-around;align-items:center;}
+.tslot{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:52px;}
+.tslot-av{width:44px;height:44px;border-radius:50%;border:2px dashed rgba(255,255,255,.45);background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:rgba(255,255,255,.8);transition:border-color .15s,background .15s;}
+.tslot-av.filled{border-style:solid;border-color:rgba(255,255,255,.9);}
+.tslot-av.picking{border-color:#ffd700;border-style:solid;background:rgba(255,215,0,.25);animation:pulse-slot .8s infinite alternate;}
+@keyframes pulse-slot{from{border-color:#ffd700;}to{border-color:#fff8b0;}}
+.tslot-name{font-size:8px;color:rgba(255,255,255,.85);font-weight:600;text-align:center;max-width:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+.tslot-pt{font-size:7px;color:rgba(255,255,255,.5);text-align:center;}
+.compo-picker{background:#fff;border-top:0.5px solid #dde3f0;padding:10px 12px;border-radius:0 0 12px 12px;}
+.picker-label{font-size:11px;font-weight:600;color:#1a4fa0;margin-bottom:8px;}
+.picker-hint{font-size:11px;color:#6b7280;margin-bottom:0;}
+.picker-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.picker-player{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:20px;background:#f5f6fa;border:1px solid #dde3f0;cursor:pointer;font-size:12px;font-weight:500;color:#1a1a2e;transition:background .1s;}
+.picker-player:active{background:#e8f0fb;}
+.picker-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0;}
+.compo-actions{display:flex;gap:8px;padding:10px 0 0;}
+
 
 .tag-absent{background:#f3e5f5;color:#7b1fa2;}
 .tag-mute{background:#e3f2fd;color:#0277bd;}
@@ -411,44 +414,38 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 
     <!-- COMPO -->
     <div class="page" id="pg-compo">
-      <div class="compo-wrap">
+      <div style="background:#fff;border-radius:12px;border:0.5px solid #dde3f0;overflow:hidden;margin-bottom:10px;">
         <div class="compo-topbar">
-          <div>
-            <div class="compo-formation-label" id="cp-formation-label">4-3-3</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:1px">Glisse un joueur sur un poste</div>
-          </div>
-          <div class="compo-mode-toggle">
-            <button class="compo-mode-btn active" id="cp-btn-off" data-mode="off">⚽ ATT</button>
-            <button class="compo-mode-btn" id="cp-btn-def" data-mode="def">🛡️ DEF</button>
+          <div class="compo-flabel" id="cp-label">4-3-3 <span>Tape un slot vide pour choisir un joueur</span></div>
+          <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="off">⚽</button>
+            <button class="mode-btn" data-mode="def">🛡️</button>
           </div>
         </div>
-        <div class="terrain" id="cp-terrain">
-          <div class="terrain-line-outer"></div>
-          <div class="terrain-line-mid"></div>
-          <div class="terrain-circle"></div>
-          <div class="terrain-grid" id="cp-grid"></div>
+        <div class="terrain-wrap" id="cp-terrain" style="aspect-ratio:0.62;position:relative;">
+          <div class="t-line-outer"></div>
+          <div class="t-line-mid"></div>
+          <div class="t-circle"></div>
+          <div class="t-grid" id="cp-grid"></div>
         </div>
-        <div class="compo-bench">
-          <div class="bench-title">Remplaçants / Disponibles</div>
-          <div class="bench-players" id="cp-bench"></div>
+        <div class="compo-picker" id="cp-picker">
+          <div class="picker-hint">Tape un slot sur le terrain pour choisir un joueur</div>
         </div>
       </div>
-      <div style="display:flex;gap:8px">
-        <div class="fg" style="flex:1;margin:0">
-          <select id="cp-formation" style="border:1px solid var(--border);border-radius:10px;padding:10px;font-size:13px;width:100%;appearance:none;">
-            <option value="433">4-3-3</option>
-            <option value="442">4-4-2</option>
-            <option value="4231">4-2-3-1</option>
-            <option value="352">3-5-2</option>
-            <option value="532">5-3-2</option>
-            <option value="451">4-5-1</option>
-          </select>
-        </div>
-        <button class="btn btn-p" id="btn-apply-formation" style="margin-top:0;width:auto;padding:10px 14px;font-size:13px">Appliquer</button>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <select id="cp-formation" style="flex:1;border:0.5px solid #dde3f0;border-radius:10px;padding:10px 12px;font-size:13px;appearance:none;background:#fff;color:#1a1a2e;">
+          <option value="433">4-3-3</option>
+          <option value="442">4-4-2</option>
+          <option value="4231">4-2-3-1</option>
+          <option value="352">3-5-2</option>
+          <option value="532">5-3-2</option>
+          <option value="451">4-5-1</option>
+        </select>
+        <button class="btn btn-p" id="btn-apply-formation" style="margin-top:0;width:auto;padding:10px 16px;font-size:13px;">Appliquer</button>
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-s" id="btn-reset-compo" style="margin-top:0;flex:1">🔄 Reset</button>
-        <button class="btn btn-s" id="btn-save-compo" style="margin-top:0;flex:1">💾 Sauvegarder</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-s" id="btn-reset-compo" style="margin-top:0;flex:1;">🔄 Reset</button>
+        <button class="btn btn-s" id="btn-save-compo" style="margin-top:0;flex:1;">💾 Sauvegarder</button>
       </div>
     </div>
 
@@ -721,7 +718,7 @@ function renderPage(name) {
   if (name === 'effectif') { renderListe(); renderDispo(); }
   if (name === 'cal')      renderCalListe();
   if (name === 'notes')    renderNotes();
-  if (name === 'compo')    { if(!compoState.slots.length)initCompo(false); selectedBenchPlayer=null; renderCompo(); }
+  if (name === 'compo')    { if(!compoState.slots.length)initCompo(false); pickingSlotIdx=null; renderCompo(); }
 }
 
 function initPills(pillsId) {
@@ -808,222 +805,202 @@ function renderDispo() {
 // ── COMPO ──
 var compoState = {
   formation: '433',
-  mode: 'off', // off=offensif (attaque en haut), def=défensif (défense en haut)
-  slots: []    // [{poste, playerId}]
+  mode: 'off',
+  slots: []
 };
 
 var FORMATIONS = {
   '433': {
-    rows: [[0],[1,2,3,4],[5,6,7],[8,9,10]],
-    slots: [
-      {p:'GB'},
-      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
-      {p:'MG'},{p:'MC'},{p:'MD'},
-      {p:'BU'},{p:'BU'},{p:'BU'}
-    ]
+    rows:[[0],[1,2,3,4],[5,6,7],[8,9,10]],
+    slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'BU'},{p:'BU'},{p:'BU'}]
   },
   '442': {
-    rows: [[0],[1,2,3,4],[5,6,7,8],[9,10]],
-    slots: [
-      {p:'GB'},
-      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
-      {p:'MG'},{p:'MC'},{p:'MC'},{p:'MD'},
-      {p:'BU'},{p:'BU'}
-    ]
+    rows:[[0],[1,2,3,4],[5,6,7,8],[9,10]],
+    slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MG'},{p:'MC'},{p:'MC'},{p:'MD'},{p:'BU'},{p:'BU'}]
   },
   '4231': {
-    rows: [[0],[1,2,3,4],[5,6],[7,8,9],[10]],
-    slots: [
-      {p:'GB'},
-      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
-      {p:'MC'},{p:'MC'},
-      {p:'MG'},{p:'MC'},{p:'MD'},
-      {p:'BU'}
-    ]
+    rows:[[0],[1,2,3,4],[5,6],[7,8,9],[10]],
+    slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'MD'},{p:'MC'},{p:'BU'}]
   },
   '352': {
-    rows: [[0],[1,2,3],[4,5,6,7,8],[9,10]],
-    slots: [
-      {p:'GB'},
-      {p:'DC'},{p:'DC'},{p:'DC'},
-      {p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'DD'},
-      {p:'BU'},{p:'BU'}
-    ]
+    rows:[[0],[1,2,3],[4,5,6,7,8],[9,10]],
+    slots:[{p:'GB'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'DD'},{p:'BU'},{p:'BU'}]
   },
   '532': {
-    rows: [[0],[1,2,3,4,5],[6,7,8],[9,10]],
-    slots: [
-      {p:'GB'},
-      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'DG'},
-      {p:'MG'},{p:'MC'},{p:'MD'},
-      {p:'BU'},{p:'BU'}
-    ]
+    rows:[[0],[1,2,3,4,5],[6,7,8],[9,10]],
+    slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'BU'},{p:'BU'}]
   },
   '451': {
-    rows: [[0],[1,2,3,4],[5,6,7,8,9],[10]],
-    slots: [
-      {p:'GB'},
-      {p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},
-      {p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'DD'},
-      {p:'BU'}
-    ]
+    rows:[[0],[1,2,3,4],[5,6,7,8,9],[10]],
+    slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MG'},{p:'MC'},{p:'MC'},{p:'MD'},{p:'DD'},{p:'BU'}]
   }
 };
 
-var draggedPlayerId = null; // id du joueur en cours de drag (depuis bench)
-var draggedSlotIdx  = null; // index du slot en cours de drag (depuis terrain)
+// Slot en cours de sélection (null = aucun)
+var pickingSlotIdx = null;
 
 function initCompo(keepPlayers) {
   var f = FORMATIONS[compoState.formation] || FORMATIONS['433'];
   if (!keepPlayers || compoState.slots.length !== f.slots.length) {
-    compoState.slots = f.slots.map(function(s){ return {poste:s.p, playerId:null}; });
+    compoState.slots = f.slots.map(function(s) { return {poste:s.p, playerId:null}; });
+  } else {
+    compoState.slots = f.slots.map(function(s, i) {
+      return {poste:s.p, playerId:compoState.slots[i].playerId};
+    });
   }
+  pickingSlotIdx = null;
 }
 
 function renderCompo() {
   var f    = FORMATIONS[compoState.formation] || FORMATIONS['433'];
-  // Toujours attaquants en haut, gardien en bas
-  var rows = f.rows.slice().reverse();
+  var rows = f.rows.slice().reverse(); // toujours : attaquants en haut, GB en bas
 
-  // Terrain
   var grid = document.getElementById('cp-grid');
   if (!grid) return;
   grid.innerHTML = '';
 
   rows.forEach(function(rowSlots) {
-    var row = document.createElement('div');
-    row.className = 'terrain-row';
+    var rowEl = document.createElement('div');
+    rowEl.className = 't-row';
+
     rowSlots.forEach(function(si) {
       var slot   = compoState.slots[si];
       var player = slot.playerId ? getPlayer(slot.playerId) : null;
-      var el = document.createElement('div');
-      el.className = 'tslot';
-      el.setAttribute('data-slot', si);
+      var isPicking = pickingSlotIdx === si;
 
-      var circleStyle = '';
-      var circleText  = slot.poste;
-      var circleClass = 'tslot-circle';
+      var slotEl = document.createElement('div');
+      slotEl.className = 'tslot';
+
+      // Avatar
+      var avEl = document.createElement('div');
+      avEl.className = 'tslot-av' + (player ? ' filled' : '') + (isPicking ? ' picking' : '');
       if (player) {
-        circleClass += ' has-player';
-        circleStyle  = 'background:' + avColor(player.id) + ';color:#fff;border-color:' + avColor(player.id) + ';';
-        circleText   = initials(player.nom);
+        avEl.style.background = avColor(player.id);
+        avEl.style.color = '#fff';
+        avEl.textContent = initials(player.nom);
+      } else {
+        avEl.textContent = slot.poste;
       }
 
-      el.innerHTML =
-        '<div class="' + circleClass + '" style="' + circleStyle + '" data-slot="' + si + '">' + circleText + '</div>' +
-        '<div class="tslot-name">' + (player ? player.nom.split(' ')[0] : '—') + '</div>' +
-        '<div class="tslot-poste">' + slot.poste + '</div>';
+      // Nom
+      var nameEl = document.createElement('div');
+      nameEl.className = 'tslot-name';
+      nameEl.textContent = player ? player.nom.split(' ')[0] : '—';
 
-      // Touch drag & drop
-      var circle = el.querySelector('.tslot-circle');
+      // Poste
+      var ptEl = document.createElement('div');
+      ptEl.className = 'tslot-pt';
+      ptEl.textContent = slot.poste;
 
-      // Tap sur slot : si joueur dessus → le retirer ; sinon → rien (drop via bench tap)
-      circle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (slot.playerId) {
-          // Retirer le joueur du slot
-          slot.playerId = null;
+      slotEl.appendChild(avEl);
+      slotEl.appendChild(nameEl);
+      slotEl.appendChild(ptEl);
+
+      // Click sur slot
+      slotEl.addEventListener('click', function() {
+        if (isPicking) {
+          // Deselect
+          pickingSlotIdx = null;
           renderCompo();
-        } else if (selectedBenchPlayer !== null) {
-          // Placer le joueur sélectionné depuis le bench
-          compoState.slots[si].playerId = selectedBenchPlayer;
-          selectedBenchPlayer = null;
+        } else if (player) {
+          // Retirer le joueur : demander confirmation via picker
+          pickingSlotIdx = si;
+          renderCompo();
+        } else {
+          // Slot vide : ouvrir picker
+          pickingSlotIdx = si;
           renderCompo();
         }
       });
 
-      // Drag depuis terrain (déplacer un joueur d'un slot à l'autre)
-      circle.addEventListener('dragstart', function(e) {
-        if (!slot.playerId) { e.preventDefault(); return; }
-        draggedSlotIdx  = si;
-        draggedPlayerId = null;
-        e.dataTransfer.effectAllowed = 'move';
-      });
-      circle.setAttribute('draggable', 'true');
-
-      el.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        circle.classList.add('drag-over');
-      });
-      el.addEventListener('dragleave', function() {
-        circle.classList.remove('drag-over');
-      });
-      el.addEventListener('drop', function(e) {
-        e.preventDefault();
-        circle.classList.remove('drag-over');
-        if (draggedPlayerId !== null) {
-          // Depuis bench
-          var prevSlot = compoState.slots.find(function(s){return s.playerId===draggedPlayerId;});
-          if (prevSlot) prevSlot.playerId = null;
-          compoState.slots[si].playerId = draggedPlayerId;
-        } else if (draggedSlotIdx !== null && draggedSlotIdx !== si) {
-          // Échange de slots
-          var tmp = compoState.slots[si].playerId;
-          compoState.slots[si].playerId = compoState.slots[draggedSlotIdx].playerId;
-          compoState.slots[draggedSlotIdx].playerId = tmp;
-        }
-        draggedPlayerId = null; draggedSlotIdx = null;
-        renderCompo();
-      });
-
-      grid.appendChild(el);
+      rowEl.appendChild(slotEl);
     });
+
+    grid.appendChild(rowEl);
   });
 
-  // Bench — joueurs dispos non placés
-  var bench = document.getElementById('cp-bench');
-  if (!bench) return;
-  bench.innerHTML = '';
-  var assigned = compoState.slots.map(function(s){return s.playerId;}).filter(Boolean);
-  var dispos   = players.filter(function(p){return p.statut==='ok';});
-  var free     = dispos.filter(function(p){return assigned.indexOf(p.id)<0;});
-
-  free.forEach(function(p) {
-    var tag = document.createElement('div');
-    tag.className = 'bench-player' + (selectedBenchPlayer===p.id?' selected':'');
-    tag.setAttribute('draggable','true');
-    tag.setAttribute('data-pid', p.id);
-    var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'?';
-    tag.innerHTML = '<div class="bp-av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
-      '<span>'+p.nom.split(' ')[0]+'</span>' +
-      '<span style="font-size:9px;opacity:.5;margin-left:2px">'+mainPt+'</span>';
-
-    // Click pour sélectionner (mode tap)
-    tag.addEventListener('click', function() {
-      selectedBenchPlayer = selectedBenchPlayer===p.id ? null : p.id;
-      renderCompo();
-    });
-
-    // Drag depuis bench
-    tag.addEventListener('dragstart', function(e) {
-      draggedPlayerId = p.id;
-      draggedSlotIdx  = null;
-      tag.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    tag.addEventListener('dragend', function() {
-      tag.classList.remove('dragging');
-      draggedPlayerId = null;
-    });
-
-    bench.appendChild(tag);
-  });
-
-  if (!free.length) {
-    bench.innerHTML = '<div style="font-size:11px;color:var(--muted)">Tous les joueurs dispo sont placés ✅</div>';
+  // Mettre à jour le label
+  var lbl = document.getElementById('cp-label');
+  if (lbl) {
+    var hint = pickingSlotIdx !== null
+      ? 'Choisis un joueur pour le poste ' + compoState.slots[pickingSlotIdx].poste
+      : 'Tape un slot vide pour choisir un joueur';
+    lbl.innerHTML = compoState.formation + ' <span>' + hint + '</span>';
   }
 
-  // Update label formation
-  var lbl = document.getElementById('cp-formation-label');
-  if (lbl) lbl.textContent = compoState.formation + ' · ' + (compoState.mode==='off'?'⚽ Offensif':'🛡️ Défensif');
+  // Mettre à jour le picker
+  renderPicker();
 }
 
-var selectedBenchPlayer = null;
+function renderPicker() {
+  var picker = document.getElementById('cp-picker');
+  if (!picker) return;
+
+  if (pickingSlotIdx === null) {
+    // Afficher résumé : joueurs placés vs total
+    var placed = compoState.slots.filter(function(s){return s.playerId;}).length;
+    picker.innerHTML = '<div class="picker-hint">'+placed+'/'+compoState.slots.length+' joueurs placés · Tape un slot pour modifier</div>';
+    return;
+  }
+
+  var slot = compoState.slots[pickingSlotIdx];
+  var assigned = compoState.slots.map(function(s){return s.playerId;}).filter(Boolean);
+  var current = slot.playerId;
+
+  // Joueurs dispos = statut ok + pas déjà placés (sauf le joueur actuel du slot)
+  var available = players.filter(function(p) {
+    return p.statut === 'ok' && (assigned.indexOf(p.id) < 0 || p.id === current);
+  }).sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
+
+  var h = '<div class="picker-label">Poste ' + slot.poste + ' — Choisis un joueur :</div>';
+  h += '<div class="picker-grid">';
+
+  // Option : retirer le joueur si slot occupé
+  if (current) {
+    h += '<div class="picker-player" style="background:#fce4ec;border-color:#f5c6cb;color:#c62828;" data-picker-remove="1">✕ Retirer</div>';
+  }
+
+  if (!available.length) {
+    h += '<div style="font-size:11px;color:#6b7280">Aucun joueur disponible</div>';
+  }
+
+  available.forEach(function(p) {
+    var isCurrentPlayer = p.id === current;
+    var mainPt = (p.postes_main && p.postes_main[0]) || p.poste || '';
+    var style = isCurrentPlayer ? 'background:#e8f0fb;border-color:#1a4fa0;' : '';
+    h += '<div class="picker-player" style="'+style+'" data-picker-pid="'+p.id+'">' +
+      '<div class="picker-av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
+      p.nom.split(' ')[0] + ' <span style="font-size:9px;opacity:.5;margin-left:2px">'+mainPt+'</span>' +
+      '</div>';
+  });
+
+  h += '</div>';
+  picker.innerHTML = h;
+
+  // Listeners sur les joueurs du picker
+  picker.querySelectorAll('[data-picker-pid]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var pid = parseInt(el.getAttribute('data-picker-pid'));
+      // Retirer le joueur de son ancien slot si nécessaire
+      compoState.slots.forEach(function(s) { if (s.playerId === pid) s.playerId = null; });
+      compoState.slots[pickingSlotIdx].playerId = pid;
+      pickingSlotIdx = null;
+      renderCompo();
+    });
+  });
+
+  picker.querySelectorAll('[data-picker-remove]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      compoState.slots[pickingSlotIdx].playerId = null;
+      pickingSlotIdx = null;
+      renderCompo();
+    });
+  });
+}
 
 function applyFormation() {
   compoState.formation = document.getElementById('cp-formation').value;
   initCompo(false);
-  selectedBenchPlayer = null;
   renderCompo();
 }
 
@@ -1034,22 +1011,17 @@ function saveCompo() {
 
 function resetCompo() {
   initCompo(false);
-  selectedBenchPlayer = null;
   renderCompo();
   toast('🔄 Réinitialisé');
 }
 
 function toggleCompoMode(mode) {
   compoState.mode = mode;
-  document.querySelectorAll('.compo-mode-btn').forEach(function(b){
-    b.classList.toggle('active', b.getAttribute('data-mode')===mode);
+  document.querySelectorAll('.mode-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-mode') === mode);
   });
   renderCompo();
 }
-
-// Touch drag & drop pour mobile (simulé via tap)
-// Sur mobile : tap sur bench player → sélectionne ; tap sur slot vide → place ; tap sur slot plein → retire
-// C'est géré dans les listeners click ci-dessus
 
 
 // ── HOME ──
@@ -1733,7 +1705,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btn-save-compo').addEventListener('click', saveCompo);
   document.getElementById('btn-reset-compo').addEventListener('click', resetCompo);
   // Mode toggle offensif/défensif
-  document.querySelectorAll('.compo-mode-btn').forEach(function(btn){
+  document.querySelectorAll('.mode-btn').forEach(function(btn){
     btn.addEventListener('click', function(){ toggleCompoMode(btn.getAttribute('data-mode')); });
   });
 
