@@ -270,14 +270,9 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
       <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border)">
         <div class="sec">⚙️ Paramètres</div>
         <div class="card">
-          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">Forcer la mise à jour de l'app</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Si l'app n'affiche pas les dernières modifications, appuie ici pour recharger les données sans perdre tes joueurs.</div>
-          <button class="btn btn-secondary" id="btn-force-update" style="margin-top:0">🔄 Mettre à jour l'app</button>
-        </div>
-        <div class="card" style="margin-top:8px">
-          <div style="font-size:13px;font-weight:500;color:var(--red);margin-bottom:4px">Réinitialisation complète</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Efface toutes les données (joueurs, matchs, notes). Action irréversible.</div>
-          <button class="btn" style="background:var(--red-bg);color:var(--red);margin-top:0" id="btn-hard-reset">🗑️ Tout réinitialiser</button>
+          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">Mettre à jour l'app</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Si l'app n'affiche pas les dernières modifications, appuie ici. Tes données ne sont jamais effacées.</div>
+          <button class="btn btn-secondary" id="btn-force-update" style="margin-top:0">🔄 Recharger l'app</button>
         </div>
       </div>
     </div>
@@ -391,14 +386,7 @@ var DEF_NOTES = [];
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
-/* Reset si ancienne version (données fictives) */
-var DATA_VERSION='v7_matchmodal';
-if(localStorage.getItem('astrw_version')!==DATA_VERSION){
-  localStorage.removeItem('astrw_matchs');
-  localStorage.removeItem('astrw_players');
-  localStorage.removeItem('astrw_notes');
-  localStorage.setItem('astrw_version',DATA_VERSION);
-}
+/* Pas de reset automatique — utilise le bouton dans Notes pour mettre à jour */
 
 var players = load('astrw_players', DEF_PLAYERS);
 var matchs  = load('astrw_matchs',  DEF_MATCHS);
@@ -1116,17 +1104,11 @@ function init(){
     toast('✅ Match ajouté !');renderCalListe();
   });
   document.getElementById('btn-force-update').addEventListener('click',function(){
-    // Clear version flag only → forces data reload on next page load
-    localStorage.removeItem('astrw_version');
-    toast('🔄 Mise à jour en cours...');
-    setTimeout(function(){ location.reload(); }, 800);
+    // Recharge la page uniquement — ne touche JAMAIS aux données
+    toast('🔄 Rechargement...');
+    setTimeout(function(){ location.reload(); }, 600);
   });
-  document.getElementById('btn-hard-reset').addEventListener('click',function(){
-    if(!confirm('Supprimer TOUTES les données ? (joueurs, matchs, notes)')) return;
-    localStorage.clear();
-    toast('✅ Réinitialisé !');
-    setTimeout(function(){ location.reload(); }, 800);
-  });
+
   document.getElementById('btn-add-note').addEventListener('click',function(){
     var txt=document.getElementById('note-input').value.trim();
     if(!txt){toast('⚠️ Écris quelque chose');return;}
