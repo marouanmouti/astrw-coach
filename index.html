@@ -432,20 +432,35 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
           <div class="picker-hint">Tape un slot sur le terrain pour choisir un joueur</div>
         </div>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <select id="cp-formation" style="flex:1;border:0.5px solid #dde3f0;border-radius:10px;padding:10px 12px;font-size:13px;appearance:none;background:#fff;color:#1a1a2e;">
-          <option value="433">4-3-3</option>
-          <option value="442">4-4-2</option>
-          <option value="4231">4-2-3-1</option>
-          <option value="352">3-5-2</option>
-          <option value="532">5-3-2</option>
-          <option value="451">4-5-1</option>
-        </select>
-        <button class="btn btn-p" id="btn-apply-formation" style="margin-top:0;width:auto;padding:10px 16px;font-size:13px;">Appliquer</button>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-s" id="btn-reset-compo" style="margin-top:0;flex:1;">🔄 Reset</button>
-        <button class="btn btn-s" id="btn-save-compo" style="margin-top:0;flex:1;">💾 Sauvegarder</button>
+      <div style="background:#fff;border-radius:12px;border:0.5px solid #dde3f0;padding:12px;margin-bottom:10px;">
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <div style="flex:1;">
+            <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">⚽ Formation offensive</div>
+            <select id="cp-formation-off" style="width:100%;border:0.5px solid #dde3f0;border-radius:10px;padding:9px 12px;font-size:13px;appearance:none;background:#e8f0fb;color:#1a4fa0;font-weight:600;">
+              <option value="433">4-3-3</option>
+              <option value="442">4-4-2</option>
+              <option value="4231">4-2-3-1</option>
+              <option value="352">3-5-2</option>
+              <option value="532">5-3-2</option>
+              <option value="451">4-5-1</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">🛡️ Formation défensive</div>
+            <select id="cp-formation-def" style="width:100%;border:0.5px solid #dde3f0;border-radius:10px;padding:9px 12px;font-size:13px;appearance:none;background:#f5f6fa;color:#1a1a2e;font-weight:600;">
+              <option value="442">4-4-2</option>
+              <option value="433">4-3-3</option>
+              <option value="4231">4-2-3-1</option>
+              <option value="352">3-5-2</option>
+              <option value="532">5-3-2</option>
+              <option value="451">4-5-1</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-s" id="btn-reset-compo" style="margin-top:0;flex:1;">🔄 Reset</button>
+          <button class="btn btn-s" id="btn-save-compo" style="margin-top:0;flex:1;">💾 Sauvegarder</button>
+        </div>
       </div>
     </div>
 
@@ -804,9 +819,11 @@ function renderDispo() {
 
 // ── COMPO ──
 var compoState = {
-  formation: '433',
+  formationOff: '433',
+  formationDef: '442',
   mode: 'off',
-  slots: []
+  slotsOff: [],
+  slotsDef: []
 };
 
 var FORMATIONS = {
@@ -839,21 +856,34 @@ var FORMATIONS = {
 // Slot en cours de sélection (null = aucun)
 var pickingSlotIdx = null;
 
-function initCompo(keepPlayers) {
-  var f = FORMATIONS[compoState.formation] || FORMATIONS['433'];
-  if (!keepPlayers || compoState.slots.length !== f.slots.length) {
-    compoState.slots = f.slots.map(function(s) { return {poste:s.p, playerId:null}; });
-  } else {
-    compoState.slots = f.slots.map(function(s, i) {
-      return {poste:s.p, playerId:compoState.slots[i].playerId};
-    });
+function initCompoSlots(formationKey, existingSlots) {
+  var f = FORMATIONS[formationKey] || FORMATIONS['433'];
+  if (!existingSlots || existingSlots.length !== f.slots.length) {
+    return f.slots.map(function(s) { return {poste:s.p, playerId:null}; });
   }
+  return f.slots.map(function(s, i) {
+    return {poste:s.p, playerId:existingSlots[i] ? existingSlots[i].playerId : null};
+  });
+}
+
+function initCompo(keepPlayers) {
+  compoState.slotsOff = initCompoSlots(compoState.formationOff, keepPlayers ? compoState.slotsOff : null);
+  compoState.slotsDef = initCompoSlots(compoState.formationDef, keepPlayers ? compoState.slotsDef : null);
   pickingSlotIdx = null;
 }
 
+function currentSlots() {
+  return compoState.mode === 'off' ? compoState.slotsOff : compoState.slotsDef;
+}
+function currentFormation() {
+  return compoState.mode === 'off' ? compoState.formationOff : compoState.formationDef;
+}
+
 function renderCompo() {
-  var f    = FORMATIONS[compoState.formation] || FORMATIONS['433'];
-  var rows = f.rows.slice().reverse(); // toujours : attaquants en haut, GB en bas
+  var fKey = currentFormation();
+  var f    = FORMATIONS[fKey] || FORMATIONS['433'];
+  var rows = f.rows.slice().reverse(); // attaquants en haut, GB en bas
+  var slots = currentSlots();
 
   var grid = document.getElementById('cp-grid');
   if (!grid) return;
@@ -864,7 +894,8 @@ function renderCompo() {
     rowEl.className = 't-row';
 
     rowSlots.forEach(function(si) {
-      var slot   = compoState.slots[si];
+      var slot   = slots[si];
+      if (!slot) return;
       var player = slot.playerId ? getPlayer(slot.playerId) : null;
       var isPicking = pickingSlotIdx === si;
 
@@ -925,65 +956,84 @@ function renderCompo() {
     var hint = pickingSlotIdx !== null
       ? 'Choisis un joueur pour le poste ' + compoState.slots[pickingSlotIdx].poste
       : 'Tape un slot vide pour choisir un joueur';
-    lbl.innerHTML = compoState.formation + ' <span>' + hint + '</span>';
+    lbl.innerHTML = currentFormation() + ' · ' + (compoState.mode==='off'?'⚽ Offensif':'🛡️ Défensif') + ' <span>' + hint + '</span>';
   }
 
   // Mettre à jour le picker
   renderPicker();
 }
 
+var STATUS_LABEL = {ok:'✅',bless:'🤕 Blessé',susp:'🟥 Suspendu',absent:'🚫 Absent',mute:'🔵 Muté',mutehp:'🟢 Muté HP'};
+
 function renderPicker() {
   var picker = document.getElementById('cp-picker');
   if (!picker) return;
+  var slots = currentSlots();
 
   if (pickingSlotIdx === null) {
-    // Afficher résumé : joueurs placés vs total
-    var placed = compoState.slots.filter(function(s){return s.playerId;}).length;
-    picker.innerHTML = '<div class="picker-hint">'+placed+'/'+compoState.slots.length+' joueurs placés · Tape un slot pour modifier</div>';
+    var placed = slots.filter(function(s){return s.playerId;}).length;
+    picker.innerHTML = '<div class="picker-hint">'+placed+'/'+slots.length+' joueurs placés · Tape un slot pour modifier</div>';
     return;
   }
 
-  var slot = compoState.slots[pickingSlotIdx];
-  var assigned = compoState.slots.map(function(s){return s.playerId;}).filter(Boolean);
+  var slot    = slots[pickingSlotIdx];
+  var assigned= slots.map(function(s){return s.playerId;}).filter(Boolean);
   var current = slot.playerId;
 
-  // Joueurs dispos = statut ok + pas déjà placés (sauf le joueur actuel du slot)
-  var available = players.filter(function(p) {
-    return p.statut === 'ok' && (assigned.indexOf(p.id) < 0 || p.id === current);
-  }).sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
+  // Tous les joueurs, triés : dispos d'abord, puis indispos
+  var dispos   = players.filter(function(p){ return p.statut==='ok' && (assigned.indexOf(p.id)<0 || p.id===current); })
+                        .sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
+  var indispos = players.filter(function(p){ return p.statut!=='ok'; })
+                        .sort(function(a,b){return a.nom.localeCompare(b.nom);});
 
-  var h = '<div class="picker-label">Poste ' + slot.poste + ' — Choisis un joueur :</div>';
+  var h = '<div class="picker-label">Poste '+slot.poste+' — Choisis un joueur :</div>';
   h += '<div class="picker-grid">';
 
-  // Option : retirer le joueur si slot occupé
   if (current) {
-    h += '<div class="picker-player" style="background:#fce4ec;border-color:#f5c6cb;color:#c62828;" data-picker-remove="1">✕ Retirer</div>';
+    h += '<div class="picker-player" style="background:#fce4ec;border-color:#f5c6cb;color:#c62828;cursor:pointer" data-picker-remove="1">✕ Retirer</div>';
   }
 
-  if (!available.length) {
-    h += '<div style="font-size:11px;color:#6b7280">Aucun joueur disponible</div>';
-  }
-
-  available.forEach(function(p) {
-    var isCurrentPlayer = p.id === current;
-    var mainPt = (p.postes_main && p.postes_main[0]) || p.poste || '';
-    var style = isCurrentPlayer ? 'background:#e8f0fb;border-color:#1a4fa0;' : '';
-    h += '<div class="picker-player" style="'+style+'" data-picker-pid="'+p.id+'">' +
+  // Joueurs disponibles
+  dispos.forEach(function(p) {
+    var isCur  = p.id === current;
+    var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'';
+    var border = isCur ? 'border-color:#1a4fa0;' : '';
+    var bg     = isCur ? 'background:#e8f0fb;' : '';
+    h += '<div class="picker-player" style="'+bg+border+'cursor:pointer" data-picker-pid="'+p.id+'">' +
       '<div class="picker-av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
-      p.nom.split(' ')[0] + ' <span style="font-size:9px;opacity:.5;margin-left:2px">'+mainPt+'</span>' +
+      '<span>'+p.nom.split(' ')[0]+'</span>' +
+      '<span style="font-size:9px;opacity:.5;margin-left:2px">'+mainPt+'</span>' +
       '</div>';
   });
+
+  // Séparateur si indispos
+  if (indispos.length) {
+    h += '<div style="width:100%;font-size:10px;font-weight:600;color:#6b7280;margin:6px 0 2px;text-transform:uppercase;letter-spacing:.4px">Indisponibles</div>';
+    indispos.forEach(function(p) {
+      var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'';
+      var lbl    = STATUS_LABEL[p.statut]||p.statut;
+      // Indispos : grisés, non cliquables SAUF si urgence (pas de joueur dispo)
+      h += '<div class="picker-player" style="opacity:.5;cursor:not-allowed;background:#f5f6fa;" title="'+lbl+'">' +
+        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(60%)">'+initials(p.nom)+'</div>' +
+        '<span style="color:#6b7280">'+p.nom.split(' ')[0]+'</span>' +
+        '<span style="font-size:9px;color:#6b7280;margin-left:2px">'+lbl+'</span>' +
+        '</div>';
+    });
+  }
+
+  if (!dispos.length && !indispos.length) {
+    h += '<div style="font-size:11px;color:#6b7280">Aucun joueur dans l\'effectif</div>';
+  }
 
   h += '</div>';
   picker.innerHTML = h;
 
-  // Listeners sur les joueurs du picker
   picker.querySelectorAll('[data-picker-pid]').forEach(function(el) {
     el.addEventListener('click', function() {
       var pid = parseInt(el.getAttribute('data-picker-pid'));
-      // Retirer le joueur de son ancien slot si nécessaire
-      compoState.slots.forEach(function(s) { if (s.playerId === pid) s.playerId = null; });
-      compoState.slots[pickingSlotIdx].playerId = pid;
+      var sl  = currentSlots();
+      sl.forEach(function(s){ if(s.playerId===pid) s.playerId=null; });
+      sl[pickingSlotIdx].playerId = pid;
       pickingSlotIdx = null;
       renderCompo();
     });
@@ -991,7 +1041,7 @@ function renderPicker() {
 
   picker.querySelectorAll('[data-picker-remove]').forEach(function(el) {
     el.addEventListener('click', function() {
-      compoState.slots[pickingSlotIdx].playerId = null;
+      currentSlots()[pickingSlotIdx].playerId = null;
       pickingSlotIdx = null;
       renderCompo();
     });
@@ -999,20 +1049,34 @@ function renderPicker() {
 }
 
 function applyFormation() {
-  compoState.formation = document.getElementById('cp-formation').value;
-  initCompo(false);
+  var selOff = document.getElementById('cp-formation-off');
+  var selDef = document.getElementById('cp-formation-def');
+  var prevOff = compoState.formationOff;
+  var prevDef = compoState.formationDef;
+  if (selOff) compoState.formationOff = selOff.value;
+  if (selDef) compoState.formationDef = selDef.value;
+  // Re-init seulement les formations qui ont changé
+  if (compoState.formationOff !== prevOff) {
+    compoState.slotsOff = initCompoSlots(compoState.formationOff, null);
+  }
+  if (compoState.formationDef !== prevDef) {
+    compoState.slotsDef = initCompoSlots(compoState.formationDef, null);
+  }
+  pickingSlotIdx = null;
   renderCompo();
+  toast('✅ Formation appliquée');
 }
 
 function saveCompo() {
-  dbSet('astrw_compo', {formation:compoState.formation, mode:compoState.mode, slots:compoState.slots});
+  dbSet('astrw_compo', {formationOff:compoState.formationOff,formationDef:compoState.formationDef,mode:compoState.mode,slotsOff:compoState.slotsOff,slotsDef:compoState.slotsDef});
   toast('💾 Composition sauvegardée');
 }
 
 function resetCompo() {
+  if (!confirm('Réinitialiser les deux compositions ?')) return;
   initCompo(false);
   renderCompo();
-  toast('🔄 Réinitialisé');
+  toast('🔄 Compositions réinitialisées');
 }
 
 function toggleCompoMode(mode) {
@@ -1701,7 +1765,12 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Compo
-  document.getElementById('btn-apply-formation').addEventListener('click', applyFormation);
+  // btn-apply-formation supprimé — formations appliquées via selects directs
+  // Listener sur changement de select
+  var cpOff=document.getElementById('cp-formation-off');
+  var cpDef=document.getElementById('cp-formation-def');
+  if(cpOff) cpOff.addEventListener('change', applyFormation);
+  if(cpDef) cpDef.addEventListener('change', applyFormation);
   document.getElementById('btn-save-compo').addEventListener('click', saveCompo);
   document.getElementById('btn-reset-compo').addEventListener('click', resetCompo);
   // Mode toggle offensif/défensif
@@ -1712,10 +1781,17 @@ document.addEventListener('DOMContentLoaded', function() {
   // Charger compo sauvegardée
   var savedCompo = dbGet('astrw_compo', null);
   if (savedCompo) {
-    compoState.formation = savedCompo.formation || '433';
-    compoState.mode = savedCompo.mode || 'ballon';
-    compoState.slots = savedCompo.slots || [];
+    compoState.formationOff = savedCompo.formationOff || '433';
+    compoState.formationDef = savedCompo.formationDef || '442';
+    compoState.mode  = savedCompo.mode || 'off';
+    compoState.slotsOff = savedCompo.slotsOff || [];
+    compoState.slotsDef = savedCompo.slotsDef || [];
   }
+  // Sync les selects avec les formations chargées
+  var selOff = document.getElementById('cp-formation-off');
+  var selDef = document.getElementById('cp-formation-def');
+  if (selOff) { for(var i=0;i<selOff.options.length;i++){if(selOff.options[i].value===compoState.formationOff){selOff.selectedIndex=i;break;}} }
+  if (selDef) { for(var i=0;i<selDef.options.length;i++){if(selDef.options[i].value===compoState.formationDef){selDef.selectedIndex=i;break;}} }
 
   // Reload
   document.getElementById('btn-reload').addEventListener('click', function() {
