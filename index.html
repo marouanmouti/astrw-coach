@@ -109,6 +109,11 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 .tslot-av{width:44px;height:44px;border-radius:50%;border:2px dashed rgba(255,255,255,.45);background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:rgba(255,255,255,.8);transition:border-color .15s,background .15s;}
 .tslot-av.filled{border-style:solid;border-color:rgba(255,255,255,.9);}
 .tslot-av.picking{border-color:#ffd700;border-style:solid;background:rgba(255,215,0,.25);animation:pulse-slot .8s infinite alternate;}
+.tslot-av.indispo{opacity:.55;filter:grayscale(50%);}
+.tslot-badge{position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;border:1.5px solid #145214;display:flex;align-items:center;justify-content:center;font-size:7px;}
+.tslot-badge.b-bless{background:#e65100;color:#fff;}
+.tslot-badge.b-susp{background:#c62828;color:#fff;}
+.tslot-badge.b-absent{background:#7b1fa2;color:#fff;}
 @keyframes pulse-slot{from{border-color:#ffd700;}to{border-color:#fff8b0;}}
 .tslot-name{font-size:8px;color:rgba(255,255,255,.85);font-weight:600;text-align:center;max-width:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.5);}
 .tslot-pt{font-size:7px;color:rgba(255,255,255,.5);text-align:center;}
@@ -418,8 +423,8 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
         <div class="compo-topbar">
           <div class="compo-flabel" id="cp-label">4-3-3 <span>Tape un slot vide pour choisir un joueur</span></div>
           <div class="mode-toggle">
-            <button class="mode-btn active" data-mode="off">⚽</button>
-            <button class="mode-btn" data-mode="def">🛡️</button>
+            <button class="mode-btn active" data-mode="def">🛡️ DEF</button>
+            <button class="mode-btn" data-mode="off">⚽ OFF</button>
           </div>
         </div>
         <div class="terrain-wrap" id="cp-terrain" style="aspect-ratio:0.62;position:relative;">
@@ -822,7 +827,7 @@ function renderDispo() {
 var compoState = {
   formationOff: '433',
   formationDef: '442',
-  mode: 'off',
+  mode: 'def',
   slotsOff: [],
   slotsDef: []
 };
@@ -904,12 +909,22 @@ function renderCompo() {
       slotEl.className = 'tslot';
 
       // Avatar
+      var isIndispo = player && player.statut !== 'ok';
       var avEl = document.createElement('div');
-      avEl.className = 'tslot-av' + (player ? ' filled' : '') + (isPicking ? ' picking' : '');
+      avEl.className = 'tslot-av' + (player ? ' filled' : '') + (isPicking ? ' picking' : '') + (isIndispo ? ' indispo' : '');
+      avEl.style.position = 'relative';
       if (player) {
         avEl.style.background = avColor(player.id);
         avEl.style.color = '#fff';
         avEl.textContent = initials(player.nom);
+        // Badge statut si indispo
+        if (isIndispo) {
+          var badge = document.createElement('div');
+          var bClass = player.statut==='bless'?'b-bless':player.statut==='susp'?'b-susp':'b-absent';
+          badge.className = 'tslot-badge ' + bClass;
+          badge.textContent = player.statut==='bless'?'🤕':player.statut==='susp'?'🟥':'🚫';
+          avEl.appendChild(badge);
+        }
       } else {
         avEl.textContent = slot.poste;
       }
@@ -968,8 +983,9 @@ function renderPicker() {
   // Tous les joueurs, triés : dispos d'abord, puis indispos
   var dispos   = players.filter(function(p){ return p.statut==='ok' && (assigned.indexOf(p.id)<0 || p.id===current); })
                         .sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
-  var indispos = players.filter(function(p){ return p.statut!=='ok'; })
-                        .sort(function(a,b){return a.nom.localeCompare(b.nom);});
+  var indispos = players.filter(function(p){
+    return p.statut!=='ok' && (assigned.indexOf(p.id)<0 || p.id===current);
+  }).sort(function(a,b){return a.nom.localeCompare(b.nom);});
 
   var h = '<div class="picker-label">Poste '+slot.poste+' — Choisis un joueur :</div>';
   h += '<div class="picker-grid">';
@@ -997,11 +1013,11 @@ function renderPicker() {
     indispos.forEach(function(p) {
       var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'';
       var lbl    = STATUS_LABEL[p.statut]||p.statut;
-      // Indispos : grisés, non cliquables SAUF si urgence (pas de joueur dispo)
-      h += '<div class="picker-player" style="opacity:.5;cursor:not-allowed;background:#f5f6fa;" title="'+lbl+'">' +
-        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(60%)">'+initials(p.nom)+'</div>' +
-        '<span style="color:#6b7280">'+p.nom.split(' ')[0]+'</span>' +
-        '<span style="font-size:9px;color:#6b7280;margin-left:2px">'+lbl+'</span>' +
+      // Indispos : grisés mais CLIQUABLES (coach peut forcer le choix)
+      h += '<div class="picker-player" style="opacity:.6;background:#f5f6fa;cursor:pointer;border-color:#dde3f0;" data-picker-pid="'+p.id+'" title="'+lbl+'">' +
+        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(50%)">'+initials(p.nom)+'</div>' +
+        '<span style="color:#374151">'+p.nom.split(' ')[0]+'</span>' +
+        '<span style="font-size:9px;color:#c62828;margin-left:3px;font-weight:600">'+lbl+'</span>' +
         '</div>';
     });
   }
@@ -1796,7 +1812,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (savedCompo) {
     compoState.formationOff = savedCompo.formationOff || '433';
     compoState.formationDef = savedCompo.formationDef || '442';
-    compoState.mode  = savedCompo.mode || 'off';
+    compoState.mode  = savedCompo.mode || 'def';
     compoState.slotsOff = savedCompo.slotsOff || [];
     compoState.slotsDef = savedCompo.slotsDef || [];
   }
