@@ -600,7 +600,7 @@ var mmJaunes = [];
 var mmRouges = [];
 
 // ── CONSTANTES POSTES ──
-var POSTES = ['GB','DD','DC','DG','MC','MD','MG','BU'];
+var POSTES = ['GB','DD','DC','DG','MC','MD','MG','MOC','BU'];
 var POSTE_INFO = {
   GB:{label:'GB',sub:'Gardien',  cls:'pc-gb'},
   DD:{label:'DD',sub:'Déf. droit',cls:'pc-def'},
@@ -609,6 +609,7 @@ var POSTE_INFO = {
   MC:{label:'MC',sub:'Mil. central',cls:'pc-mil'},
   MD:{label:'MD',sub:'Mil. droit',cls:'pc-mil'},
   MG:{label:'MG',sub:'Mil. gauche',cls:'pc-mil'},
+  MOC:{label:'MOC',sub:'Mil. off. central',cls:'pc-bu'},
   BU:{label:'BU',sub:'Buteur',   cls:'pc-bu'}
 };
 
@@ -647,7 +648,7 @@ function posteColorClass(pt) {
 }
 function posteSortKey(p) {
   var pt = (p.postes_main && p.postes_main.length) ? p.postes_main[0] : (p.poste || 'BU');
-  var order = {GB:0, DD:10, DC:11, DG:12, MC:20, MD:21, MG:22, BU:30};
+  var order = {GB:0, DD:10, DC:11, DG:12, MC:20, MD:21, MG:22, MOC:25, BU:30};
   return order[pt] !== undefined ? order[pt] : 99;
 }
 function posteGroup(p) {
@@ -678,7 +679,7 @@ function getPosteColor(pt) {
   if (pt === 'GB') return '#ff6b00';
   if (pt === 'DD' || pt === 'DC' || pt === 'DG') return '#b8940a';
   if (pt === 'MC' || pt === 'MD' || pt === 'MG') return '#1a7a40';
-  if (pt === 'BU') return '#1a4fa0';
+  if (pt === 'MOC' || pt === 'BU') return '#1a4fa0';
   return '#6b7280';
 }
 
@@ -833,15 +834,15 @@ var FORMATIONS = {
   },
   '442': {
     rows:[[0],[1,2,3,4],[5,6,7,8],[9,10]],
-    slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MG'},{p:'MC'},{p:'MC'},{p:'MD'},{p:'BU'},{p:'BU'}]
+    slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MD'},{p:'MG'},{p:'MC'},{p:'MC'},{p:'BU'},{p:'BU'}]
   },
   '4231': {
     rows:[[0],[1,2,3,4],[5,6],[7,8,9],[10]],
     slots:[{p:'GB'},{p:'DD'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'MD'},{p:'MC'},{p:'BU'}]
   },
   '352': {
-    rows:[[0],[1,2,3],[4,5,6,7,8],[9,10]],
-    slots:[{p:'GB'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'DG'},{p:'MG'},{p:'MC'},{p:'MD'},{p:'DD'},{p:'BU'},{p:'BU'}]
+    rows:[[0],[1,2,3],[4,5,6,7],[8],[9,10]],
+    slots:[{p:'GB'},{p:'DC'},{p:'DC'},{p:'DC'},{p:'MD'},{p:'MC'},{p:'MC'},{p:'MG'},{p:'MOC'},{p:'BU'},{p:'BU'}]
   },
   '532': {
     rows:[[0],[1,2,3,4,5],[6,7,8],[9,10]],
@@ -1027,25 +1028,7 @@ function renderPicker() {
 
   h += '</div>';
   picker.innerHTML = h;
-
-  picker.querySelectorAll('[data-picker-pid]').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var pid = parseInt(el.getAttribute('data-picker-pid'));
-      var sl  = currentSlots();
-      sl.forEach(function(s){ if(s.playerId===pid) s.playerId=null; });
-      sl[pickingSlotIdx].playerId = pid;
-      pickingSlotIdx = null;
-      renderCompo();
-    });
-  });
-
-  picker.querySelectorAll('[data-picker-remove]').forEach(function(el) {
-    el.addEventListener('click', function() {
-      currentSlots()[pickingSlotIdx].playerId = null;
-      pickingSlotIdx = null;
-      renderCompo();
-    });
-  });
+  // Les listeners sont gérés par délégation dans init() — pas besoin de querySelectorAll ici
 }
 
 function applyFormation() {
@@ -1604,6 +1587,37 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
     overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
+  });
+
+  // ── DÉLÉGATION PICKER COMPO ──
+  // Attaché une seule fois sur le conteneur picker (stable dans le DOM)
+  document.addEventListener('click', function(e) {
+    var picker = document.getElementById('cp-picker');
+    if (!picker || pickingSlotIdx === null) {
+      // Pas de picking actif — géré par la délégation globale ci-dessous
+    } else {
+      // Click sur un joueur dispo dans le picker
+      var pid_el = e.target.closest('[data-picker-pid]');
+      if (pid_el && picker.contains(pid_el)) {
+        e.stopPropagation();
+        var pid = parseInt(pid_el.getAttribute('data-picker-pid'));
+        var sl = currentSlots();
+        sl.forEach(function(s){ if(s.playerId===pid) s.playerId=null; });
+        sl[pickingSlotIdx].playerId = pid;
+        pickingSlotIdx = null;
+        renderCompo();
+        return;
+      }
+      // Click sur "✕ Retirer"
+      var rem_el = e.target.closest('[data-picker-remove]');
+      if (rem_el && picker.contains(rem_el)) {
+        e.stopPropagation();
+        currentSlots()[pickingSlotIdx].playerId = null;
+        pickingSlotIdx = null;
+        renderCompo();
+        return;
+      }
+    }
   });
 
   // ── DÉLÉGATION D'ÉVÉNEMENTS GLOBALE ──
