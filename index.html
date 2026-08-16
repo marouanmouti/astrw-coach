@@ -959,11 +959,11 @@ function renderBenchPicker() {
   var picker = document.getElementById('cp-picker');
   if (!picker) return;
 
-  // Joueurs déjà sur terrain ou déjà remplaçants
-  var onField = compoState.slotsOff.map(function(s){return s.playerId;}).filter(Boolean)
+  var onFieldRaw = compoState.slotsOff.map(function(s){return s.playerId;}).filter(Boolean)
     .concat(compoState.slotsDef.map(function(s){return s.playerId;}).filter(Boolean));
+  var onField = onFieldRaw.filter(function(id,i){return onFieldRaw.indexOf(id)===i;});
   var currentBench = compoState.bench[pickingBenchIdx];
-  var takenBench = compoState.bench.filter(function(id,i){return id && i!==pickingBenchIdx;});
+  var takenBench = compoState.bench.filter(function(id,i){return id!=null && i!==pickingBenchIdx;});
   var excluded = onField.concat(takenBench);
 
   var dispos = players.filter(function(p){
@@ -985,9 +985,9 @@ function renderBenchPicker() {
     var isCur = p.id === currentBench;
     var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'';
     h += '<div class="picker-player" style="'+(isCur?'background:#e8f0fb;border-color:#1a4fa0;':'')+' cursor:pointer" data-bench-pid="'+p.id+'">' +
-      '<div class="picker-av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
-      '<span>'+p.nom.split(' ')[0]+'</span>' +
-      '<span style="font-size:9px;opacity:.5;margin-left:2px">'+mainPt+'</span>' +
+      '<div class="picker-av" style="background:'+avColor(p.id)+';pointer-events:none">'+initials(p.nom)+'</div>' +
+      '<span style="pointer-events:none">'+p.nom.split(' ')[0]+'</span>' +
+      '<span style="font-size:9px;opacity:.5;margin-left:2px;pointer-events:none">'+mainPt+'</span>' +
       '</div>';
   });
 
@@ -997,9 +997,9 @@ function renderBenchPicker() {
       var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'';
       var lbl = STATUS_LABEL[p.statut]||p.statut;
       h += '<div class="picker-player" style="opacity:.6;background:#f5f6fa;cursor:pointer;border-color:#dde3f0;" data-bench-pid="'+p.id+'">' +
-        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(50%)">'+initials(p.nom)+'</div>' +
-        '<span style="color:#374151">'+p.nom.split(' ')[0]+'</span>' +
-        '<span style="font-size:9px;color:#c62828;margin-left:3px;font-weight:600">'+lbl+'</span>' +
+        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(50%);pointer-events:none">'+initials(p.nom)+'</div>' +
+        '<span style="color:#374151;pointer-events:none">'+p.nom.split(' ')[0]+'</span>' +
+        '<span style="font-size:9px;color:#c62828;margin-left:3px;font-weight:600;pointer-events:none">'+lbl+'</span>' +
         '</div>';
     });
   }
@@ -1136,9 +1136,9 @@ function renderPicker() {
     var border = isCur ? 'border-color:#1a4fa0;' : '';
     var bg     = isCur ? 'background:#e8f0fb;' : '';
     h += '<div class="picker-player" style="'+bg+border+'cursor:pointer" data-picker-pid="'+p.id+'">' +
-      '<div class="picker-av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
-      '<span>'+p.nom.split(' ')[0]+'</span>' +
-      '<span style="font-size:9px;opacity:.5;margin-left:2px">'+mainPt+'</span>' +
+      '<div class="picker-av" style="background:'+avColor(p.id)+';pointer-events:none">'+initials(p.nom)+'</div>' +
+      '<span style="pointer-events:none">'+p.nom.split(' ')[0]+'</span>' +
+      '<span style="font-size:9px;opacity:.5;margin-left:2px;pointer-events:none">'+mainPt+'</span>' +
       '</div>';
   });
 
@@ -1150,9 +1150,9 @@ function renderPicker() {
       var lbl    = STATUS_LABEL[p.statut]||p.statut;
       // Indispos : grisés mais CLIQUABLES (coach peut forcer le choix)
       h += '<div class="picker-player" style="opacity:.6;background:#f5f6fa;cursor:pointer;border-color:#dde3f0;" data-picker-pid="'+p.id+'" title="'+lbl+'">' +
-        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(50%)">'+initials(p.nom)+'</div>' +
-        '<span style="color:#374151">'+p.nom.split(' ')[0]+'</span>' +
-        '<span style="font-size:9px;color:#c62828;margin-left:3px;font-weight:600">'+lbl+'</span>' +
+        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(50%);pointer-events:none">'+initials(p.nom)+'</div>' +
+        '<span style="color:#374151;pointer-events:none">'+p.nom.split(' ')[0]+'</span>' +
+        '<span style="font-size:9px;color:#c62828;margin-left:3px;font-weight:600;pointer-events:none">'+lbl+'</span>' +
         '</div>';
     });
   }
