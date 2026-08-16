@@ -118,6 +118,17 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 .tslot-name{font-size:8px;color:rgba(255,255,255,.85);font-weight:600;text-align:center;max-width:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.5);}
 .tslot-pt{font-size:7px;color:rgba(255,255,255,.5);text-align:center;}
 .compo-picker{background:#fff;border-top:0.5px solid #dde3f0;padding:10px 12px;border-radius:0 0 12px 12px;}
+.bench-section{background:#fff;border-radius:12px;border:0.5px solid #dde3f0;padding:12px;margin-bottom:10px;}
+.bench-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.bench-title-txt{font-size:12px;font-weight:600;color:#1a1a2e;}
+.bench-count{font-size:11px;color:#6b7280;}
+.bench-slots{display:flex;gap:8px;}
+.bench-slot{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;}
+.bench-av{width:40px;height:40px;border-radius:50%;border:2px dashed #b0bec5;background:#f5f6fa;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#9e9e9e;position:relative;transition:border-color .15s;}
+.bench-av.filled{border-style:solid;border-color:#1a4fa0;}
+.bench-av.filled.indispo{opacity:.55;filter:grayscale(50%);}
+.bench-av.picking{border-color:#ffd700;border-style:solid;background:rgba(255,215,0,.15);}
+.bench-name{font-size:7px;color:#6b7280;font-weight:500;text-align:center;max-width:44px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .picker-label{font-size:11px;font-weight:600;color:#1a4fa0;margin-bottom:8px;}
 .picker-hint{font-size:11px;color:#6b7280;margin-bottom:0;}
 .picker-grid{display:flex;flex-wrap:wrap;gap:6px;}
@@ -437,6 +448,15 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
           <div class="picker-hint">Tape un slot sur le terrain pour choisir un joueur</div>
         </div>
       </div>
+      <!-- REMPLAÇANTS -->
+      <div class="bench-section">
+        <div class="bench-header">
+          <div class="bench-title-txt">🔄 Remplaçants</div>
+          <div class="bench-count" id="bench-count">0/5 sélectionnés</div>
+        </div>
+        <div class="bench-slots" id="cp-bench"></div>
+      </div>
+
       <div style="background:#fff;border-radius:12px;border:0.5px solid #dde3f0;padding:12px;margin-bottom:10px;">
         <div style="display:flex;gap:8px;margin-bottom:10px;">
           <div style="flex:1;">
@@ -739,7 +759,7 @@ function renderPage(name) {
   if (name === 'effectif') { renderListe(); renderDispo(); }
   if (name === 'cal')      renderCalListe();
   if (name === 'notes')    renderNotes();
-  if (name === 'compo')    { if(!compoState.slots.length)initCompo(false); pickingSlotIdx=null; renderCompo(); }
+  if (name === 'compo')    { if(!compoState.slotsOff.length&&!compoState.slotsDef.length)initCompo(false); pickingSlotIdx=null; pickingBenchIdx=null; renderCompo(); renderBench(); }
 }
 
 function initPills(pillsId) {
@@ -829,8 +849,10 @@ var compoState = {
   formationDef: '442',
   mode: 'def',
   slotsOff: [],
-  slotsDef: []
+  slotsDef: [],
+  bench: [null, null, null, null, null] // 5 remplaçants
 };
+var pickingBenchIdx = null; // index du slot remplaçant en cours de sélection
 
 var FORMATIONS = {
   '433': {
@@ -876,6 +898,118 @@ function initCompo(keepPlayers) {
   compoState.slotsOff = initCompoSlots(compoState.formationOff, keepPlayers ? compoState.slotsOff : null);
   compoState.slotsDef = initCompoSlots(compoState.formationDef, keepPlayers ? compoState.slotsDef : null);
   pickingSlotIdx = null;
+}
+
+
+function renderBench() {
+  var benchEl = document.getElementById('cp-bench');
+  var countEl = document.getElementById('bench-count');
+  if (!benchEl) return;
+
+  // IDs déjà sur terrain (DEF + OFF)
+  var onFieldOff = compoState.slotsOff.map(function(s){return s.playerId;}).filter(Boolean);
+  var onFieldDef = compoState.slotsDef.map(function(s){return s.playerId;}).filter(Boolean);
+  var onField = onFieldOff.concat(onFieldDef.filter(function(id){return onFieldOff.indexOf(id)<0;}));
+
+  var filled = compoState.bench.filter(Boolean).length;
+  if (countEl) countEl.textContent = filled + '/5 sélectionnés';
+
+  benchEl.innerHTML = '';
+  for (var i = 0; i < 5; i++) {
+    (function(idx) {
+      var pid = compoState.bench[idx];
+      var player = pid ? getPlayer(pid) : null;
+      var isPicking = pickingBenchIdx === idx;
+
+      var slotEl = document.createElement('div');
+      slotEl.className = 'bench-slot';
+      slotEl.setAttribute('data-bench-idx', idx);
+
+      var avEl = document.createElement('div');
+      var isIndispo = player && player.statut !== 'ok';
+      avEl.className = 'bench-av' + (player ? ' filled' : '') + (isPicking ? ' picking' : '') + (isIndispo ? ' indispo' : '');
+      if (player) {
+        avEl.style.background = avColor(player.id);
+        avEl.style.color = '#fff';
+        avEl.textContent = initials(player.nom);
+        if (isIndispo) {
+          var badge = document.createElement('div');
+          var bClass = player.statut==='bless'?'b-bless':player.statut==='susp'?'b-susp':'b-absent';
+          badge.className = 'tslot-badge ' + bClass;
+          badge.textContent = player.statut==='bless'?'🤕':player.statut==='susp'?'🟥':'🚫';
+          avEl.appendChild(badge);
+        }
+      } else {
+        avEl.textContent = (idx + 1).toString();
+      }
+
+      var nameEl = document.createElement('div');
+      nameEl.className = 'bench-name';
+      nameEl.textContent = player ? player.nom.split(' ')[0] : '—';
+
+      slotEl.appendChild(avEl);
+      slotEl.appendChild(nameEl);
+      benchEl.appendChild(slotEl);
+    })(i);
+  }
+}
+
+function renderBenchPicker() {
+  // Affiche dans cp-picker la liste pour choisir un remplaçant
+  var picker = document.getElementById('cp-picker');
+  if (!picker) return;
+
+  // Joueurs déjà sur terrain ou déjà remplaçants
+  var onField = compoState.slotsOff.map(function(s){return s.playerId;}).filter(Boolean)
+    .concat(compoState.slotsDef.map(function(s){return s.playerId;}).filter(Boolean));
+  var currentBench = compoState.bench[pickingBenchIdx];
+  var takenBench = compoState.bench.filter(function(id,i){return id && i!==pickingBenchIdx;});
+  var excluded = onField.concat(takenBench);
+
+  var dispos = players.filter(function(p){
+    return p.statut==='ok' && (excluded.indexOf(p.id)<0 || p.id===currentBench);
+  }).sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
+
+  var indispos = players.filter(function(p){
+    return p.statut!=='ok' && (excluded.indexOf(p.id)<0 || p.id===currentBench);
+  }).sort(function(a,b){return a.nom.localeCompare(b.nom);});
+
+  var h = '<div class="picker-label">Remplaçant '+(pickingBenchIdx+1)+' — Choisis un joueur :</div>';
+  h += '<div class="picker-grid">';
+
+  if (currentBench) {
+    h += '<div class="picker-player" style="background:#fce4ec;border-color:#f5c6cb;color:#c62828;cursor:pointer" data-bench-remove="1">✕ Retirer</div>';
+  }
+
+  dispos.forEach(function(p) {
+    var isCur = p.id === currentBench;
+    var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'';
+    h += '<div class="picker-player" style="'+(isCur?'background:#e8f0fb;border-color:#1a4fa0;':'')+' cursor:pointer" data-bench-pid="'+p.id+'">' +
+      '<div class="picker-av" style="background:'+avColor(p.id)+'">'+initials(p.nom)+'</div>' +
+      '<span>'+p.nom.split(' ')[0]+'</span>' +
+      '<span style="font-size:9px;opacity:.5;margin-left:2px">'+mainPt+'</span>' +
+      '</div>';
+  });
+
+  if (indispos.length) {
+    h += '<div style="width:100%;font-size:10px;font-weight:600;color:#6b7280;margin:6px 0 2px;text-transform:uppercase;letter-spacing:.4px">Indisponibles</div>';
+    indispos.forEach(function(p) {
+      var mainPt = (p.postes_main&&p.postes_main[0])||p.poste||'';
+      var lbl = STATUS_LABEL[p.statut]||p.statut;
+      h += '<div class="picker-player" style="opacity:.6;background:#f5f6fa;cursor:pointer;border-color:#dde3f0;" data-bench-pid="'+p.id+'">' +
+        '<div class="picker-av" style="background:'+avColor(p.id)+';filter:grayscale(50%)">'+initials(p.nom)+'</div>' +
+        '<span style="color:#374151">'+p.nom.split(' ')[0]+'</span>' +
+        '<span style="font-size:9px;color:#c62828;margin-left:3px;font-weight:600">'+lbl+'</span>' +
+        '</div>';
+    });
+  }
+
+  if (!dispos.length && !indispos.length) {
+    h += '<div style="font-size:11px;color:#6b7280">Aucun joueur disponible</div>';
+  }
+
+  h += '</div>';
+  picker.innerHTML = h;
 }
 
 function currentSlots() {
@@ -961,6 +1095,7 @@ function renderCompo() {
 
   // Mettre à jour le picker
   renderPicker();
+  renderBench();
 }
 
 var STATUS_LABEL = {ok:'✅',bless:'🤕 Blessé',susp:'🟥 Suspendu',absent:'🚫 Absent',mute:'🔵 Muté',mutehp:'🟢 Muté HP'};
@@ -1051,14 +1186,17 @@ function applyFormation() {
 }
 
 function saveCompo() {
-  dbSet('astrw_compo', {formationOff:compoState.formationOff,formationDef:compoState.formationDef,mode:compoState.mode,slotsOff:compoState.slotsOff,slotsDef:compoState.slotsDef});
+  dbSet('astrw_compo', {formationOff:compoState.formationOff,formationDef:compoState.formationDef,mode:compoState.mode,slotsOff:compoState.slotsOff,slotsDef:compoState.slotsDef,bench:compoState.bench});
   toast('💾 Composition sauvegardée');
 }
 
 function resetCompo() {
-  if (!confirm('Réinitialiser les deux compositions ?')) return;
+  if (!confirm('Réinitialiser les deux compositions et les remplaçants ?')) return;
   initCompo(false);
+  compoState.bench=[null,null,null,null,null];
+  pickingBenchIdx=null;
   renderCompo();
+  renderBench();
   toast('🔄 Compositions réinitialisées');
 }
 
@@ -1624,13 +1762,59 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Clic sur "✕ Retirer" dans le picker
+    // Clic sur "✕ Retirer" dans le picker (terrain)
     var remEl = t.closest ? t.closest('[data-picker-remove]') : null;
     if (remEl) {
       if (pickingSlotIdx === null) return;
       currentSlots()[pickingSlotIdx].playerId = null;
       pickingSlotIdx = null;
       renderCompo();
+      return;
+    }
+
+    // Clic sur un slot remplaçant
+    var benchSlotEl = t.closest ? t.closest('[data-bench-idx]') : null;
+    if (benchSlotEl) {
+      var bi = parseInt(benchSlotEl.getAttribute('data-bench-idx'));
+      pickingSlotIdx = null; // fermer picker terrain si ouvert
+      if (pickingBenchIdx === bi) {
+        pickingBenchIdx = null;
+        renderCompo();
+        renderBench();
+        var pk = document.getElementById('cp-picker');
+        if (pk) pk.innerHTML = '<div class="picker-hint">Tape un slot sur le terrain ou un remplaçant pour choisir un joueur</div>';
+      } else {
+        pickingBenchIdx = bi;
+        renderBench();
+        renderBenchPicker();
+      }
+      return;
+    }
+
+    // Clic joueur dans le picker remplaçant
+    var bPidEl = t.closest ? t.closest('[data-bench-pid]') : null;
+    if (bPidEl) {
+      if (pickingBenchIdx === null) return;
+      var pid = parseInt(bPidEl.getAttribute('data-bench-pid'));
+      // Retirer joueur de l'autre slot bench si présent
+      compoState.bench = compoState.bench.map(function(id,i){return (id===pid&&i!==pickingBenchIdx)?null:id;});
+      compoState.bench[pickingBenchIdx] = pid;
+      pickingBenchIdx = null;
+      renderBench();
+      var pk2 = document.getElementById('cp-picker');
+      if (pk2) pk2.innerHTML = '<div class="picker-hint">Tape un slot sur le terrain ou un remplaçant pour choisir un joueur</div>';
+      return;
+    }
+
+    // Clic "✕ Retirer" dans le picker remplaçant
+    var bRemEl = t.closest ? t.closest('[data-bench-remove]') : null;
+    if (bRemEl) {
+      if (pickingBenchIdx === null) return;
+      compoState.bench[pickingBenchIdx] = null;
+      pickingBenchIdx = null;
+      renderBench();
+      var pk3 = document.getElementById('cp-picker');
+      if (pk3) pk3.innerHTML = '<div class="picker-hint">Tape un slot sur le terrain ou un remplaçant pour choisir un joueur</div>';
       return;
     }
   });
@@ -1815,6 +1999,7 @@ document.addEventListener('DOMContentLoaded', function() {
     compoState.mode  = savedCompo.mode || 'def';
     compoState.slotsOff = savedCompo.slotsOff || [];
     compoState.slotsDef = savedCompo.slotsDef || [];
+    compoState.bench   = savedCompo.bench   || [null,null,null,null,null];
   }
   // Sync les selects avec les formations chargées
   var selOff = document.getElementById('cp-formation-off');
@@ -1839,6 +2024,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renderButeurs();
   renderListe();
   renderDispo();
+  renderBench();
   renderCalListe();
   renderNotes();
 });
