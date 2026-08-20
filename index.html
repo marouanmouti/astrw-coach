@@ -308,8 +308,16 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
           <div class="fg"><label>Date</label><input type="date" id="c-date"></div>
           <div class="fg"><label>RDV</label><input type="time" id="c-time" value="13:30"></div>
         </div>
+        <div class="fg"><label>Heure du match</label><input type="time" id="c-match-time" value="15:00"></div>
         <div class="fg"><label>Lieu</label><input type="text" id="c-lieu" placeholder="Stade Théodore"></div>
         <div class="fg"><label>Type</label><select id="c-type"><option>Domicile</option><option>Extérieur</option></select></div>
+        <div class="fg"><label>Couleur du maillot</label>
+          <select id="c-maillot">
+            <option value="⚪ Blanc">⚪ Blanc</option>
+            <option value="🔵 Bleu">🔵 Bleu</option>
+            <option value="⚫ Gris">⚫ Gris</option>
+          </select>
+        </div>
         <div class="fg"><label>Message optionnel</label><textarea id="c-msg" rows="2" placeholder="Tenue complète requise..."></textarea></div>
       </div>
       <div class="sec">Joueurs convoqués</div>
@@ -1278,28 +1286,31 @@ function renderConvo() {
 }
 
 function genConvo() {
-  var adv  = document.getElementById('c-adv').value || 'Adversaire';
-  var date = document.getElementById('c-date').value;
-  var time = document.getElementById('c-time').value;
-  var lieu = document.getElementById('c-lieu').value || 'Stade Théodore';
-  var type = document.getElementById('c-type').value;
-  var msg  = document.getElementById('c-msg').value;
+  var adv       = document.getElementById('c-adv').value || 'Adversaire';
+  var date      = document.getElementById('c-date').value;
+  var rdv       = document.getElementById('c-time').value;
+  var matchTime = document.getElementById('c-match-time').value;
+  var lieu      = document.getElementById('c-lieu').value || 'Stade Théodore';
+  var type      = document.getElementById('c-type').value;
+  var maillot   = document.getElementById('c-maillot').value;
+  var msg       = document.getElementById('c-msg').value;
   var conv = [];
-  document.querySelectorAll('.pcheck.sel').forEach(function(el, i) {
+  document.querySelectorAll('.pcheck.sel').forEach(function(el) {
     var p = getPlayer(parseInt(el.getAttribute('data-pid')));
-    if (p) conv.push((i+1)+'. '+p.nom);
+    if (p) conv.push('• ' + p.nom);
   });
-  var txt = '📢 *CONVOCATION ASTRW*\n';
-  txt += '────────────────────\n';
+  var txt = '────────────────────\n';
   txt += '⚽ *Match :* ASTRW vs '+adv+'\n';
   txt += '📅 *Date :* '+fmtDate(date)+'\n';
-  txt += '⏰ *RDV :* '+time+'\n';
+  txt += '⏰ *RDV :* '+rdv+'\n';
+  txt += '🕒 *Coup d'envoi :* '+matchTime+'\n';
   txt += '📍 *Lieu :* '+lieu+' ('+type+')\n';
+  txt += '👕 *Maillot :* '+maillot+'\n';
   txt += '────────────────────\n';
   txt += '*Joueurs convoqués ('+conv.length+') :*\n'+conv.join('\n')+'\n';
   txt += '────────────────────\n';
   if (msg) txt += msg + '\n';
-  txt += '✅ Merci de confirmer votre présence.\nBonne préparation ! 💙🤍\n— Staff ASTRW';
+  txt += '✅ Merci de confirmer votre présence.\n⚠️ Prévenir si retard !';
   document.getElementById('c-text').textContent = txt;
   document.getElementById('c-result').style.display = 'block';
   document.getElementById('c-result').scrollIntoView({ behavior:'smooth' });
