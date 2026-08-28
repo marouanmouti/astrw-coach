@@ -93,31 +93,39 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 .tag-susp{background:var(--red-l);color:var(--red);}
 
 
-/* SÉANCES */
-.theme-pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;}
-.theme-pills::-webkit-scrollbar{display:none;}
-.theme-pill{border:1px solid var(--border);background:#fff;border-radius:20px;padding:6px 13px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;}
-.theme-pill.active{background:var(--blue);color:#fff;border-color:var(--blue);}
-.exo-card{background:#fff;border-radius:14px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden;}
-.exo-header{padding:12px 14px 10px;display:flex;align-items:flex-start;gap:10px;}
-.exo-badge{border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-top:2px;}
-.exo-info{flex:1;}
-.exo-title{font-size:14px;font-weight:600;color:var(--text);}
-.exo-meta{font-size:11px;color:var(--muted);margin-top:3px;}
-.exo-desc{font-size:12px;color:var(--text);line-height:1.55;padding:0 14px 10px;}
-.exo-schema{background:#1e7a1e;margin:0;padding:6px;}
-.exo-consignes{background:#f8f9fc;border-top:1px solid var(--border);padding:10px 14px;}
-.exo-consignes-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
-.exo-consigne-item{font-size:11px;color:var(--text);line-height:1.6;}
-.exo-consigne-item::before{content:"→ ";color:var(--blue);font-weight:600;}
-.exo-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--border);cursor:pointer;font-size:12px;color:var(--blue);font-weight:500;}
-.badge-pressing{background:#fce4ec;color:#c62828;}
-.badge-attaque{background:#e8f5e9;color:#2e7d32;}
-.badge-cpa{background:#fff3e0;color:#e65100;}
-.badge-technique{background:#e8f0fb;color:#1a4fa0;}
-.badge-physique{background:#f3e5f5;color:#7b1fa2;}
-.badge-transition{background:#e0f2f1;color:#00695c;}
-.badge-surnom{background:#fff8e1;color:#f57f17;}
+
+/* ── SÉANCES MODULE ── */
+.seances-home{padding:0;}
+.dossier-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.dossier-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:14px 12px;cursor:pointer;display:flex;flex-direction:column;gap:6px;}
+.dossier-ico{font-size:26px;line-height:1;}
+.dossier-name{font-size:13px;font-weight:600;color:var(--text);}
+.dossier-count{font-size:10px;color:var(--muted);}
+.exo-list-item{background:#fff;border-radius:12px;border:1px solid var(--border);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.exo-list-thumb{width:60px;height:40px;border-radius:7px;overflow:hidden;background:#1e7a1e;flex-shrink:0;}
+.exo-list-info{flex:1;min-width:0;}
+.exo-list-name{font-size:13px;font-weight:500;color:var(--text);}
+.exo-list-meta{font-size:10px;color:var(--muted);margin-top:2px;}
+.tool-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:9px;border:1.5px solid transparent;cursor:pointer;background:#f5f6fa;min-width:44px;flex-shrink:0;}
+.tool-btn.active{border-color:var(--blue);background:var(--blue-l);}
+.tool-btn .t-ico{font-size:18px;line-height:1;}
+.tool-btn .t-lbl{font-size:8px;color:var(--muted);font-weight:500;white-space:nowrap;}
+.tool-btn.active .t-lbl{color:var(--blue);}
+.editor-canvas-wrap{flex:1;overflow:hidden;position:relative;}
+.editor-canvas{width:100%;height:100%;touch-action:none;}
+.editor-header{background:var(--blue);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.editor-back-btn-inner{background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;}
+.editor-title-input{flex:1;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;outline:none;}
+.editor-title-input::placeholder{color:rgba(255,255,255,.5);}
+.editor-save-btn{background:#fff;color:var(--blue);border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;}
+.dossier-select-bar{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;}
+.dossier-select-bar::-webkit-scrollbar{display:none;}
+.dos-chip{padding:5px 12px;border-radius:20px;border:1px solid var(--border);font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;background:#f5f6fa;}
+.dos-chip.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.back-btn-seance{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0 0 12px;}
+.num-picker{display:flex;gap:4px;align-items:center;}
+.num-btn{width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:#f5f6fa;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+.num-val{font-size:13px;font-weight:600;color:var(--text);min-width:16px;text-align:center;}
 
 /* COMPO */
 .compo-topbar{background:#1a4fa0;padding:10px 14px;border-radius:12px 12px 0 0;display:flex;align-items:center;gap:10px;}
@@ -466,17 +474,16 @@ html,body{height:100%;overflow:hidden;background:#f0f2f8;}
 
     <!-- SÉANCES -->
     <div class="page" id="pg-seances">
-      <div class="theme-pills" id="seance-themes">
-        <div class="theme-pill active" data-theme="tous">🔍 Tous</div>
-        <div class="theme-pill" data-theme="pressing">🛡️ Pressing</div>
-        <div class="theme-pill" data-theme="attaque">⚽ Attaque</div>
-        <div class="theme-pill" data-theme="cpa">🎯 Coups de pied arrêtés</div>
-        <div class="theme-pill" data-theme="technique">🦶 Technique</div>
-        <div class="theme-pill" data-theme="physique">💪 Physique</div>
-        <div class="theme-pill" data-theme="transition">🔄 Transition</div>
-        <div class="theme-pill" data-theme="surnom">👑 Supériorité</div>
+      <div id="sv-home">
+        <div class="dossier-grid" id="sv-dossiers"></div>
+        <button class="btn btn-p" id="btn-new-exo">✏️ Créer un exercice</button>
       </div>
-      <div id="seances-list"></div>
+      <div id="sv-liste" style="display:none">
+        <button class="back-btn-seance" id="sv-back-home">← Dossiers</button>
+        <div class="sec" id="sv-liste-titre"></div>
+        <div id="sv-exo-list"></div>
+        <button class="btn btn-s" id="btn-new-exo-from-liste" style="margin-top:4px">✏️ Nouvel exercice ici</button>
+      </div>
     </div>
 
     <!-- COMPO -->
@@ -1263,678 +1270,554 @@ function toggleCompoMode(mode) {
 
 
 
+
 // ── SÉANCES ──
-var EXERCICES = [
-  {
-    id:1, theme:'pressing', titre:'Pressing haut en 4-3-3',
-    duree:'20 min', joueurs:'11 vs 11', difficulte:'⭐⭐⭐',
-    desc:'Organiser le pressing haut dès la perte de balle. Les 3 attaquants ferment les sorties du gardien adverse, les milieux couvrent les lignes de passe.',
-    consignes:['Les 3 BU pressent le GB et les DC adverses','Les MC ferment les couloirs centraux','Signal du pressing : cri du capitaine ou geste du coach','Si pressing raté → repli défensif immédiat en bloc bas'],
-    schema:'pressing433'
-  },
-  {
-    id:2, theme:'pressing', titre:'Bloc défensif bas 4-4-2',
-    duree:'15 min', joueurs:'11 vs 11', difficulte:'⭐⭐',
-    desc:'Défendre en bloc bas compact. Les deux lignes de 4 restent serrées, les 2 BU couvrent les DC adverses sans presser.',
-    consignes:['Ligne défensive à 30m du but','Distance entre ligne déf et ligne mil : max 10m','Les BU ne pressent pas, ils coupent les passes vers le milieu','Déclencher le pressing uniquement sur erreur adverse'],
-    schema:'bloc442'
-  },
-  {
-    id:3, theme:'attaque', titre:'Combinaison côté droit en 4-3-3',
-    duree:'20 min', joueurs:'8 joueurs', difficulte:'⭐⭐',
-    desc:'Travail de combinaison entre le DD, le MG et le BU droit pour créer des situations de centres et de tirs.',
-    consignes:['DD monte en appui sur le côté','BU droit part dans le dos du DG adverse','MD fait la liaison entre DD et BU','Centre tendu en retrait pour le MC qui arrive'],
-    schema:'combinaison_droite'
-  },
-  {
-    id:4, theme:'attaque', titre:'Attaque placée : jeu en triangle',
-    duree:'25 min', joueurs:'9 joueurs', difficulte:'⭐⭐⭐',
-    desc:'Circulation de balle rapide en triangle pour créer des décalages et trouver l\'espace dans une défense organisée.',
-    consignes:['Triangle : milieu central + 2 ailiers','Jeu en 2 touches max','Le 3ème homme fait toujours la course de profondeur','Finir par un tir ou un centre systématiquement'],
-    schema:'triangle_attaque'
-  },
-  {
-    id:5, theme:'cpa', titre:'Corner offensif — croix au 1er poteau',
-    duree:'15 min', joueurs:'9 joueurs', difficulte:'⭐⭐',
-    desc:'Routine de corner avec un cross au premier poteau et une déviation pour le deuxième attaquant qui rentre.',
-    consignes:['1 tireur de corner en bas à droite','BU 1 : décrochage puis course 1er poteau','BU 2 : attend au 2e poteau pour la déviation','MC : arrive en retard pour la reprise hors surface','DC adverse à bloquer : celui du 1er poteau'],
-    schema:'corner_1er_poteau'
-  },
-  {
-    id:6, theme:'cpa', titre:'Coup franc direct — mur et tir',
-    duree:'15 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'Organisation du coup franc offensif avec option tir direct ou déviation courte pour le tireur.',
-    consignes:['2 joueurs au ballon (option 1 : tir, option 2 : passe courte)','1 joueur saute dans le mur adverse pour créer un couloir','2 BU en mouvement dans la surface pour déstabiliser','Décision en fonction du positionnement du mur'],
-    schema:'coup_franc'
-  },
-  {
-    id:7, theme:'technique', titre:'Rondo 4 vs 2 (carousel)',
-    duree:'10 min', joueurs:'6 joueurs', difficulte:'⭐',
-    desc:'4 joueurs en cercle contre 2 défenseurs au centre. Objectif : conserver le ballon avec des passes en 1-2 touches.',
-    consignes:['4 joueurs en cercle, 2 au centre','Max 2 touches par joueur','Si presse recupere : changement de role immédiat','Variante : 1 touche obligatoire pour les meilleurs'],
-    schema:'rondo'
-  },
-  {
-    id:8, theme:'technique', titre:'Contrôle orienté + conduite',
-    duree:'15 min', joueurs:'8 joueurs', difficulte:'⭐',
-    desc:'Exercice de contrôle orienté pour préparer l\'action suivante immédiatement. Passe + contrôle dans l\'espace + conduite + passe.',
-    consignes:['En colonne, face à face à 15m','Passe → contrôle orienté vers l\'extérieur → conduite 5m → passe retour','Orientation du contrôle vers le côté libre','Progressivement augmenter la vitesse d\'exécution'],
-    schema:'controle_oriente'
-  },
-  {
-    id:9, theme:'physique', titre:'Navettes intensives 30-30',
-    duree:'20 min', joueurs:'Tout le groupe', difficulte:'⭐⭐⭐',
-    desc:'Travail intermittent 30 secondes d\'effort / 30 secondes de récupération sur 20m. Reproduit les efforts du match.',
-    consignes:['Navettes sur 20m : sprint aller-retour','30 sec effort maximal / 30 sec marche','6 à 8 séries selon le niveau','Surveiller la fréquence cardiaque : max 85-90%'],
-    schema:'navettes'
-  },
-  {
-    id:10, theme:'physique', titre:'Circuit athlétique ballon',
-    duree:'25 min', joueurs:'Tout le groupe', difficulte:'⭐⭐',
-    desc:'Circuit de 5 ateliers combinant travail physique et technique : jonglerie, frappe, tête, conduite, dribble.',
-    consignes:['5 ateliers de 3 min avec 1 min de repos entre','Atelier 1 : jonglerie libre','Atelier 2 : frappe en mouvement','Atelier 3 : jeu de tête par 2','Atelier 4 : slalom cônes','Atelier 5 : conduite en vitesse'],
-    schema:'circuit'
-  },
-  {
-    id:11, theme:'transition', titre:'Transition défense-attaque rapide',
-    duree:'20 min', joueurs:'8 vs 8', difficulte:'⭐⭐⭐',
-    desc:'Dès la récupération du ballon, basculer immédiatement en phase offensive avant que l\'adversaire se replace. Contre-attaque rapide en 4-6 secondes.',
-    consignes:['Zone de récupération fixée à 40m du but','Dès récupération : 1 passe max puis conduite rapide','2 joueurs partent en profondeur dès la perte du ballon adverse','Objectif : tir en moins de 8 secondes après récupération'],
-    schema:'transition'
-  },
-  {
-    id:12, theme:'transition', titre:'Pressing après perte de balle',
-    duree:'15 min', joueurs:'11 vs 11', difficulte:'⭐⭐⭐',
-    desc:'Contre-pressing immédiat dans les 5 secondes suivant la perte de balle. Récupérer haut pour attaquer directement.',
-    consignes:['Dès la perte : les 3-4 joueurs les plus proches pressent immédiatement','Les autres bloquent les lignes de passe','Si non-récupération en 5 sec : repli organisé','Le signal : joueur perd le ballon → crie "hop" pour ses coéquipiers'],
-    schema:'contre_pressing'
-  },
-  {
-    id:13, theme:'surnom', titre:'Jeu en supériorité numérique 3v2',
-    duree:'20 min', joueurs:'5 joueurs', difficulte:'⭐⭐',
-    desc:'Situation de 3 attaquants contre 2 défenseurs pour apprendre à exploiter les espaces en supériorité.',
-    consignes:['3 att vs 2 déf sur demi-terrain','Les 3 att doivent faire au moins 2 passes avant de tirer','Les déf essaient de rester serrés sans se faire déborder','Si les déf récupèrent : contre-attaque 2v1'],
-    schema:'sup_3v2'
-  },
-  {
-    id:14, theme:'surnom', titre:'Infériorité : bloc et contre',
-    duree:'20 min', joueurs:'8 joueurs', difficulte:'⭐⭐⭐',
-    desc:'Apprendre à défendre en infériorité numérique et exploiter le moindre espace pour contre-attaquer rapidement.',
-    consignes:['4 déf vs 6 att sur demi-terrain','Les 4 déf forment un bloc compact de 2+2','Objectif : tenir 30 sec sans concéder de tir cadré','Si récupération : passe longue immédiate vers les 2 BU isolés'],
-    schema:'inferiorite'
-  }
+var DOSSIERS = [
+  {id:'echauffement', ico:'🔥', name:'Échauffement',    color:'#ff6b00'},
+  {id:'technique',    ico:'🦶', name:'Technique',        color:'#1a4fa0'},
+  {id:'jeu',          ico:'⚽', name:'Jeu / Tactique',   color:'#2e7d32'},
+  {id:'physique',     ico:'💪', name:'Physique',          color:'#7b1fa2'},
+  {id:'cpa',          ico:'🎯', name:'Coups de pied arr.',color:'#e65100'},
+  {id:'defense',      ico:'🛡️', name:'Défense',          color:'#c62828'},
+  {id:'attaque',      ico:'⚡', name:'Attaque',           color:'#1565c0'},
+  {id:'favoris',      ico:'⭐', name:'Favoris',           color:'#f57f17'}
 ];
 
+var exercicesSauvegardes = dbGet('astrw_seances', []);
+var currentDossierId = null;
+var currentExoId = null;
 
-function pressing4231SVG(){var h=180;return svgTerrain(defs()+dot(150,25,'#e53935','BU')+dot(80,55,'#e53935','AI')+dot(220,55,'#e53935','AD')+dot(150,55,'#e53935','MOC')+dot(110,85,'#e53935','MC')+dot(190,85,'#e53935','MC')+dot(60,115,'#e53935','DL')+dot(120,115,'#e53935','DC')+dot(180,115,'#e53935','DC')+dot(240,115,'#e53935','DR')+dot(150,148,'#e53935','GB')+dot(150,50,'#1565c0','B')+dot(90,80,'#1565c0','M1')+dot(210,80,'#1565c0','M2')+arw(150,50,150,30,'rgba(255,255,0,.9)')+arw(90,80,80,60,'rgba(255,255,0,.9)')+arw(210,80,220,60,'rgba(255,255,0,.9)')+ballon(150,148),h);}
-function piegeCoteSVG(){var h=180;return svgTerrain(defs()+dot(50,50,'#e53935','A')+dot(120,40,'#e53935','B')+dot(200,50,'#e53935','C')+dot(50,90,'#e53935','ML')+dot(150,85,'#e53935','MC')+dot(240,90,'#e53935','MR')+dot(60,125,'#e53935','DL')+dot(240,125,'#e53935','DR')+dot(70,60,'#1565c0','P1')+dot(110,70,'#1565c0','P2')+dot(60,95,'#1565c0','P3')+arw(70,60,53,53,'rgba(255,255,0,.9)')+arw(110,70,122,44,'rgba(255,255,0,.9)')+arw(60,95,53,93,'rgba(255,255,0,.9)')+ballon(50,50),h);}
-function ligneHauteSVG(){var h=180;return svgTerrain(defs()+'<line x1="40" y1="70" x2="260" y2="70" stroke="rgba(255,255,0,.7)" stroke-width="2" stroke-dasharray="6,3"/>'+dot(60,85,'#1565c0','DD')+dot(115,85,'#1565c0','DC')+dot(185,85,'#1565c0','DC')+dot(240,85,'#1565c0','DG')+dot(150,130,'#1565c0','GB')+dot(50,40,'#e53935','A')+dot(150,35,'#e53935','A')+dot(250,40,'#e53935','A')+arw(60,85,60,50,'rgba(255,255,0,.9)')+arw(115,85,115,50,'rgba(255,255,0,.9)')+arw(185,85,185,50,'rgba(255,255,0,.9)')+arw(240,85,240,50,'rgba(255,255,0,.9)')+arw(150,130,150,90,'rgba(100,200,255,.7)','4,2')+ballon(150,35),h);}
-function blocMedianSVG(){var h=180;return svgTerrain(defs()+'<line x1="40" y1="90" x2="260" y2="90" stroke="rgba(255,255,0,.4)" stroke-width="1.5" stroke-dasharray="5,3"/>'+dot(60,100,'#1565c0','DL')+dot(115,100,'#1565c0','DC')+dot(185,100,'#1565c0','DC')+dot(240,100,'#1565c0','DR')+dot(70,78,'#1565c0','ML')+dot(120,78,'#1565c0','MC')+dot(180,78,'#1565c0','MC')+dot(230,78,'#1565c0','MR')+dot(150,162,'#1565c0','GB')+dot(50,40,'#e53935','A')+dot(150,35,'#e53935','A')+dot(250,40,'#e53935','A')+arw(50,40,70,78,'rgba(255,100,100,.7)','4,2')+ballon(150,35),h);}
-function pressingCornerSVG(){var h=180;return svgTerrain(defs()+dot(90,30,'#1565c0','P1')+dot(150,25,'#1565c0','P2')+dot(210,30,'#1565c0','P3')+dot(90,65,'#e53935','D')+dot(150,60,'#e53935','D')+dot(210,65,'#e53935','D')+arw(90,30,90,60,'rgba(255,255,0,.9)')+arw(150,25,150,55,'rgba(255,255,0,.9)')+arw(210,30,210,60,'rgba(255,255,0,.9)')+'<text x="150" y="140" text-anchor="middle" font-size="9" fill="rgba(255,255,0,.8)" font-family="sans-serif">Dégagement → Pressing</text>'+ballon(150,140),h);}
-function attaqueCoteSVG(){var h=180;return svgTerrain(defs()+dot(240,50,'#1565c0','DD')+dot(240,90,'#1565c0','AI')+dot(200,130,'#1565c0','BU')+dot(150,90,'#1565c0','MC')+arw(240,50,240,90,'rgba(255,255,0,.9)')+arw(240,90,200,130,'rgba(255,255,0,.9)')+arw(200,130,160,115,'rgba(255,200,0,.7)','4,2')+arw(150,90,200,130,'rgba(100,255,100,.7)','3,2')+ballon(240,50),h);}
-function jeuPivotSVG(){var h=180;return svgTerrain(defs()+dot(150,100,'#1565c0','BU')+dot(150,75,'#e53935','DEF')+dot(100,80,'#1565c0','MC')+dot(200,80,'#1565c0','MC')+arw(100,80,150,100,'rgba(255,255,0,.9)')+arw(150,100,200,80,'rgba(255,255,0,.9)')+arw(200,80,200,130,'rgba(255,200,0,.7)','4,2')+ballon(100,80),h);}
-function centresFinitionSVG(){var h=180;return svgTerrain(defs()+dot(270,90,'#1565c0','C')+dot(100,80,'#1565c0','B1')+dot(130,110,'#1565c0','B2')+dot(150,55,'#1565c0','MC')+arw(270,90,140,75,'rgba(255,255,0,.9)')+arw(270,90,120,105,'rgba(100,200,255,.7)','4,2')+arw(270,90,155,60,'rgba(100,255,100,.7)','3,2')+ballon(270,90),h);}
-function sortieBlocSVG(){var h=180;return svgTerrain(defs()+dot(150,155,'#1565c0','GB')+dot(110,130,'#1565c0','DC')+dot(190,130,'#1565c0','DC')+dot(150,100,'#1565c0','MC')+dot(90,60,'#1565c0','AI')+dot(210,60,'#1565c0','AD')+dot(150,30,'#1565c0','BU')+arw(150,155,110,135,'rgba(255,255,0,.9)')+arw(110,135,150,105,'rgba(255,255,0,.9)')+arw(150,105,90,65,'rgba(255,255,0,.9)')+arw(90,65,150,35,'rgba(255,200,0,.7)','4,2')+ballon(150,155),h);}
-function decalage3v2SVG(){var h=180;return svgTerrain(defs()+dot(60,60,'#1565c0','AI')+dot(150,50,'#1565c0','BU')+dot(240,60,'#1565c0','AD')+dot(100,90,'#1565c0','MC')+dot(200,90,'#1565c0','MC')+arw(100,90,150,55,'rgba(255,255,0,.9)')+arw(150,55,240,65,'rgba(255,255,0,.9)')+arw(240,65,240,30,'rgba(255,200,0,.7)','4,2')+arw(60,60,60,30,'rgba(100,255,100,.7)','3,2')+ballon(100,90),h);}
-function pressingOffensifSVG(){var h=180;return svgTerrain(defs()+dot(90,40,'#1565c0','P1')+dot(150,35,'#1565c0','P2')+dot(210,40,'#1565c0','P3')+dot(110,75,'#1565c0','M')+dot(190,75,'#1565c0','M')+dot(90,110,'#e53935','D')+dot(150,105,'#e53935','D')+dot(210,110,'#e53935','D')+arw(90,40,90,80,'rgba(255,255,0,.9)')+arw(150,35,150,80,'rgba(255,255,0,.9)')+arw(210,40,210,80,'rgba(255,255,0,.9)')+ballon(150,105),h);}
-function passeSuitSVG(){var h=160;return svgTerrain(defs()+'<rect x="60" y="40" width="180" height="100" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>'+dot(60,40,'#1565c0','A')+dot(240,40,'#1565c0','B')+dot(240,140,'#1565c0','C')+dot(60,140,'#1565c0','D')+arw(60,40,240,40,'rgba(255,255,0,.9)')+arw(60,40,60,80,'rgba(100,255,100,.7)','3,2')+ballon(60,40),h);}
-function slalomConesSVG(){var h=140;return svgTerrain(defs()+'<circle cx="60" cy="70" r="4" fill="#ff9800"/><circle cx="90" cy="70" r="4" fill="#ff9800"/><circle cx="120" cy="70" r="4" fill="#ff9800"/><circle cx="150" cy="70" r="4" fill="#ff9800"/><circle cx="180" cy="70" r="4" fill="#ff9800"/><circle cx="210" cy="70" r="4" fill="#ff9800"/>'+dot(40,70,'#1565c0','A')+arw(40,70,60,55,'rgba(255,255,0,.9)')+arw(60,55,90,85,'rgba(255,255,0,.9)')+arw(90,85,120,55,'rgba(255,255,0,.9)')+arw(120,55,150,85,'rgba(255,255,0,.9)')+arw(150,85,180,55,'rgba(255,255,0,.9)')+arw(180,55,210,85,'rgba(255,255,0,.9)')+ballon(40,70),h);}
-function tirMouvementSVG(){var h=180;return svgTerrain(defs()+dot(60,150,'#1565c0','A')+dot(240,120,'#1565c0','B')+arw(60,150,150,100,'rgba(255,255,0,.9)','4,2')+arw(240,120,150,103,'rgba(255,200,0,.7)')+arw(150,100,150,40,'rgba(100,255,100,.8)','3,2')+ballon(240,120),h);}
-function jeuTeteSVG(){var h=160;return svgTerrain(defs()+dot(100,80,'#1565c0','A')+dot(200,80,'#1565c0','B')+arw(100,80,150,50,'rgba(255,255,0,.9)')+arw(200,80,150,52,'rgba(100,200,255,.7)','4,2')+'<circle cx="150" cy="48" r="6" fill="#fff" stroke="#333" stroke-width="1"/>'+'<text x="150" y="105" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.8)" font-family="sans-serif">Zone de tête</text>',h);}
-function frappePivotSVG(){var h=180;return svgTerrain(defs()+dot(150,110,'#1565c0','BU')+dot(150,85,'#e53935','DEF')+dot(120,100,'#1565c0','P')+arw(120,100,150,110,'rgba(255,255,0,.9)')+arw(150,110,200,80,'rgba(255,255,0,.7)','2,2')+arw(150,110,150,40,'rgba(100,255,100,.8)','3,2')+ballon(120,100),h);}
-function jeuReduit5v5SVG(){var h=160;return svgTerrain(defs()+'<rect x="30" y="30" width="240" height="120" fill="none" stroke="rgba(255,255,0,.4)" stroke-width="1.5" stroke-dasharray="5,3"/>'+dot(70,90,'#1565c0','A')+dot(120,60,'#1565c0','B')+dot(120,120,'#1565c0','C')+dot(180,75,'#1565c0','D')+dot(200,110,'#1565c0','E')+dot(130,90,'#e53935','D1')+dot(170,90,'#e53935','D2')+ballon(70,90),h);}
-function sprintsSVG(){var h=140;return svgTerrain(defs()+'<line x1="40" y1="70" x2="280" y2="70" stroke="rgba(255,255,255,.4)" stroke-width="2"/>'+dot(50,70,'#1565c0')+dot(90,70,'#1565c0')+dot(130,70,'#1565c0')+arw(50,70,280,70,'rgba(255,255,0,.9)')+'<text x="160" y="50" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.8)" font-family="sans-serif">Sprint max 20-40m</text>',h);}
-function circuitPhysiqueSVG(){return circuitSVG();}
-function largeur4v2SVG(){var h=180;return svgTerrain(defs()+'<rect x="20" y="30" width="80" height="130" fill="rgba(255,255,0,.05)" stroke="rgba(255,255,0,.3)" stroke-width="1.5"/>'+dot(50,60,'#1565c0','A')+dot(50,90,'#1565c0','B')+dot(50,120,'#1565c0','C')+dot(80,75,'#1565c0','D')+dot(70,95,'#e53935','D1')+dot(70,115,'#e53935','D2')+arw(50,60,80,75,'rgba(255,255,0,.9)','4,2')+ballon(50,60),h);}
-function cornerDefSVG(){var h=180;return svgTerrain(defs()+dot(10,162,'#e53935','T')+dot(50,135,'#1565c0','P1')+dot(130,120,'#1565c0','Z1')+dot(170,120,'#1565c0','Z2')+dot(250,135,'#1565c0','P2')+dot(90,110,'#1565c0','M1')+dot(200,110,'#1565c0','M2')+dot(150,155,'#1565c0','GB')+dot(90,130,'#e53935','A')+dot(160,125,'#e53935','B')+arw(10,162,90,130,'rgba(255,100,100,.6)','4,2')+ballon(10,162),h);}
-function francIndirectSVG(){var h=180;return svgTerrain(defs()+dot(120,110,'#1565c0','J1')+dot(150,115,'#1565c0','J2')+dot(200,90,'#1565c0','J3')+dot(90,80,'#1565c0','J4')+'<rect x="130" y="60" width="40" height="12" fill="#e53935" rx="3" opacity=".8"/>'+dot(150,155,'#e53935','GB')+arw(120,110,150,115,'rgba(255,255,0,.9)')+arw(150,115,200,95,'rgba(255,255,0,.9)')+arw(200,95,200,60,'rgba(255,200,0,.7)','3,2')+ballon(120,112),h);}
-function murDefensifSVG(){var h=180;return svgTerrain(defs()+dot(150,110,'#e53935','T1')+dot(162,115,'#e53935','T2')+'<rect x="125" y="58" width="50" height="14" fill="#1565c0" rx="3" opacity=".9"/>'+dot(150,148,'#1565c0','GB')+dot(90,80,'#1565c0','M1')+dot(210,80,'#1565c0','M2')+arw(150,110,150,72,'rgba(255,100,100,.7)')+ballon(150,112),h);}
-function toucheOffSVG(){var h=180;return svgTerrain(defs()+dot(10,90,'#1565c0','L')+dot(70,80,'#1565c0','J1')+dot(120,60,'#1565c0','J2')+dot(160,100,'#1565c0','J3')+arw(10,90,70,83,'rgba(255,255,0,.9)')+arw(70,80,120,65,'rgba(255,255,0,.9)','4,2')+arw(120,60,160,100,'rgba(100,255,100,.7)','3,2')+ballon(10,90),h);}
-function transition3v3SVG(){var h=180;return svgTerrain(defs()+dot(60,80,'#1565c0','A1')+dot(150,60,'#1565c0','A2')+dot(240,80,'#1565c0','A3')+dot(80,120,'#e53935','D1')+dot(150,130,'#e53935','D2')+dot(220,120,'#e53935','D3')+arw(150,60,80,120,'rgba(255,100,100,.7)','4,2')+arw(150,60,220,120,'rgba(255,100,100,.7)','4,2')+ballon(150,60),h);}
-function balleLongueSVG(){var h=180;return svgTerrain(defs()+dot(150,155,'#1565c0','GB')+dot(110,130,'#1565c0','DC')+dot(90,50,'#1565c0','B1')+dot(210,50,'#1565c0','B2')+arw(110,130,90,55,'rgba(255,255,0,.9)')+arw(90,55,210,55,'rgba(255,200,0,.7)','4,2')+ballon(110,130),h);}
-function sortieRapideSVG(){var h=180;return svgTerrain(defs()+dot(150,155,'#1565c0','GB')+dot(110,130,'#1565c0','DC')+dot(150,105,'#1565c0','MC')+dot(110,75,'#1565c0','MO')+dot(80,40,'#1565c0','AI')+dot(150,25,'#1565c0','BU')+arw(150,155,110,135,'rgba(255,255,0,.9)')+arw(110,135,150,110,'rgba(255,255,0,.9)')+arw(150,110,110,80,'rgba(255,255,0,.9)')+arw(110,80,80,45,'rgba(255,255,0,.9)')+arw(80,45,150,30,'rgba(255,200,0,.7)','4,2')+ballon(150,155),h);}
-function deuxUnSVG(){var h=160;return svgTerrain(defs()+dot(80,80,'#1565c0','A')+dot(200,80,'#1565c0','B')+dot(140,80,'#e53935','D')+arw(80,80,140,80,'rgba(255,255,0,.9)')+arw(140,80,200,80,'rgba(255,255,0,.7)','4,2')+arw(80,80,80,50,'rgba(100,255,100,.7)','3,2')+ballon(80,80),h);}
-function rotationTriangleSVG(){return triangleSVG();}
-function cinqTroisSVG(){var h=180;return svgTerrain(defs()+dot(50,80,'#1565c0','A')+dot(120,50,'#1565c0','B')+dot(150,100,'#1565c0','C')+dot(230,60,'#1565c0','D')+dot(200,120,'#1565c0','E')+dot(100,120,'#e53935','D1')+dot(160,80,'#e53935','D2')+dot(200,90,'#e53935','D3')+arw(50,80,120,55,'rgba(255,255,0,.9)','4,2')+arw(120,55,230,65,'rgba(255,255,0,.9)','4,2')+ballon(50,80),h);}
-
-function schemaExo(id) {
-  // SVG miniatures des schémas selon l\'exercice
-  var schemas = {
-    pressing433: pressing433SVG(),
-    pressing4231: pressing4231SVG(),
-    piege_cote: piegeCoteSVG(),
-    ligne_haute: ligneHauteSVG(),
-    bloc_median: blocMedianSVG(),
-    pressing_corner: pressingCornerSVG(),
-    attaque_cote: attaqueCoteSVG(),
-    jeu_pivot: jeuPivotSVG(),
-    centres_finition: centresFinitionSVG(),
-    sortie_bloc: sortieBlocSVG(),
-    decalage_3v2: decalage3v2SVG(),
-    pressing_offensif: pressingOffensifSVG(),
-    passe_suit: passeSuitSVG(),
-    slalom_cones: slalomConesSVG(),
-    tir_mouvement: tirMouvementSVG(),
-    jeu_tete: jeuTeteSVG(),
-    frappe_pivot: frappePivotSVG(),
-    jeu_reduit_5v5: jeuReduit5v5SVG(),
-    sprints: sprintsSVG(),
-    circuit_physique: circuitPhysiqueSVG(),
-    largeur_4v2: largeur4v2SVG(),
-    corner_def: cornerDefSVG(),
-    franc_indirect: francIndirectSVG(),
-    mur_defensif: murDefensifSVG(),
-    touche_off: toucheOffSVG(),
-    transition_3v3: transition3v3SVG(),
-    balle_longue: balleLongueSVG(),
-    sortie_rapide: sortieRapideSVG(),
-    deux_un: deuxUnSVG(),
-    rotation_triangle: rotationTriangleSVG(),
-    cinq_trois: cinqTroisSVG(),
-    bloc442: bloc442SVG(),
-    combinaison_droite: combinaisonDroiteSVG(),
-    triangle_attaque: triangleSVG(),
-    corner_1er_poteau: cornerSVG(),
-    coup_franc: coupFrancSVG(),
-    rondo: rondoSVG(),
-    controle_oriente: controleSVG(),
-    navettes: navettesSVG(),
-    circuit: circuitSVG(),
-    transition: transitionSVG(),
-    contre_pressing: contrePressingSVG(),
-    sup_3v2: sup3v2SVG(),
-    inferiorite: inferioriteSVG()
-  };
-  return schemas[id] || '';
+// ─── VUES SÉANCES ───
+function renderSeances() {
+  showSeanceView('home');
+  renderDossiers();
 }
 
-function svgTerrain(contenu, hauteur) {
-  hauteur = hauteur || 160;
-  return '<svg viewBox="0 0 300 '+hauteur+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">' +
-    '<rect width="300" height="'+hauteur+'" fill="#2d7a2d"/>' +
-    '<rect x="10" y="8" width="280" height="'+(hauteur-16)+'" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5" rx="3"/>' +
-    '<line x1="10" y1="'+(hauteur/2)+'" x2="290" y2="'+(hauteur/2)+'" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>' +
-    '<circle cx="150" cy="'+(hauteur/2)+'" r="30" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>' +
-    '<rect x="110" y="'+(hauteur-28)+'" width="80" height="22" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>' +
-    '<rect x="130" y="'+(hauteur-14)+'" width="40" height="8" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1"/>' +
-    '<rect x="110" y="6" width="80" height="22" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>' +
-    '<rect x="130" y="6" width="40" height="8" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1"/>' +
-    contenu + '</svg>';
-}
-function dot(x,y,col,label,lpos){
-  col=col||'#fff'; lpos=lpos||'b';
-  var ly=lpos==='t'?y-8:y+12;
-  return '<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+col+'" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>'+
-    (label?'<text x="'+x+'" y="'+(ly)+'" text-anchor="middle" font-size="7" fill="rgba(255,255,255,.9)" font-family="sans-serif" font-weight="600">'+label+'</text>':'');
-}
-function arw(x1,y1,x2,y2,col,dash){
-  col=col||'rgba(255,255,0,.8)'; dash=dash||'';
-  var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
-  var ux=dx/len,uy=dy/len;
-  var ax=x2-ux*10,ay=y2-uy*10;
-  return '<line x1="'+x1+'" y1="'+y1+'" x2="'+ax+'" y2="'+ay+'" stroke="'+col+'" stroke-width="1.8" stroke-dasharray="'+dash+'" marker-end="url(#arr)"/>';
-}
-function defs(col){
-  col=col||'rgba(255,255,0,.9)';
-  return '<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="'+col+'"/></marker></defs>';
-}
-function ballon(x,y){
-  return '<circle cx="'+x+'" cy="'+y+'" r="5" fill="#fff" stroke="#333" stroke-width="1"/>'+
-    '<circle cx="'+x+'" cy="'+y+'" r="2" fill="#333"/>';
+function showSeanceView(view) {
+  document.getElementById('sv-home').style.display  = view==='home'  ? 'block' : 'none';
+  document.getElementById('sv-liste').style.display = view==='liste' ? 'block' : 'none';
 }
 
-function pressing433SVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    // Attaquants adverses (rouges) en haut
-    dot(90,30,'#e53935','DA')+dot(150,25,'#e53935','DC')+dot(210,30,'#e53935','DA')+
-    dot(60,70,'#e53935','ML')+dot(150,65,'#e53935','MC')+dot(240,70,'#e53935','MR')+
-    dot(60,115,'#e53935','DL')+dot(110,115,'#e53935','DC')+dot(190,115,'#e53935','DC')+dot(240,115,'#e53935','DR')+
-    dot(150,145,'#e53935','GB')+
-    // Nos joueurs (bleus) qui pressent
-    dot(90,50,'#1565c0','BU')+dot(150,45,'#1565c0','BU')+dot(210,50,'#1565c0','BU')+
-    // Flèches de pressing
-    arw(90,50,90,35,'rgba(255,255,0,.9)')+arw(150,45,150,30,'rgba(255,255,0,.9)')+arw(210,50,210,35,'rgba(255,255,0,.9)')+
-    arw(90,50,60,75,'rgba(255,200,0,.7)','4,2')+arw(210,50,240,75,'rgba(255,200,0,.7)','4,2')+
-    ballon(150,145),h);
+function renderDossiers() {
+  var grid = document.getElementById('sv-dossiers');
+  if (!grid) return;
+  grid.innerHTML = DOSSIERS.map(function(d) {
+    var count = exercicesSauvegardes.filter(function(e){return e.dossier===d.id;}).length;
+    return '<div class="dossier-card" data-dos-id="'+d.id+'">' +
+      '<div class="dossier-ico">'+d.ico+'</div>' +
+      '<div class="dossier-name">'+d.name+'</div>' +
+      '<div class="dossier-count">'+count+' exercice'+(count>1?'s':'')+'</div>' +
+      '</div>';
+  }).join('');
 }
 
-function bloc442SVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(60,25,'#e53935','A')+dot(150,20,'#e53935','A')+dot(240,25,'#e53935','A')+
-    dot(60,65,'#e53935','M')+dot(120,65,'#e53935','M')+dot(180,65,'#e53935','M')+dot(240,65,'#e53935','M')+
-    // Bloc bas bleu
-    dot(60,115,'#1565c0','DL')+dot(110,115,'#1565c0','DC')+dot(190,115,'#1565c0','DC')+dot(240,115,'#1565c0','DR')+
-    dot(70,90,'#1565c0','ML')+dot(120,90,'#1565c0','MC')+dot(180,90,'#1565c0','MC')+dot(230,90,'#1565c0','MR')+
-    dot(60,145,'#1565c0','BU')+dot(240,145,'#1565c0','BU')+
-    dot(150,162,'#1565c0','GB')+
-    // Ligne de bloc
-    '<line x1="40" y1="105" x2="260" y2="105" stroke="rgba(255,255,0,.5)" stroke-width="1.5" stroke-dasharray="5,3"/>'+
-    ballon(80,40),h);
+function openDossier(id) {
+  currentDossierId = id;
+  var dos = DOSSIERS.find(function(d){return d.id===id;});
+  document.getElementById('sv-liste-titre').textContent = (dos?dos.ico+' '+dos.name:'');
+  renderExoList(id);
+  showSeanceView('liste');
 }
 
-function combinaisonDroiteSVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(240,50,'#1565c0','DD')+ dot(240,100,'#1565c0','MR')+dot(240,145,'#1565c0','BU')+
-    dot(150,100,'#1565c0','MC')+
-    arw(240,50,240,100,'rgba(255,255,0,.9)')+arw(240,100,240,145,'rgba(255,255,0,.9)')+
-    arw(240,145,200,130,'rgba(255,255,0,.9)')+arw(200,130,150,120,'rgba(255,255,0,.9)','4,2')+
-    arw(240,50,270,80,'rgba(100,200,255,.8)','3,2')+
-    ballon(240,50),h);
-}
-
-function triangleSVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(150,60,'#1565c0','MC')+dot(90,100,'#1565c0','AI')+dot(210,100,'#1565c0','AD')+
-    dot(150,140,'#1565c0','BU')+
-    arw(150,60,90,100,'rgba(255,255,0,.9)')+arw(90,100,210,100,'rgba(255,255,0,.9)')+
-    arw(210,100,150,60,'rgba(255,255,0,.9)')+arw(150,60,150,140,'rgba(255,200,0,.7)','4,2')+
-    ballon(150,60),h);
-}
-
-function cornerSVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(10,162,'#1565c0','C')+ // tireur corner gauche
-    dot(90,120,'#1565c0','B1')+dot(150,110,'#1565c0','B2')+dot(200,125,'#1565c0','MC')+
-    dot(90,80,'#e53935','D1')+dot(150,80,'#e53935','D2')+dot(200,80,'#e53935','D3')+
-    arw(10,162,90,125,'rgba(255,255,0,.9)')+
-    arw(90,120,90,100,'rgba(255,100,100,.8)','3,2')+ // mouvement décrochage puis
-    arw(90,95,120,110,'rgba(100,255,100,.8)','3,2')+ // déviation
-    ballon(10,162),h);
-}
-
-function coupFrancSVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(150,110,'#1565c0','T1')+dot(160,115,'#1565c0','T2')+
-    dot(110,80,'#1565c0','S')+dot(170,75,'#1565c0','B1')+dot(200,85,'#1565c0','B2')+
-    // Mur adverse
-    '<rect x="130" y="60" width="35" height="12" fill="#e53935" rx="3" opacity=".8"/>'+
-    '<text x="147" y="70" text-anchor="middle" font-size="8" fill="#fff" font-family="sans-serif">MUR</text>'+
-    dot(150,145,'#e53935','GB')+
-    arw(150,110,150,65,'rgba(255,255,0,.9)')+arw(150,110,110,80,'rgba(255,255,0,.7)','4,2')+
-    ballon(150,112),h);
-}
-
-function rondoSVG(){
-  var h=160;
-  return svgTerrain(defs()+
-    dot(150,30,'#1565c0','A')+dot(230,80,'#1565c0','B')+dot(200,140,'#1565c0','C')+dot(100,140,'#1565c0','D')+dot(70,80,'#1565c0','E')+
-    dot(140,85,'#e53935','P1')+dot(165,90,'#e53935','P2')+
-    arw(150,30,230,80,'rgba(255,255,0,.9)','3,2')+arw(230,80,200,140,'rgba(255,255,0,.9)','3,2')+
-    arw(200,140,100,140,'rgba(255,255,0,.9)','3,2')+
-    ballon(150,30),h);
-}
-
-function controleSVG(){
-  var h=160;
-  return svgTerrain(defs()+
-    dot(60,80,'#1565c0','A')+dot(240,80,'#1565c0','B')+
-    arw(60,80,140,80,'rgba(255,255,0,.9)')+
-    '<circle cx="150" cy="80" r="5" fill="#fff" stroke="#333" stroke-width="1"/>'+
-    arw(150,80,200,80,'rgba(100,255,100,.8)','3,2')+
-    arw(200,80,240,80,'rgba(255,255,0,.9)')+
-    '<text x="150" y="100" text-anchor="middle" font-size="8" fill="rgba(255,255,255,.8)" font-family="sans-serif">Contrôle orienté</text>',h);
-}
-
-function navettesSVG(){
-  var h=140;
-  return svgTerrain(defs()+
-    '<line x1="40" y1="70" x2="260" y2="70" stroke="rgba(255,255,255,.5)" stroke-width="2"/>'+
-    '<text x="40" y="65" font-size="9" fill="rgba(255,255,255,.8)" font-family="sans-serif">A</text>'+
-    '<text x="255" y="65" font-size="9" fill="rgba(255,255,255,.8)" font-family="sans-serif">B</text>'+
-    '<text x="150" y="50" text-anchor="middle" font-size="9" fill="rgba(255,255,0,.9)" font-family="sans-serif">← 20m →</text>'+
-    dot(60,70,'#1565c0')+dot(100,70,'#1565c0')+dot(140,70,'#1565c0')+
-    arw(60,70,260,70,'rgba(255,255,0,.9)')+arw(260,90,40,90,'rgba(255,100,100,.8)'),h);
-}
-
-function circuitSVG(){
-  var h=170;
-  return svgTerrain(defs()+
-    '<rect x="20" y="20" width="55" height="35" fill="rgba(255,200,0,.2)" stroke="rgba(255,200,0,.6)" stroke-width="1.5" rx="4"/>'+
-    '<text x="47" y="33" text-anchor="middle" font-size="8" fill="#ffd700" font-family="sans-serif">Jonglerie</text>'+
-    '<rect x="110" y="20" width="55" height="35" fill="rgba(100,200,100,.2)" stroke="rgba(100,200,100,.6)" stroke-width="1.5" rx="4"/>'+
-    '<text x="137" y="33" text-anchor="middle" font-size="8" fill="#80ff80" font-family="sans-serif">Frappe</text>'+
-    '<rect x="215" y="20" width="55" height="35" fill="rgba(200,100,100,.2)" stroke="rgba(200,100,100,.6)" stroke-width="1.5" rx="4"/>'+
-    '<text x="242" y="33" text-anchor="middle" font-size="8" fill="#ff8080" font-family="sans-serif">Tête</text>'+
-    '<rect x="20" y="110" width="55" height="35" fill="rgba(100,100,255,.2)" stroke="rgba(100,100,255,.6)" stroke-width="1.5" rx="4"/>'+
-    '<text x="47" y="123" text-anchor="middle" font-size="8" fill="#8080ff" font-family="sans-serif">Slalom</text>'+
-    '<rect x="215" y="110" width="55" height="35" fill="rgba(255,100,200,.2)" stroke="rgba(255,100,200,.6)" stroke-width="1.5" rx="4"/>'+
-    '<text x="242" y="123" text-anchor="middle" font-size="8" fill="#ff80c0" font-family="sans-serif">Conduite</text>'+
-    '<circle cx="150" cy="90" r="20" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>'+
-    '<text x="150" y="94" text-anchor="middle" font-size="8" fill="#fff" font-family="sans-serif">Repos</text>',h);
-}
-
-function transitionSVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(60,100,'#e53935','A1')+dot(90,80,'#e53935','A2')+dot(90,120,'#e53935','A3')+
-    dot(150,100,'#1565c0','R')+ // récupération
-    dot(220,40,'#1565c0','B1')+dot(250,60,'#1565c0','B2')+
-    arw(150,100,220,45,'rgba(255,255,0,.9)')+arw(220,45,250,60,'rgba(255,200,0,.7)','4,2')+
-    '<line x1="150" y1="20" x2="150" y2="170" stroke="rgba(255,255,0,.4)" stroke-width="1" stroke-dasharray="4,3"/>'+
-    '<text x="100" y="168" font-size="8" fill="rgba(255,255,0,.7)" font-family="sans-serif">Zone récup.</text>'+
-    ballon(140,100),h);
-}
-
-function contrePressingSVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(150,60,'#e53935','A')+dot(100,80,'#e53935','B')+dot(200,80,'#e53935','C')+
-    dot(140,60,'#1565c0','P1')+dot(120,75,'#1565c0','P2')+dot(160,75,'#1565c0','P3')+dot(150,95,'#1565c0','P4')+
-    arw(140,60,145,60,'rgba(255,255,0,.9)')+arw(120,75,105,78,'rgba(255,255,0,.9)')+
-    arw(160,75,202,80,'rgba(255,255,0,.9)')+arw(150,95,150,65,'rgba(255,200,0,.7)','3,2')+
-    ballon(148,58),h);
-}
-
-function sup3v2SVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(80,60,'#1565c0','A1')+dot(150,40,'#1565c0','A2')+dot(220,60,'#1565c0','A3')+
-    dot(120,110,'#e53935','D1')+dot(180,110,'#e53935','D2')+
-    dot(150,162,'#e53935','GB')+
-    arw(80,60,150,40,'rgba(255,255,0,.9)','4,2')+arw(150,40,220,60,'rgba(255,255,0,.9)','4,2')+
-    arw(220,60,200,130,'rgba(255,255,0,.9)')+
-    ballon(80,60),h);
-}
-
-function inferioriteSVG(){
-  var h=180;
-  return svgTerrain(defs()+
-    dot(50,40,'#e53935','A1')+dot(120,30,'#e53935','A2')+dot(180,30,'#e53935','A3')+dot(250,40,'#e53935','A4')+
-    dot(100,70,'#e53935','A5')+dot(200,70,'#e53935','A6')+
-    // Bloc défensif 2+2
-    dot(90,110,'#1565c0','D1')+dot(140,110,'#1565c0','D2')+dot(160,110,'#1565c0','D3')+dot(210,110,'#1565c0','D4')+
-    dot(150,145,'#1565c0','GB')+
-    dot(50,155,'#1565c0','B1')+dot(250,155,'#1565c0','B2')+
-    arw(150,145,50,155,'rgba(100,255,100,.7)','4,3')+arw(150,145,250,155,'rgba(100,255,100,.7)','4,3')+
-    ballon(150,50),h);
-}
-
-
-  // ── EXERCICES SUPPLÉMENTAIRES ──
-  EXERCICES = EXERCICES.concat([
-
-  // PRESSING (5 nouveaux)
-  {
-    id:15, theme:'pressing', titre:'Pressing en 4-2-3-1 : fermeture des lignes',
-    duree:'20 min', joueurs:'11 vs 11', difficulte:'⭐⭐⭐',
-    desc:'Le 4-2-3-1 défensif avec fermeture rapide des lignes de passes intérieures. Les 2 MC défensifs couvrent le centre pendant que les 3 milieux offensifs pressent haut.',
-    consignes:['Les 2 MC défensifs ne bougent pas : ils couvrent les couloirs centraux','Le MOC déclenche le pressing sur le porteur','Les ailiers ferment immédiatement les latéraux adverses','Le BU oriente le jeu adverse vers un côté choisi à l\'avance'],
-    schema:'pressing4231'
-  },
-  {
-    id:16, theme:'pressing', titre:'Pressing en zone : piège sur le côté',
-    duree:'20 min', joueurs:'9 vs 9', difficulte:'⭐⭐⭐',
-    desc:'Orienter volontairement le ballon vers le côté gauche pour déclencher un pressing collectif en surnombre sur ce côté.',
-    consignes:['BU oriente l\'adversaire vers le couloir gauche','3-4 joueurs convergent immédiatement sur ce côté','Les autres coupent les passes vers le centre et l\'autre côté','Dès récupération : transition rapide vers le côté droit libéré'],
-    schema:'piege_cote'
-  },
-  {
-    id:17, theme:'pressing', titre:'Ligne défensive haute : hors-jeu provoqué',
-    duree:'15 min', joueurs:'8 vs 8', difficulte:'⭐⭐⭐',
-    desc:'Monter la ligne défensive pour provoquer des hors-jeux. Les 4 défenseurs sortent ensemble au signal du capitaine.',
-    consignes:['Signal : cri "LIGNE" du capitaine ou du libero','Les 4 défenseurs montent ensemble à l\'unisson','Le GB sort aussi pour couvrir l\'espace derrière','Règle : si doute → ne pas sortir'],
-    schema:'ligne_haute'
-  },
-  {
-    id:18, theme:'pressing', titre:'Bloc médian 4-4-2 : attirer et presser',
-    duree:'20 min', joueurs:'11 vs 11', difficulte:'⭐⭐',
-    desc:'Se replier en bloc médian pour attirer l\'adversaire puis déclencher un pressing agressif quand la balle arrive dans la zone de vérité.',
-    consignes:['Bloc entre les 2 surfaces : laisser l\'adversaire progresser','Déclencher le pressing quand le ballon dépasse la ligne des 30m','Les 2 BU ferment la sortie des DC adverses','Les 4 milieux referment rapidement sur les porteurs'],
-    schema:'bloc_median'
-  },
-  {
-    id:19, theme:'pressing', titre:'Pressing après corner défensif',
-    duree:'15 min', joueurs:'11 vs 11', difficulte:'⭐⭐',
-    desc:'Après avoir dégagé un corner, lancer immédiatement un pressing haut avant que l\'adversaire ne se replace.',
-    consignes:['Dès le dégagement : les 3 joueurs les plus avancés pressent','Les milieux montent dans les 5 secondes','Objectif : récupérer dans les 30m adverses','Si pas de récupération en 8 sec : retour en bloc bas'],
-    schema:'pressing_corner'
-  },
-
-  // ATTAQUE (6 nouveaux)
-  {
-    id:20, theme:'attaque', titre:'Attaque rapide sur les côtés : 1-2-1',
-    duree:'20 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'Combinaison rapide pour déborder le latéral adverse avec un 1-2 et une course en profondeur de l\'ailier.',
-    consignes:['Ailier reçoit dos au but','Donne et décroche en profondeur dans le dos du latéral','Le milieu fait l\'appel intérieur pour libérer l\'espace','Centre en retrait pour le BU ou le MC qui arrive'],
-    schema:'attaque_cote'
-  },
-  {
-    id:21, theme:'attaque', titre:'Jeu en pivot : BU dos au but',
-    duree:'20 min', joueurs:'7 joueurs', difficulte:'⭐⭐',
-    desc:'Utiliser le BU comme pivot pour fixer la défense et créer des espaces pour les milieux qui arrivent.',
-    consignes:['BU reçoit le ballon dos au but, fixe son défenseur','Donne en 1 touche vers le milieu qui arrive en retard','Faire une course de décrochage pour recevoir la remise','Terminer par un tir ou une déviation en profondeur'],
-    schema:'jeu_pivot'
-  },
-  {
-    id:22, theme:'attaque', titre:'Centre et finition : 3 types de centres',
-    duree:'20 min', joueurs:'8 joueurs', difficulte:'⭐⭐',
-    desc:'Travailler les 3 types de centres : au premier poteau, en retrait, et piqué au deuxième poteau. Avec deux finisseurs.',
-    consignes:['Centre 1 : tendu au 1er poteau (BU part en profondeur)','Centre 2 : en retrait pour MC qui arrive (frappe du pied fort)','Centre 3 : piqué au 2e poteau (BU plonge en extension)','Alterner les 3 types en 3 séries de 5'],
-    schema:'centres_finition'
-  },
-  {
-    id:23, theme:'attaque', titre:'Attaque placée : sortie de bloc bas',
-    duree:'25 min', joueurs:'11 vs 11', difficulte:'⭐⭐⭐',
-    desc:'Comment sortir proprement du bloc bas adverse avec une circulation courte puis une balle longue pour libérer les attaquants.',
-    consignes:['GB → DC → MC en retrait','MC joue en 1 touche vers le milieu axial','Long ballon vers l\'espace dans le dos de la ligne adverse','BU court en profondeur sur la balle longue, pas sur le joueur'],
-    schema:'sortie_bloc'
-  },
-  {
-    id:24, theme:'attaque', titre:'Mouvement d\'attaque en 3-2 : décalage',
-    duree:'20 min', joueurs:'8 joueurs', difficulte:'⭐⭐⭐',
-    desc:'Les 3 attaquants et 2 milieux créent des décalages successifs pour trouver l\'homme libre face au but.',
-    consignes:['3 att : L-C-R en ligne','2 mil : 1 axial + 1 côté','Circulation : mil axial → att C → décrochage att L ou R','Le 3e att part toujours en profondeur côté opposé'],
-    schema:'decalage_3v2'
-  },
-  {
-    id:25, theme:'attaque', titre:'Pressing haut offensif après perte',
-    duree:'15 min', joueurs:'11 vs 11', difficulte:'⭐⭐⭐',
-    desc:'Dès la perte du ballon en zone offensive, les 3 attaquants et les milieux proches pressent immédiatement pour récupérer haut.',
-    consignes:['Perte de balle → les 3 BU pressent dans les 3 secondes','MC fermé le plus proche sort immédiatement','Objectif : récupérer dans les 40m adverses','Si non récupération : retour rapide en 2 lignes de 4'],
-    schema:'pressing_offensif'
-  },
-
-  // TECHNIQUE (5 nouveaux)
-  {
-    id:26, theme:'technique', titre:'Passe et suit : circuit à 4',
-    duree:'15 min', joueurs:'8 joueurs', difficulte:'⭐',
-    desc:'Passe et suit son ballon. 4 joueurs sur les côtés d\'un carré de 15m. Passe → va à la place du receveur.',
-    consignes:['Carré de 15m avec 2 joueurs par côté','Passe vers le côté droit → court vers l\'endroit où tu as passé','Progressif : 2 touches → 1 touche → 1 touche avec changement direction','Variante : 2 ballons en même temps'],
-    schema:'passe_suit'
-  },
-  {
-    id:27, theme:'technique', titre:'Dribble et crochet : slalom cônes',
-    duree:'15 min', joueurs:'Tout le groupe', difficulte:'⭐',
-    desc:'Slalom entre les cônes avec différents crochets : intérieur, extérieur, semelle, Marseillaise. Travailler les deux pieds.',
-    consignes:['6 cônes espacés de 2m sur 12m','Aller : crochet intérieur uniquement','Retour : crochet extérieur uniquement','Variante : alterner les crochets + finition en tir'],
-    schema:'slalom_cones'
-  },
-  {
-    id:28, theme:'technique', titre:'Tir en mouvement : appel + frappe',
-    duree:'20 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'Travailler le tir en mouvement avec un appel préalable. Le joueur reçoit dans le mouvement et frappe directement ou en 1 touche.',
-    consignes:['Départ du poteau opposé → appel diagonal','Recevez la passe dans le mouvement sans s\'arrêter','Frappe directe ou contrôle + frappe en 1 touche','Varier : côté droit, côté gauche, axe central'],
-    schema:'tir_mouvement'
-  },
-  {
-    id:29, theme:'technique', titre:'Jeu de tête offensif et défensif',
-    duree:'15 min', joueurs:'Par 2', difficulte:'⭐',
-    desc:'Exercices de jeu de tête progressifs : tête debout, en mouvement, en saut, en concurrence. Offensive (but) et défensive (dégagement).',
-    consignes:['Phase 1 : tête debout à 3m l\'un de l\'autre (10 rép)','Phase 2 : tête en mouvement (appel + saut)','Phase 3 : 1 centre + 1 défenseur + 1 attaquant','Attention : menton rentré, yeux ouverts, frappe avec le front'],
-    schema:'jeu_tete'
-  },
-  {
-    id:30, theme:'technique', titre:'Frappe en pivot : dos au but',
-    duree:'15 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'Recevoir dos au but, pivoter et tirer en 1 ou 2 touches. Travailler le pivot rapide et la qualité de frappe.',
-    consignes:['BU reçoit dos au but à 16m','Pivot rapide avec le pied extérieur ou intérieur','Tir en 1 ou 2 touches maximum','Variante : défenseur collé dans le dos (jeu de corps)'],
-    schema:'frappe_pivot'
-  },
-
-  // PHYSIQUE (4 nouveaux)
-  {
-    id:31, theme:'physique', titre:'Jeu réduit 5v5 : intensité maximale',
-    duree:'20 min', joueurs:'10 joueurs', difficulte:'⭐⭐⭐',
-    desc:'5 contre 5 sur terrain réduit (30x20m) avec pressing permanent. Haute intensité cardio + technique sous pression.',
-    consignes:['Terrain 30x20m, 2 petits buts','Pressing obligatoire dès la perte de balle','Séries de 4 min avec 2 min de repos','Rotation toutes les 4 min pour maintenir l\'intensité'],
-    schema:'jeu_reduit_5v5'
-  },
-  {
-    id:32, theme:'physique', titre:'Sprint départ arrêté avec ballon',
-    duree:'15 min', joueurs:'Tout le groupe', difficulte:'⭐⭐',
-    desc:'Sprints maximaux de 20 à 40m avec ou sans ballon. Départ arrêté sur signal. Travail de la vitesse de démarrage.',
-    consignes:['Distance : 20m / 30m / 40m','Départ sur signal sonore ou visuel','Récupération : 2 min entre chaque sprint','Variante avec ballon : conduire à pleine vitesse sur 30m + frappe'],
-    schema:'sprints'
-  },
-  {
-    id:33, theme:'physique', titre:'Gainage et explosivité : circuit 6 ateliers',
-    duree:'25 min', joueurs:'Tout le groupe', difficulte:'⭐⭐',
-    desc:'Circuit de renforcement spécifique football : gainage, squat sauté, sprint, slalom, frappe, repos actif.',
-    consignes:['6 ateliers de 40 sec avec 20 sec de repos','Atelier 1 : gainage frontal','Atelier 2 : squat sauté','Atelier 3 : sprint 10m aller-retour','Atelier 4 : slalom cônes','Atelier 5 : jonglerie','Atelier 6 : repos actif (marche)'],
-    schema:'circuit_physique'
-  },
-  {
-    id:34, theme:'physique', titre:'Jeu en largeur : 4v2 en couloir',
-    duree:'20 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'4 joueurs contre 2 dans un couloir de 10x30m. Travail cardio intense couplé à la technique de conservation.',
-    consignes:['Couloir 10x30m, 4 attaquants contre 2 défenseurs','Les 4 doivent faire 6 passes consécutives pour marquer 1 point','Si les 2 récupèrent : échange des rôles immédiat','Durée : 5 min par série, 3 séries'],
-    schema:'largeur_4v2'
-  },
-
-  // CPA (4 nouveaux)
-  {
-    id:35, theme:'cpa', titre:'Corner défensif : organisation du marquage',
-    duree:'15 min', joueurs:'11 vs 8', difficulte:'⭐⭐',
-    desc:'Organiser la défense sur corner adverse avec 2 joueurs en zone (poteau + surface) et le reste en marquage individuel.',
-    consignes:['1 joueur au 1er poteau','1 joueur au 2e poteau','2 joueurs en zone au point de pénalty','Les autres : marquage individuel strict','Règle : ne jamais perdre son homme de vue'],
-    schema:'corner_def'
-  },
-  {
-    id:36, theme:'cpa', titre:'Coup franc indirect : combinaison à 3',
-    duree:'15 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'Coup franc indirect avec une combinaison à 3 joueurs pour créer un décalage et un tir dans la surface.',
-    consignes:['Joueur 1 : pose le ballon et feinte','Joueur 2 : passe courte vers joueur 3 sur le côté','Joueur 3 : centre ou frappe selon position du mur','Joueur 1 continue sa course pour la remise éventuelle'],
-    schema:'franc_indirect'
-  },
-  {
-    id:37, theme:'cpa', titre:'Coup franc défensif : organisation du mur',
-    duree:'10 min', joueurs:'11 joueurs', difficulte:'⭐',
-    desc:'Organisation rapide du mur défensif à partir de la position du tireur adverse. Le GB positionne le mur, un joueur tient le mur.',
-    consignes:['GB se place du côté du 1er poteau à couvrir','1 joueur désigné aligne le mur sur indication du GB','Mur de 3, 4 ou 5 joueurs selon la distance et l\'angle','Les autres joueurs marquent les adversaires dans la surface'],
-    schema:'mur_defensif'
-  },
-  {
-    id:38, theme:'cpa', titre:'Touche offensive : combinaison rapide',
-    duree:'10 min', joueurs:'5 joueurs', difficulte:'⭐',
-    desc:'Tirer parti d\'une rentrée de touche offensive avec une combinaison rapide pour créer une situation de tir ou de centre.',
-    consignes:['Lanceur à la touche','Joueur 1 : appel court pour recevoir','Joueur 2 : démarquage en profondeur','Joueur 3 : apport de l\'autre côté pour la déviation','Ne jamais jouer la touche lentement en zone offensive'],
-    schema:'touche_off'
-  },
-
-  // TRANSITION (3 nouveaux)
-  {
-    id:39, theme:'transition', titre:'Transition 3v3 : reconversion rapide',
-    duree:'15 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'3v3 sur terrain réduit avec reconversion instantanée dès la perte ou la récupération. Travail de transition offensive et défensive.',
-    consignes:['Terrain 25x25m','Dès la perte : les 3 deviennent défenseurs immédiatement','Objectif offensif : tir en moins de 6 secondes','Pas de temps mort : jeu continu pendant 4 min'],
-    schema:'transition_3v3'
-  },
-  {
-    id:40, theme:'transition', titre:'Balle longue vers les BU : contre-attaque',
-    duree:'20 min', joueurs:'8 joueurs', difficulte:'⭐⭐',
-    desc:'Sur récupération du ballon en zone défensive, jouer immédiatement long vers les 2 BU qui partent en profondeur.',
-    consignes:['GB ou DC récupère → balle longue immédiate sans réflexion','2 BU partent en profondeur dès qu\'ils voient la récupération','1 milieu suit en soutien (arrive en 3e)','Ne jamais jouer court en zone défensive si les BU sont libres'],
-    schema:'balle_longue'
-  },
-  {
-    id:41, theme:'transition', titre:'Bloc défensif → sortie rapide : 6 étapes',
-    duree:'20 min', joueurs:'11 vs 11', difficulte:'⭐⭐⭐',
-    desc:'Travail complet du bloc bas à la sortie rapide propre en 6 étapes claires pour tout le groupe.',
-    consignes:['Étape 1 : bloc bas → récupération','Étape 2 : GB récupère → passe courte DC','Étape 3 : DC → MC démarqué','Étape 4 : MC → milieu offensif entre les lignes','Étape 5 : balle vers BU ou ailier en profondeur','Étape 6 : finition'],
-    schema:'sortie_rapide'
-  },
-
-  // SUPÉRIORITÉ (3 nouveaux)
-  {
-    id:42, theme:'surnom', titre:'2v1 : exploiter la supériorité',
-    duree:'15 min', joueurs:'3 joueurs', difficulte:'⭐',
-    desc:'Situation élémentaire de 2 contre 1. Apprendre à ne jamais perdre un 2v1 : temporiser, attirer, décaler.',
-    consignes:['Joueur avec le ballon : conduire vers le défenseur','Dès que le déf engage : passe vers le partenaire libre','Le partenaire : toujours à distance de passe, jamais dans le dos du déf','Ne jamais se précipiter : attirer d\'abord, décaler ensuite'],
-    schema:'deux_un'
-  },
-  {
-    id:43, theme:'surnom', titre:'Rotation en triangle sous pression',
-    duree:'20 min', joueurs:'6 joueurs', difficulte:'⭐⭐',
-    desc:'3v2 avec rotation continue des 3 attaquants pour toujours avoir le ballon et créer des espaces.',
-    consignes:['Triangle de 3 joueurs : toujours 1 en axe, 2 sur les côtés','Le porteur attire le déf → passe vers le joueur libre','Le 3e joueur se déplace toujours pour créer le triangle','Variante : 4v3 sur terrain élargi'],
-    schema:'rotation_triangle'
-  },
-  {
-    id:44, theme:'surnom', titre:'5v3 : conservation et tempo',
-    duree:'20 min', joueurs:'8 joueurs', difficulte:'⭐⭐',
-    desc:'5 attaquants contre 3 défenseurs. Conserver le ballon et choisir le bon moment pour accélérer et finir.',
-    consignes:['5 att vs 3 déf sur 30x20m','Objectif : 10 passes consécutives = 1 point','Après 10 passes : accélération vers le but','Si les 3 déf récupèrent : contre-attaque 3v2'],
-    schema:'cinq_trois'
+function renderExoList(dossierId) {
+  var list = exercicesSauvegardes.filter(function(e){return e.dossier===dossierId;});
+  var el = document.getElementById('sv-exo-list');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty">Aucun exercice — crées-en un !</div>';
+    return;
   }
-  ]);
+  el.innerHTML = list.map(function(e) {
+    var thumb = e.thumbnail ? '<img src="'+e.thumbnail+'" style="width:100%;height:100%;object-fit:cover">' : '';
+    return '<div class="exo-list-item" data-exo-open="'+e.id+'">' +
+      '<div class="exo-list-thumb">'+thumb+'</div>' +
+      '<div class="exo-list-info">' +
+        '<div class="exo-list-name">'+e.titre+'</div>' +
+        '<div class="exo-list-meta">'+(e.notes?e.notes.substring(0,50)+'...':'Aucune note')+'</div>' +
+      '</div>' +
+      '<button style="background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:4px;pointer-events:all" data-exo-del="'+e.id+'">✕</button>' +
+      '</div>';
+  }).join('');
+}
 
-var THEME_LABELS = {
-  pressing:{label:'Pressing / Défense',cls:'badge-pressing'},
-  attaque:{label:'Attaque',cls:'badge-attaque'},
-  cpa:{label:'Coups de pied arrêtés',cls:'badge-cpa'},
-  technique:{label:'Technique',cls:'badge-technique'},
-  physique:{label:'Condition physique',cls:'badge-physique'},
-  transition:{label:'Transition',cls:'badge-transition'},
-  surnom:{label:'Supériorité / Infériorité',cls:'badge-surnom'}
+// ─── ÉDITEUR ───
+var editorState = {
+  tool: 'joueur_bleu',
+  numero: 1,
+  arrowStyle: 'solid',
+  elements: [],
+  history: [],
+  drawing: false,
+  drawStart: null,
+  canvas: null,
+  ctx: null,
+  dossier: 'echauffement',
+  editingId: null,
+  selectedEl: null
 };
 
-var currentTheme = 'tous';
-var openExos = {};
+var TOOLS = [
+  {id:'joueur_bleu',   ico:'🔵', lbl:'Joueur A',   hasNum:true},
+  {id:'joueur_rouge',  ico:'🔴', lbl:'Joueur B',   hasNum:true},
+  {id:'joueur_jaune',  ico:'🟡', lbl:'Neutre',     hasNum:true},
+  {id:'gardien_bleu',  ico:'🟦', lbl:'GB A',       hasNum:false},
+  {id:'gardien_rouge', ico:'🟥', lbl:'GB B',       hasNum:false},
+  {id:'ballon',        ico:'⚽', lbl:'Ballon',     hasNum:false},
+  {id:'coupelle',      ico:'🔶', lbl:'Coupelle',   hasNum:false},
+  {id:'cone',          ico:'🚩', lbl:'Cône',       hasNum:false},
+  {id:'but',           ico:'🥅', lbl:'But',        hasNum:false},
+  {id:'zone',          ico:'⬜', lbl:'Zone',       hasNum:false},
+  {id:'fleche_passe',  ico:'→',  lbl:'Passe',      hasArrow:true},
+  {id:'fleche_course', ico:'⤴',  lbl:'Course',     hasArrow:true},
+  {id:'fleche_tir',    ico:'⚡',  lbl:'Tir',        hasArrow:true},
+  {id:'select',        ico:'👆', lbl:'Sélect.',    hasNum:false},
+  {id:'effacer',       ico:'❌', lbl:'Effacer',    hasNum:false}
+];
 
-function renderSeances() {
-  var list = EXERCICES.filter(function(e){
-    return currentTheme === 'tous' || e.theme === currentTheme;
-  });
+function openEditor(exoId) {
+  var modal = document.getElementById('editor-modal');
+  modal.style.display = 'flex';
+  modal.style.flexDirection = 'column';
 
-  var h = '';
-  if (!list.length) { h = '<div class="empty">Aucun exercice pour ce thème</div>'; }
-
-  list.forEach(function(e) {
-    var tl = THEME_LABELS[e.theme] || {label:e.theme,cls:'badge-technique'};
-    var isOpen = openExos[e.id];
-    h += '<div class="exo-card">' +
-      '<div class="exo-header">' +
-        '<span class="exo-badge '+tl.cls+'">'+tl.label+'</span>' +
-      '</div>' +
-      '<div style="padding:0 14px 8px">' +
-        '<div class="exo-title">'+e.titre+'</div>' +
-        '<div class="exo-meta">⏱ '+e.duree+' · 👥 '+e.joueurs+' · '+e.difficulte+'</div>' +
-      '</div>' +
-      '<div class="exo-desc">'+e.desc+'</div>' +
-      '<div class="exo-schema">'+schemaExo(e.schema)+'</div>';
-
-    if (isOpen) {
-      h += '<div class="exo-consignes">' +
-        '<div class="exo-consignes-title">Consignes</div>';
-      e.consignes.forEach(function(con){
-        h += '<div class="exo-consigne-item">'+con+'</div>';
-      });
-      h += '</div>';
+  // Reset ou charger
+  if (exoId) {
+    var exo = exercicesSauvegardes.find(function(e){return e.id===exoId;});
+    if (exo) {
+      document.getElementById('editor-title').value = exo.titre;
+      document.getElementById('editor-notes').value = exo.notes||'';
+      editorState.elements = JSON.parse(JSON.stringify(exo.elements||[]));
+      editorState.dossier = exo.dossier || currentDossierId || 'echauffement';
+      editorState.editingId = exoId;
     }
+  } else {
+    document.getElementById('editor-title').value = '';
+    document.getElementById('editor-notes').value = '';
+    editorState.elements = [];
+    editorState.dossier = currentDossierId || 'echauffement';
+    editorState.editingId = null;
+  }
+  editorState.history = [];
+  editorState.selectedEl = null;
 
-    h += '<div class="exo-toggle" data-exo-id="'+e.id+'">' +
-      (isOpen ? '▲ Masquer les consignes' : '▼ Voir les consignes') +
-      '</div></div>';
+  buildEditorToolbar();
+  buildDossierBar();
+  updateSubToolbar();
+
+  // Init canvas
+  setTimeout(function() {
+    initCanvas();
+    drawCanvas();
+  }, 50);
+}
+
+function buildEditorToolbar() {
+  var tb = document.getElementById('editor-toolbar');
+  if (!tb) return;
+  tb.innerHTML = TOOLS.map(function(t) {
+    var active = editorState.tool === t.id ? ' active' : '';
+    return '<div class="tool-btn'+active+'" data-editor-tool="'+t.id+'" style="pointer-events:all">' +
+      '<div class="t-ico" style="pointer-events:none">'+t.ico+'</div>' +
+      '<div class="t-lbl" style="pointer-events:none">'+t.lbl+'</div>' +
+      '</div>';
+  }).join('');
+}
+
+function buildDossierBar() {
+  var bar = document.getElementById('editor-dossier-bar');
+  if (!bar) return;
+  bar.innerHTML = DOSSIERS.map(function(d) {
+    var active = editorState.dossier === d.id ? ' active' : '';
+    return '<div class="dos-chip'+active+'" data-editor-dos="'+d.id+'" style="pointer-events:all">'+d.ico+' '+d.name+'</div>';
+  }).join('');
+}
+
+function updateSubToolbar() {
+  var tool = TOOLS.find(function(t){return t.id===editorState.tool;});
+  var numOpt = document.getElementById('opt-numero');
+  var arrOpt = document.getElementById('opt-arrow');
+  if (numOpt) numOpt.style.display = (tool&&tool.hasNum) ? 'flex' : 'none';
+  if (arrOpt) arrOpt.style.display = (tool&&tool.hasArrow) ? 'flex' : 'none';
+  if (document.getElementById('opt-num-val'))
+    document.getElementById('opt-num-val').textContent = editorState.numero;
+}
+
+function initCanvas() {
+  var canvas = document.getElementById('editor-canvas');
+  if (!canvas) return;
+  var wrap = canvas.parentElement;
+  canvas.width  = wrap.offsetWidth  * window.devicePixelRatio;
+  canvas.height = wrap.offsetHeight * window.devicePixelRatio;
+  canvas.style.width  = wrap.offsetWidth  + 'px';
+  canvas.style.height = wrap.offsetHeight + 'px';
+  editorState.canvas = canvas;
+  editorState.ctx = canvas.getContext('2d');
+  editorState.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  editorState.W = wrap.offsetWidth;
+  editorState.H = wrap.offsetHeight;
+}
+
+function drawCanvas() {
+  var ctx = editorState.ctx;
+  if (!ctx) return;
+  var W = editorState.W, H = editorState.H;
+
+  // Fond terrain
+  ctx.fillStyle = '#2d8a2d';
+  ctx.fillRect(0, 0, W, H);
+
+  // Lignes de terrain
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(12, 10, W-24, H-20);
+  ctx.beginPath(); ctx.moveTo(12, H/2); ctx.lineTo(W-12, H/2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(W/2, H/2, 40, 0, Math.PI*2); ctx.stroke();
+  // Surface de réparation haute
+  ctx.strokeRect(W/2-55, 10, 110, 40);
+  // Surface de réparation basse
+  ctx.strokeRect(W/2-55, H-50, 110, 40);
+  // But haut
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+  ctx.strokeRect(W/2-25, 5, 50, 10);
+  // But bas
+  ctx.strokeRect(W/2-25, H-15, 50, 10);
+
+  // Dessiner les éléments
+  editorState.elements.forEach(function(el) {
+    drawElement(ctx, el, el === editorState.selectedEl);
   });
 
-  document.getElementById('seances-list').innerHTML = h;
+  // Prévisualisation flèche en cours
+  if (editorState.drawing && editorState.drawStart && editorState.tool.indexOf('fleche')>=0) {
+    var ds = editorState.drawStart;
+    if (ds.x2 !== undefined) drawArrow(ctx, ds.x1, ds.y1, ds.x2, ds.y2, editorState.tool, editorState.arrowStyle, true);
+  }
 }
+
+function drawElement(ctx, el, selected) {
+  ctx.save();
+  if (selected) { ctx.shadowColor='rgba(255,215,0,0.8)'; ctx.shadowBlur=8; }
+  switch(el.type) {
+    case 'joueur_bleu':   drawPlayer(ctx, el, '#1565c0', '#fff'); break;
+    case 'joueur_rouge':  drawPlayer(ctx, el, '#c62828', '#fff'); break;
+    case 'joueur_jaune':  drawPlayer(ctx, el, '#f57f17', '#fff'); break;
+    case 'gardien_bleu':  drawGoalie(ctx, el, '#1565c0'); break;
+    case 'gardien_rouge': drawGoalie(ctx, el, '#c62828'); break;
+    case 'ballon':        drawBall(ctx, el); break;
+    case 'coupelle':      drawCoupelle(ctx, el); break;
+    case 'cone':          drawCone(ctx, el); break;
+    case 'but':           drawBut(ctx, el); break;
+    case 'zone':          drawZone(ctx, el); break;
+    case 'fleche_passe':  drawArrow(ctx, el.x1, el.y1, el.x2, el.y2, el.type, el.style||'solid', false); break;
+    case 'fleche_course': drawArrow(ctx, el.x1, el.y1, el.x2, el.y2, el.type, el.style||'dashed', false); break;
+    case 'fleche_tir':    drawArrow(ctx, el.x1, el.y1, el.x2, el.y2, el.type, el.style||'solid', false); break;
+  }
+  ctx.restore();
+}
+
+function drawPlayer(ctx, el, fillColor, textColor) {
+  ctx.beginPath();
+  ctx.arc(el.x, el.y, 14, 0, Math.PI*2);
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  if (el.numero) {
+    ctx.fillStyle = textColor;
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(el.numero, el.x, el.y);
+  }
+}
+
+function drawGoalie(ctx, el, fillColor) {
+  ctx.fillStyle = fillColor;
+  ctx.fillRect(el.x-14, el.y-14, 28, 28);
+  ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(el.x-14, el.y-14, 28, 28);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 9px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('GB', el.x, el.y);
+}
+
+function drawBall(ctx, el) {
+  ctx.beginPath();
+  ctx.arc(el.x, el.y, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(el.x, el.y, 3, 0, Math.PI*2);
+  ctx.fillStyle = '#333';
+  ctx.fill();
+}
+
+function drawCoupelle(ctx, el) {
+  ctx.beginPath();
+  ctx.moveTo(el.x, el.y-10);
+  ctx.lineTo(el.x+8, el.y+6);
+  ctx.lineTo(el.x-8, el.y+6);
+  ctx.closePath();
+  ctx.fillStyle = '#ff9800';
+  ctx.fill();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+function drawCone(ctx, el) {
+  ctx.beginPath();
+  ctx.moveTo(el.x, el.y-12);
+  ctx.lineTo(el.x+7, el.y+8);
+  ctx.lineTo(el.x-7, el.y+8);
+  ctx.closePath();
+  ctx.fillStyle = '#f44336';
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(el.x-8, el.y+8, 16, 3);
+}
+
+function drawBut(ctx, el) {
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 3;
+  var w=30, h=18;
+  ctx.strokeRect(el.x-w/2, el.y-h/2, w, h);
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 1;
+  for (var i=1;i<3;i++) {
+    ctx.beginPath();
+    ctx.moveTo(el.x-w/2+i*10, el.y-h/2);
+    ctx.lineTo(el.x-w/2+i*10, el.y+h/2);
+    ctx.stroke();
+  }
+}
+
+function drawZone(ctx, el) {
+  if (!el.x2||!el.y2) return;
+  ctx.fillStyle = 'rgba(255,255,0,0.12)';
+  ctx.strokeStyle = 'rgba(255,255,0,0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5,3]);
+  var x=Math.min(el.x,el.x2), y=Math.min(el.y,el.y2);
+  var w=Math.abs(el.x2-el.x), h=Math.abs(el.y2-el.y);
+  ctx.fillRect(x,y,w,h);
+  ctx.strokeRect(x,y,w,h);
+  ctx.setLineDash([]);
+}
+
+function drawArrow(ctx, x1, y1, x2, y2, type, style, preview) {
+  var colors = {fleche_passe:'rgba(255,255,0,0.9)',fleche_course:'rgba(100,220,100,0.9)',fleche_tir:'rgba(255,100,100,0.9)'};
+  var col = colors[type] || '#fff';
+  ctx.strokeStyle = col;
+  ctx.fillStyle = col;
+  ctx.lineWidth = preview ? 1.5 : 2.5;
+  ctx.setLineDash(style==='dashed' ? [7,4] : []);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Tête de flèche
+  var angle = Math.atan2(y2-y1, x2-x1);
+  var size = 10;
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2-size*Math.cos(angle-0.4), y2-size*Math.sin(angle-0.4));
+  ctx.lineTo(x2-size*Math.cos(angle+0.4), y2-size*Math.sin(angle+0.4));
+  ctx.closePath();
+  ctx.fill();
+}
+
+function getCanvasPos(e) {
+  var canvas = editorState.canvas;
+  var rect = canvas.getBoundingClientRect();
+  var touch = e.touches ? e.touches[0] : e;
+  return {
+    x: (touch.clientX - rect.left),
+    y: (touch.clientY - rect.top)
+  };
+}
+
+function hitTest(el, x, y) {
+  var r = 18;
+  switch(el.type) {
+    case 'zone': return x>=Math.min(el.x,el.x2)-5&&x<=Math.max(el.x,el.x2)+5&&y>=Math.min(el.y,el.y2)-5&&y<=Math.max(el.y,el.y2)+5;
+    case 'fleche_passe': case 'fleche_course': case 'fleche_tir':
+      var dx=el.x2-el.x1, dy=el.y2-el.y1, len=Math.sqrt(dx*dx+dy*dy)||1;
+      var t=((x-el.x1)*dx+(y-el.y1)*dy)/(len*len);
+      t=Math.max(0,Math.min(1,t));
+      var px=el.x1+t*dx, py=el.y1+t*dy;
+      return Math.sqrt((x-px)*(x-px)+(y-py)*(y-py)) < 12;
+    default: return Math.sqrt((x-el.x)*(x-el.x)+(y-el.y)*(y-el.y)) < r;
+  }
+}
+
+function canvasDown(e) {
+  e.preventDefault();
+  var pos = getCanvasPos(e);
+  var tool = editorState.tool;
+
+  if (tool === 'select') {
+    editorState.selectedEl = null;
+    for (var i = editorState.elements.length-1; i >= 0; i--) {
+      if (hitTest(editorState.elements[i], pos.x, pos.y)) {
+        editorState.selectedEl = editorState.elements[i];
+        editorState.dragOffset = {dx: pos.x - (editorState.elements[i].x||editorState.elements[i].x1), dy: pos.y - (editorState.elements[i].y||editorState.elements[i].y1)};
+        break;
+      }
+    }
+    editorState.drawing = true;
+    editorState.drawStart = pos;
+    drawCanvas();
+    return;
+  }
+
+  if (tool === 'effacer') {
+    for (var i = editorState.elements.length-1; i >= 0; i--) {
+      if (hitTest(editorState.elements[i], pos.x, pos.y)) {
+        saveHistory();
+        editorState.elements.splice(i, 1);
+        drawCanvas();
+        return;
+      }
+    }
+    return;
+  }
+
+  if (tool.indexOf('fleche') >= 0 || tool === 'zone') {
+    editorState.drawing = true;
+    editorState.drawStart = {x1:pos.x, y1:pos.y, x2:pos.x, y2:pos.y};
+    return;
+  }
+
+  // Poser un élément
+  saveHistory();
+  var el = {type: tool, x: pos.x, y: pos.y, id: Date.now()+Math.random()};
+  if (tool.indexOf('joueur') >= 0) el.numero = editorState.numero;
+  editorState.elements.push(el);
+  drawCanvas();
+}
+
+function canvasMove(e) {
+  e.preventDefault();
+  if (!editorState.drawing) return;
+  var pos = getCanvasPos(e);
+  var tool = editorState.tool;
+
+  if (tool === 'select' && editorState.selectedEl) {
+    var sel = editorState.selectedEl;
+    var off = editorState.dragOffset || {dx:0,dy:0};
+    if (sel.x1 !== undefined) {
+      var dx = pos.x - off.dx - sel.x1, dy = pos.y - off.dy - sel.y1;
+      sel.x1 += dx; sel.y1 += dy; sel.x2 += dx; sel.y2 += dy;
+      editorState.dragOffset = {dx: pos.x - sel.x1, dy: pos.y - sel.y1};
+    } else {
+      sel.x = pos.x - off.dx;
+      sel.y = pos.y - off.dy;
+      editorState.dragOffset = {dx: pos.x - sel.x, dy: pos.y - sel.y};
+    }
+    drawCanvas();
+    return;
+  }
+
+  if (editorState.drawStart) {
+    editorState.drawStart.x2 = pos.x;
+    editorState.drawStart.y2 = pos.y;
+    drawCanvas();
+  }
+}
+
+function canvasUp(e) {
+  e.preventDefault();
+  if (!editorState.drawing) return;
+  editorState.drawing = false;
+  var tool = editorState.tool;
+  var ds = editorState.drawStart;
+
+  if (ds && (tool.indexOf('fleche') >= 0 || tool === 'zone')) {
+    var dx = ds.x2-ds.x1, dy = ds.y2-ds.y1;
+    if (Math.sqrt(dx*dx+dy*dy) > 15) {
+      saveHistory();
+      var el = {type:tool, id:Date.now()+Math.random(), style:editorState.arrowStyle};
+      if (tool === 'zone') { el.x=ds.x1; el.y=ds.y1; el.x2=ds.x2; el.y2=ds.y2; }
+      else { el.x1=ds.x1; el.y1=ds.y1; el.x2=ds.x2; el.y2=ds.y2; }
+      editorState.elements.push(el);
+    }
+  }
+  editorState.drawStart = null;
+  drawCanvas();
+}
+
+function saveHistory() {
+  editorState.history.push(JSON.stringify(editorState.elements));
+  if (editorState.history.length > 30) editorState.history.shift();
+}
+
+function undoEditor() {
+  if (!editorState.history.length) return;
+  editorState.elements = JSON.parse(editorState.history.pop());
+  editorState.selectedEl = null;
+  drawCanvas();
+}
+
+function getThumbnail() {
+  var c = document.getElementById('editor-canvas');
+  if (!c) return '';
+  var thumb = document.createElement('canvas');
+  thumb.width = 120; thumb.height = 80;
+  var ctx2 = thumb.getContext('2d');
+  ctx2.drawImage(c, 0, 0, 120, 80);
+  return thumb.toDataURL('image/jpeg', 0.6);
+}
+
+function saveExercice() {
+  var titre = document.getElementById('editor-title').value.trim();
+  if (!titre) { toast('⚠️ Donne un nom à l\'exercice'); return; }
+  var thumbnail = getThumbnail();
+  var notes = document.getElementById('editor-notes').value;
+  var exo = {
+    id: editorState.editingId || Date.now(),
+    titre: titre,
+    dossier: editorState.dossier,
+    elements: JSON.parse(JSON.stringify(editorState.elements)),
+    thumbnail: thumbnail,
+    notes: notes,
+    date: new Date().toISOString().slice(0,10)
+  };
+  if (editorState.editingId) {
+    var idx = exercicesSauvegardes.findIndex(function(e){return e.id===editorState.editingId;});
+    if (idx >= 0) exercicesSauvegardes[idx] = exo;
+    else exercicesSauvegardes.push(exo);
+  } else {
+    exercicesSauvegardes.push(exo);
+  }
+  dbSet('astrw_seances', exercicesSauvegardes);
+  closeEditor();
+  renderDossiers();
+  if (currentDossierId) renderExoList(currentDossierId);
+  toast('✅ Exercice sauvegardé !');
+}
+
+function closeEditor() {
+  document.getElementById('editor-modal').style.display = 'none';
+  editorState.drawing = false;
+  editorState.selectedEl = null;
+}
+
+function deleteExercice(id) {
+  if (!confirm('Supprimer cet exercice ?')) return;
+  exercicesSauvegardes = exercicesSauvegardes.filter(function(e){return e.id!==id;});
+  dbSet('astrw_seances', exercicesSauvegardes);
+  renderExoList(currentDossierId);
+  renderDossiers();
+  toast('Exercice supprimé');
+}
+
 
 // ── HOME ──
 function renderHome() {
@@ -2760,7 +2643,97 @@ document.addEventListener('DOMContentLoaded', function() {
   if (selDef) { for(var i=0;i<selDef.options.length;i++){if(selDef.options[i].value===compoState.formationDef){selDef.selectedIndex=i;break;}} }
 
   // Reload
-  document.getElementById('btn-reload').addEventListener('click', function() {
+  // ── SÉANCES LISTENERS ──
+  document.addEventListener('click', function(e) {
+    var t = e.target;
+    // Ouvrir dossier
+    var dosCard = t.closest ? t.closest('[data-dos-id]') : null;
+    if (dosCard) { openDossier(dosCard.getAttribute('data-dos-id')); return; }
+    // Retour home
+    if (t.id==='sv-back-home') { showSeanceView('home'); return; }
+    // Nouveau exercice
+    if (t.id==='btn-new-exo'||t.id==='btn-new-exo-from-liste') { openEditor(null); return; }
+    // Ouvrir exercice existant
+    var exoOpen = t.closest ? t.closest('[data-exo-open]') : null;
+    if (exoOpen && !t.getAttribute('data-exo-del')) { openEditor(parseInt(exoOpen.getAttribute('data-exo-open'))); return; }
+    // Supprimer exercice
+    var exoDel = t.closest ? t.closest('[data-exo-del]') : null;
+    if (exoDel) { deleteExercice(parseInt(exoDel.getAttribute('data-exo-del'))); return; }
+    // Outil éditeur
+    var toolBtn = t.closest ? t.closest('[data-editor-tool]') : null;
+    if (toolBtn) {
+      editorState.tool = toolBtn.getAttribute('data-editor-tool');
+      buildEditorToolbar();
+      updateSubToolbar();
+      return;
+    }
+    // Dossier éditeur
+    var dosBtn = t.closest ? t.closest('[data-editor-dos]') : null;
+    if (dosBtn) {
+      editorState.dossier = dosBtn.getAttribute('data-editor-dos');
+      buildDossierBar();
+      return;
+    }
+    // Style flèche
+    var arrBtn = t.closest ? t.closest('[data-arrow]') : null;
+    if (arrBtn) {
+      editorState.arrowStyle = arrBtn.getAttribute('data-arrow');
+      document.querySelectorAll('[data-arrow]').forEach(function(b){b.classList.remove('active');});
+      arrBtn.classList.add('active');
+      return;
+    }
+  });
+
+  // Fermer éditeur
+  document.getElementById('editor-close').addEventListener('click', function() {
+    if (editorState.elements.length > 0) {
+      if (!confirm('Fermer sans sauvegarder ?')) return;
+    }
+    closeEditor();
+  });
+
+  // Sauvegarder
+  document.getElementById('editor-save').addEventListener('click', saveExercice);
+
+  // Undo / Clear
+  document.getElementById('btn-undo').addEventListener('click', undoEditor);
+  document.getElementById('btn-clear').addEventListener('click', function() {
+    if (!confirm('Effacer tout le terrain ?')) return;
+    saveHistory();
+    editorState.elements = [];
+    editorState.selectedEl = null;
+    drawCanvas();
+  });
+
+  // Numéro joueur
+  document.getElementById('opt-num-m').addEventListener('click', function() {
+    editorState.numero = Math.max(1, editorState.numero-1);
+    document.getElementById('opt-num-val').textContent = editorState.numero;
+  });
+  document.getElementById('opt-num-p').addEventListener('click', function() {
+    editorState.numero = Math.min(20, editorState.numero+1);
+    document.getElementById('opt-num-val').textContent = editorState.numero;
+  });
+
+  // Canvas events
+  var canvas = document.getElementById('editor-canvas');
+  if (canvas) {
+    canvas.addEventListener('mousedown',  canvasDown);
+    canvas.addEventListener('mousemove',  canvasMove);
+    canvas.addEventListener('mouseup',    canvasUp);
+    canvas.addEventListener('touchstart', canvasDown, {passive:false});
+    canvas.addEventListener('touchmove',  canvasMove, {passive:false});
+    canvas.addEventListener('touchend',   canvasUp,   {passive:false});
+  }
+
+  // Resize canvas quand l'éditeur s'ouvre
+  window.addEventListener('resize', function() {
+    if (document.getElementById('editor-modal').style.display !== 'none') {
+      initCanvas(); drawCanvas();
+    }
+  });
+
+    document.getElementById('btn-reload').addEventListener('click', function() {
     toast('🔄 Rechargement...');
     setTimeout(function(){ location.reload(); }, 600);
   });
@@ -2782,5 +2755,42 @@ document.addEventListener('DOMContentLoaded', function() {
   renderSeances();
 });
 </script>
+
+<!-- ÉDITEUR TERRAIN SÉANCE -->
+<div id="editor-modal" style="display:none;position:fixed;inset:0;z-index:500;flex-direction:column;background:#f0f2f8;">
+  <div class="editor-header">
+    <button class="editor-back-btn-inner" id="editor-close">✕</button>
+    <input type="text" class="editor-title-input" id="editor-title" placeholder="Nom de l'exercice...">
+    <button class="editor-save-btn" id="editor-save">💾 Sauvegarder</button>
+  </div>
+  <div class="dossier-select-bar" id="editor-dossier-bar"></div>
+  <div style="background:#fff;border-bottom:1px solid var(--border);padding:6px 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;">
+    <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-right:2px">Outils</div>
+    <div style="display:flex;gap:5px;overflow-x:auto;flex:1;" id="editor-toolbar"></div>
+  </div>
+  <div style="background:#fff;border-bottom:1px solid var(--border);padding:5px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;" id="editor-sub-toolbar">
+    <div id="opt-numero" style="display:none;align-items:center;gap:4px">
+      <span style="font-size:10px;color:var(--muted)">N°</span>
+      <button class="num-btn" id="opt-num-m">−</button>
+      <span class="num-val" id="opt-num-val">1</span>
+      <button class="num-btn" id="opt-num-p">+</button>
+    </div>
+    <div id="opt-arrow" style="display:none;gap:5px">
+      <div class="dos-chip active" data-arrow="solid" style="padding:3px 9px">─── Pleine</div>
+      <div class="dos-chip" data-arrow="dashed" style="padding:3px 9px">- - - Pointillé</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="tool-btn" id="btn-undo" style="padding:4px 8px;border:1px solid var(--border)"><div class="t-ico" style="font-size:14px">↩️</div><div class="t-lbl">Annuler</div></button>
+      <button class="tool-btn" id="btn-clear" style="padding:4px 8px;border:1px solid var(--red-l);background:var(--red-l)"><div class="t-ico" style="font-size:14px">🗑️</div><div class="t-lbl" style="color:var(--red)">Vider</div></button>
+    </div>
+  </div>
+  <div style="flex:1;overflow:hidden;position:relative;">
+    <canvas id="editor-canvas" style="width:100%;height:100%;touch-action:none;display:block;"></canvas>
+  </div>
+  <div style="background:#fff;border-top:1px solid var(--border);padding:8px 12px;flex-shrink:0;">
+    <textarea id="editor-notes" rows="2" placeholder="Consignes, durée, nombre de joueurs..." style="width:100%;border:1px solid var(--border);border-radius:9px;padding:8px 12px;font-size:12px;outline:none;resize:none;font-family:inherit;"></textarea>
+  </div>
+</div>
+
 </body>
 </html>
