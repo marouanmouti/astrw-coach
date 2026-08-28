@@ -1874,13 +1874,40 @@ function renderHome() {
 
 // ── CONVOCATIONS ──
 function renderConvo() {
+  var sorted = players.slice().sort(function(a,b){return posteSortKey(a)-posteSortKey(b)||a.nom.localeCompare(b.nom);});
+  var dispos   = sorted.filter(function(p){return p.statut==='ok';});
+  var indispos = sorted.filter(function(p){return p.statut!=='ok';});
+
+  var tagT = {bless:'🤕 Blessé',susp:'🟥 Suspendu',absent:'🚫 Absent',mute:'🔵 Muté',mutehp:'🟢 HP'};
+
   var h = '';
-  players.slice().sort(function(a,b){return a.nom.localeCompare(b.nom);}).forEach(function(p) {
-    var isBless = p.statut === 'bless';
-    h += '<div class="pcheck'+(isBless?'':' sel')+'" data-pid="'+p.id+'">' +
-      '<div class="pcheck-dot"></div><span>'+p.nom.split(' ')[0]+'</span></div>';
-  });
-  document.getElementById('c-players').innerHTML = h || '<div class="empty">Aucun joueur</div>';
+  if (dispos.length) {
+    h += '<div class="sec" style="margin-bottom:6px">✅ Disponibles</div>';
+    h += '<div class="pcheck-grid">';
+    dispos.forEach(function(p) {
+      var main = (p.postes_main&&p.postes_main[0])||p.poste||'';
+      h += '<div class="pcheck" data-pid="'+p.id+'">' +
+        '<div class="pcheck-dot"></div>' +
+        '<span style="flex:1">'+p.nom.split(' ')[0]+'</span>' +
+        '<span style="font-size:9px;opacity:.5">'+main+'</span></div>';
+    });
+    h += '</div>';
+  }
+  if (indispos.length) {
+    h += '<div class="sec" style="margin:10px 0 6px">❌ Indisponibles</div>';
+    h += '<div class="pcheck-grid">';
+    indispos.forEach(function(p) {
+      var lbl = tagT[p.statut]||p.statut;
+      h += '<div class="pcheck" data-pid="'+p.id+'" style="opacity:.55">' +
+        '<div class="pcheck-dot"></div>' +
+        '<span style="flex:1">'+p.nom.split(' ')[0]+'</span>' +
+        '<span style="font-size:9px;color:var(--red)">'+lbl+'</span></div>';
+    });
+    h += '</div>';
+  }
+  if (!players.length) h = '<div class="empty">Aucun joueur dans l\'effectif</div>';
+
+  document.getElementById('c-players').innerHTML = h;
   document.getElementById('c-result').style.display = 'none';
   document.querySelectorAll('.pcheck').forEach(function(el) {
     el.addEventListener('click', function() { el.classList.toggle('sel'); });
